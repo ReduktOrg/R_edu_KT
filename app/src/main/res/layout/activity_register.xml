@@ -25,7 +25,8 @@
                 <TextView
                     style="@style/viewParent.headerText.NoMode"
                     android:layout_alignParentLeft="true"
-                    android:text="here"
+                    android:text="Here is\nyour first\nstep with us"
+                    android:textSize="22dp"
                     android:textColor="@color/whiteTextColor"/>
                 <ImageView
                     android:layout_width="wrap_content"
@@ -108,7 +109,7 @@
                         style="@style/parent"
                         android:layout_marginTop="@dimen/loginViewsMargin"
                         android:onClick="onLoginClick"
-                        android:text="Alreadt have an account?"
+                        android:text="Already have an account?"
                         android:textAlignment="center"
                         android:textColor="@color/themeColor"
                         android:textSize="17sp"
