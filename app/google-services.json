@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "116188204223",
+    "project_id": "r-edu-kt",
+    "storage_bucket": "r-edu-kt.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:116188204223:android:49f945df6fb60cfef90a0a",
+        "android_client_info": {
+          "package_name": "com.example.r_edu_kt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "116188204223-c2bq2p95iqkq28rse7jqe8ap5r9c1bdh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkHFWif9_o0dijwWOLJ25-JoLiQAM5Etg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "116188204223-c2bq2p95iqkq28rse7jqe8ap5r9c1bdh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

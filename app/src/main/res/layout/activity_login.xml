@@ -49,10 +49,9 @@
                 android:layout_marginTop="@dimen/loginViewsMargin">
 
                 <EditText
-                    android:id="@+id/editTextEmail"
+                    android:id="@+id/editTextName"
                     style="@style/modifiedEditText"
-                    android:hint="@string/login_email_hint"
-                    android:inputType="textEmailAddress"
+                    android:hint="Name"
                     android:maxLines="1"/>
             </com.google.android.material.textfield.TextInputLayout>
 
