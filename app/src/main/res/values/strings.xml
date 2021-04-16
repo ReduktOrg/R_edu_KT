@@ -2,4 +2,7 @@
     <string name="app_name">ReduKT</string>
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
+    <string name="logo_name">ReduKT</string>
+    <string name="slogan_name">Learning by doing!</string>
+    <string name="powered_by">Copyright© 2021 | Team JAC</string>
 </resources>
