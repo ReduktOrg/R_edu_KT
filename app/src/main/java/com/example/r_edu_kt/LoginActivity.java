@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.r_edu_kt.User.UserDashboard;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,12 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                        String phoneNoFromDB=snapshot.child(name).child("phoneNo").getValue(String.class);
                        String emailFromDB=snapshot.child(name).child("email").getValue(String.class);
 
-                       Intent intent=new Intent(LoginActivity.this,UserProfile.class);
-
-                       intent.putExtra("name",nameFromDB);
-                       intent.putExtra("password",passwordFromDB);
-                       intent.putExtra("phoneNo",phoneNoFromDB);
-                       intent.putExtra("email",emailFromDB);
+                       Intent intent=new Intent(LoginActivity.this, UserDashboard.class);
                        startActivity(intent);
 
                    }

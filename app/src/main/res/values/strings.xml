@@ -5,4 +5,22 @@
     <string name="logo_name">ReduKT</string>
     <string name="slogan_name">Learning by doing!</string>
     <string name="powered_by">Copyright© 2021 | Team JAC</string>
+
+
+    <!--    strings for dashboard-->
+
+    <!--    categories  -->
+    <string name="cse">Cse</string>
+    <string name="ece">Ece</string>
+    <string name="mech">Mech</string>
+    <string name="civil">Civil</string>
+    <string name="chemical">Chemical</string>
+
+    <!--  Tiles and descriptions  -->
+    <string name="featured_cources">All Featured Courses</string>
+    <string name="featured_courses_description">All the courses that are featured and have the top demand!</string>
+    <string name="most_viewed_courses">Most Viewed</string>
+    <string name="categories">Categories</string>
+    <string name="view_all">View All</string>
+    <string name="search_text">Search...</string>
 </resources>
