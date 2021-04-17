@@ -75,13 +75,14 @@
                         android:id="@+id/textInputMobile"
                         style="@style/parent"
                         android:layout_marginTop="@dimen/loginViewsMargin">
+
                         <EditText
                             android:id="@+id/editTextMobile"
                             style="@style/modifiedEditText"
+                            android:layout_height="36dp"
                             android:hint="Mobile no."
-                            android:inputType="phone"
-                            android:maxLines="1"
-                            />
+                            android:inputType="number"
+                            android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputPassword"

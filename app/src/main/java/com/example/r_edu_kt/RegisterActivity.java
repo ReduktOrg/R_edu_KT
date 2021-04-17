@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -69,6 +70,10 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(new Intent(this,LoginActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
     void register(){
         rootNode =FirebaseDatabase.getInstance();
         reference=rootNode.getReference("users");
@@ -79,21 +84,38 @@ public class RegisterActivity extends AppCompatActivity {
         phoneNo=phonenumEt.getText().toString();
 
          if(TextUtils.isEmpty(name)){
-            passwordEt.setError("Enter your name");
+            nameEt.setError("Enter your name");
             return;
         }
         else if(TextUtils.isEmpty(email)){
             emailEt.setError("Enter your mail");
             return;
         }
+        else if(!isValidEmail(email)){
+            emailEt.setError("Enter correct EmailAddress");
+            return;
+         }
         else if(TextUtils.isEmpty(phoneNo)){
-             passwordEt.setError("Enter your password1");
+             phonenumEt.setError("Enter your PhoneNumber");
              return;
          }
         else if(TextUtils.isEmpty(password)){
-            passwordEt.setError("Enter your password1");
+            passwordEt.setError("Enter your password");
             return;
         }
+        else if(name.length()<6){
+            nameEt.setError("Name should be atleast 6 characters");
+            return;
+         }
+        else if(phoneNo.length()!=10){
+            phonenumEt.setError("phone number should contain 10 digits");
+            return;
+         }
+        else if(password.length()<6){
+            passwordEt.setError("Password should be atleast 6 characters");
+            return;
+        }
+
 
 
         Query checkUser=reference.orderByChild("name").equalTo(name);

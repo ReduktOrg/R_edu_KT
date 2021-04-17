@@ -58,11 +58,11 @@ public class LoginActivity extends AppCompatActivity {
         name=nameEt.getText().toString();
 
         if(TextUtils.isEmpty(name)){
-            nameEt.setError("Enter your mail");
+            nameEt.setError("Enter your username");
             return;
         }
         else if(TextUtils.isEmpty(password)){
-            passwordEt.setError("Enter your password1");
+            passwordEt.setError("Enter your password");
             return;
         }
 
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                    }
                }
                else{
-                   nameEt.setError("No such use exists");
+                   nameEt.setError("No such user exists");
                    nameEt.requestFocus();
                }
             }
