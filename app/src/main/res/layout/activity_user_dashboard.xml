@@ -47,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:fontFamily="@font/brandon_grotesque_black_58a8a3e824392"
+                    android:fontFamily="@font/poppins_bold"
                     android:text="@string/logo_name"
                     android:textSize="30sp" />
 
@@ -112,6 +112,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="@string/cse"
+                        android:fontFamily="@font/poppins_medium"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -140,6 +141,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="@string/ece"
+                        android:fontFamily="@font/poppins_medium"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -168,6 +170,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="@string/mech"
+                        android:fontFamily="@font/poppins_medium"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -196,6 +199,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="@string/civil"
+                        android:fontFamily="@font/poppins_medium"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -224,6 +228,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:text="@string/chemical"
+                        android:fontFamily="@font/poppins_medium"
                         android:textAlignment="center" />
                 </LinearLayout>
 
@@ -238,9 +243,9 @@
 
                 <LinearLayout
                     android:id="@+id/featured_background"
-                    android:layout_width="170dp"
+                    android:layout_width="150dp"
                     android:layout_height="280dp"
-                    android:layout_margin="10dp"
+                    android:layout_margin="9dp"
                     android:background="@color/banner_background"
                     android:orientation="vertical">
 
@@ -251,6 +256,7 @@
                         android:layout_marginTop="50dp"
                         android:text="@string/featured_cources"
                         android:textAllCaps="true"
+                        android:fontFamily="@font/poppins_semibold"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="25sp" />
 
@@ -262,10 +268,11 @@
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/featured_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="280dp"
+                    android:layout_height="300dp"
                     android:layout_toRightOf="@+id/featured_background"
-                    android:background="@color/home_background"/>
+                    android:background="@color/home_background" />
             </RelativeLayout>
 
             <LinearLayout
@@ -298,8 +305,9 @@
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/most_viewed_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -318,6 +326,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/categories"
                         android:textSize="20sp"
+                        android:layout_marginLeft="10dp"
                         android:textColor="@color/colorAccent"
                         android:fontFamily="@font/brandon_grotesque_black_58a8a3e824392"
                         android:textAllCaps="true"/>
@@ -333,7 +342,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"/>
+                    android:layout_height="wrap_content"
+                    android:id="@+id/categories_recycler"/>
             </LinearLayout>
 
         </LinearLayout>

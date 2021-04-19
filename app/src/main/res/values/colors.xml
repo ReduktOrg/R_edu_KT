@@ -22,8 +22,8 @@
 
     <!--   body and background colors     -->
     <color name="home_background">#f2f5f8</color>
-    <color name="banner_background">#87cefa</color>
-    <color name="banner_background_light">#9fd8fb</color>
+    <color name="banner_background">#ceebfd</color>
+    <color name="banner_background_light">#e7f5fe</color>
 
     <!--   card colors     -->
     <color name="card1">#15b2d1</color>

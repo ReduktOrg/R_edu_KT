@@ -16,7 +16,7 @@ import com.example.r_edu_kt.R;
 
 public class SplashScreen extends AppCompatActivity {
 
-    private static int SPLASH_TIMER =5000;
+    private static int SPLASH_TIMER =2000;
 
     // variables
     ImageView backgroundImage;
