@@ -1,4 +1,4 @@
-<resources>
+ <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -47,5 +47,9 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:paddingLeft">5dp</item>
     </style>
+     <style name="navigationTheme">
+         <item name="colorPrimary">@color/colorPrimary</item>
+         <item name="android:colorControlHighlight">@color/colorAccent</item>
+     </style>
 
 </resources>
