@@ -6,6 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.WindowManager;
 
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
 import com.example.r_edu_kt.R;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
@@ -25,16 +27,25 @@ public class UserDashboard extends AppCompatActivity {
     RecyclerView.Adapter adapter;
     private GradientDrawable gradient1, gradient2, gradient3, gradient4;
 
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user_dashboard);
 
         //Hooks
         featuredRecycler = findViewById(R.id.featured_recycler);
         mostViewedRecycler = findViewById(R.id.most_viewed_recycler);
         categoriesRecycler = findViewById(R.id.categories_recycler);
+
+        //menu hooks
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+
         featuredRecycler();
         mostViewedRecycler();
         categoriesRecycler();
@@ -87,10 +98,10 @@ public class UserDashboard extends AppCompatActivity {
 
         ArrayList<FeaturedHelperClass> featuredCourses = new ArrayList<>();
 
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence,"Artificial Intelligence","asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence,"IOT","asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence,"Data analysis","asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence,"App development","asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "Artificial Intelligence", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "IOT", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "Data analysis", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "App development", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
 
 
         adapter = new FeaturedAdapter(featuredCourses);
