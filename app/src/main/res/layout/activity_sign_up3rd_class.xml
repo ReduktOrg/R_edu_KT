@@ -8,7 +8,7 @@
     android:background="@color/register_bk_color"
     android:focusableInTouchMode="true"
     android:gravity="center"
-    tools:context=".RegisterActivity">
+    tools:context=".SignUp3rdClass">
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -33,7 +33,7 @@
                     android:text="Here is\nyour first\nstep with us"
                     android:textColor="@color/whiteTextColor"
                     android:textSize="22dp"
-                    android:transitionName="transition_title_text" />
+                    android:transitionName="transition_title_text"/>
 
                 <ImageView
                     android:id="@+id/sign_up_side_image"
@@ -42,7 +42,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:src="@drawable/ic_login_hero"
-                    android:transitionName="transition_side_image" />
+                    android:transitionName="transition_side_image"/>
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView
@@ -58,74 +58,43 @@
                     android:layout_margin="10dp"
                     android:orientation="vertical">
 
+                    <com.hbb20.CountryCodePicker
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:ccp_autoDetectCountry="true"
+                        app:ccp_showFlag="true"
+                        app:ccp_showNameCode="true"
+                        app:ccp_showFullName="true"
+                        android:background="@drawable/blue_border"/>
+
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputName"
+                        android:id="@+id/textInputMobile"
                         style="@style/parent"
                         android:layout_marginTop="@dimen/loginViewsMargin">
 
                         <EditText
-                            android:id="@+id/editTextName"
+                            android:id="@+id/editTextMobile"
                             style="@style/modifiedEditText"
-                            android:hint="Full Name"
-                            android:inputType="textPersonName"
-                            android:maxLines="1" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputUserName"
-                        style="@style/parent"
-                        android:layout_marginTop="@dimen/loginViewsMargin">
-
-                        <EditText
-                            android:id="@+id/editTextUserName"
-                            style="@style/modifiedEditText"
-                            android:hint="Username"
-                            android:inputType="textPersonName"
-                            android:maxLines="1" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputEmail"
-                        style="@style/parent"
-                        android:layout_marginTop="@dimen/loginViewsMargin">
-
-                        <EditText
-                            android:id="@+id/editTextEmail"
-                            style="@style/modifiedEditText"
-                            android:hint="@string/login_email_hint"
-                            android:inputType="textEmailAddress"
+                            android:layout_height="36dp"
+                            android:hint="Mobile no."
+                            android:inputType="number"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/textInputPassword"
-                        style="@style/parent"
-                        android:layout_marginTop="@dimen/loginViewsMargin"
-                        app:endIconMode="password_toggle">
-
-                        <EditText
-                            android:id="@+id/editTextPaswword"
-                            style="@style/modifiedEditText"
-                            android:hint="@string/login_password_hint"
-                            android:inputType="textPassword"
-                            android:maxLines="1" />
-                    </com.google.android.material.textfield.TextInputLayout>
 
                     <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
                         android:id="@+id/cirRegisterButton"
                         style="@style/loginButton"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/loginViewsMargin"
-                        android:onClick="callNextSignupScreen"
                         android:text="Next"
-                        android:transitionName="transition_next_btn"
+                        android:onClick="callNextSignupScreen"
                         app:initialCornerAngle="27dp"
                         app:spinning_bar_color="#fff"
                         app:spinning_bar_padding="6dp"
-                        app:spinning_bar_width="4dp" />
+                        app:spinning_bar_width="4dp"
+                        android:transitionName="transition_next_btn"/>
 
                     <TextView
                         android:id="@+id/sign_up_login_button"
@@ -137,7 +106,7 @@
                         android:textColor="@color/themeColor"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        android:transitionName="transition_login_btn" />
+                        android:transitionName="transition_login_btn"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
