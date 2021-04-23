@@ -42,9 +42,9 @@
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@color/banner_background"
+                android:background="@color/transparent"
                 android:padding="5dp"
-                android:src="@drawable/baseline_add_black_48" />
+                android:src="@drawable/baseline_search_black_48" />
         </RelativeLayout>
 
         <ScrollView
@@ -69,34 +69,34 @@
                         android:text="@string/logo_name"
                         android:textSize="30sp" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_below="@id/app_name"
-                        android:layout_marginLeft="40dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginRight="40dp"
-                        android:layout_marginBottom="20dp"
-                        android:background="@color/white"
-                        android:elevation="8dp">
+<!--                    <RelativeLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:layout_below="@id/app_name"-->
+<!--                        android:layout_marginLeft="40dp"-->
+<!--                        android:layout_marginTop="20dp"-->
+<!--                        android:layout_marginRight="40dp"-->
+<!--                        android:layout_marginBottom="20dp"-->
+<!--                        android:background="@color/white"-->
+<!--                        android:elevation="8dp">-->
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="15dp"
-                            android:text="@string/search_text" />
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginLeft="15dp"-->
+<!--                            android:text="@string/search_text" />-->
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="15dp"
-                            android:src="@drawable/baseline_search_20" />
+<!--                        <ImageView-->
+<!--                            android:layout_width="30dp"-->
+<!--                            android:layout_height="30dp"-->
+<!--                            android:layout_alignParentRight="true"-->
+<!--                            android:layout_centerVertical="true"-->
+<!--                            android:layout_marginRight="15dp"-->
+<!--                            android:src="@drawable/baseline_search_20" />-->
 
 
-                    </RelativeLayout>
+<!--                    </RelativeLayout>-->
                 </RelativeLayout>
 
                 <LinearLayout
@@ -121,7 +121,9 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/baseline_add_black_36" />
+                                android:src="@drawable/baseline_laptop_mac_black_48"
+                                android:tint="@color/home_background"
+                                />
 
                         </RelativeLayout>
 
@@ -150,7 +152,8 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/baseline_add_black_36" />
+                                android:src="@drawable/baseline_cable_black_48"
+                                android:tint="@color/home_background"/>
 
                         </RelativeLayout>
 
@@ -179,7 +182,8 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/baseline_add_black_36" />
+                                android:src="@drawable/baseline_precision_manufacturing_black_48"
+                                android:tint="@color/home_background"/>
 
                         </RelativeLayout>
 
@@ -208,7 +212,8 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/baseline_add_black_36" />
+                                android:src="@drawable/baseline_engineering_black_48"
+                                android:tint="@color/home_background"/>
 
                         </RelativeLayout>
 
@@ -237,7 +242,8 @@
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
-                                android:src="@drawable/baseline_add_black_36" />
+                                android:src="@drawable/baseline_science_black_48"
+                                android:tint="@color/home_background"/>
 
                         </RelativeLayout>
 

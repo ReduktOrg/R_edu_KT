@@ -4,6 +4,7 @@
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#03254c</color>
     <color name="colorAccent">#2a9df4</color>
+    <color name="button_blue">#187bcd</color>
     <color name="themeColor">#2a9df4</color>
 
     <color name="darkTextColor">#020000</color>
@@ -15,6 +16,7 @@
 
     <color name="lightWhite">#f5f5f5</color>
     <color name="white">#fff</color>
+    <color name="transparent">#00000000</color>
     <color name="black">#000</color>
     <color name="lightBlue">#9cc3d5ff</color>
 
@@ -28,8 +30,8 @@
     <!--   card colors     -->
     <color name="card1">#15b2d1</color>
     <color name="card2">#f3767c</color>
-    <color name="card3">#ffe6a7</color>
-    <color name="card4">#b8d7f5</color>
+    <color name="card3">#ffc533</color>
+    <color name="card4">#8fbfef</color>
     <color name="card5">#faa31b</color>
 
 </resources>

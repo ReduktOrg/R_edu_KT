@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    static final float END_SCALE=0.7f;
+    static final float END_SCALE = 0.7f;
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
     RecyclerView.Adapter adapter;
     private GradientDrawable gradient1, gradient2, gradient3, gradient4;
@@ -48,12 +48,12 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         featuredRecycler = findViewById(R.id.featured_recycler);
         mostViewedRecycler = findViewById(R.id.most_viewed_recycler);
         categoriesRecycler = findViewById(R.id.categories_recycler);
-       menuIcon = findViewById(R.id.menu_icon);
-        contentView=findViewById(R.id.content);
+        menuIcon = findViewById(R.id.menu_icon);
+        contentView = findViewById(R.id.content);
         //menu hooks
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
-        
+
         naviagationDrawer();
 
         featuredRecycler();
@@ -64,21 +64,21 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     private void naviagationDrawer() {
         navigationView.bringToFront();
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setCheckedItem(R.id.nav_home );
+        navigationView.setCheckedItem(R.id.nav_home);
         menuIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(drawerLayout.isDrawerVisible(GravityCompat.START))
+                if (drawerLayout.isDrawerVisible(GravityCompat.START))
                     drawerLayout.closeDrawer(GravityCompat.START);
                 else drawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
-       animateNavigateDrawer();
+        animateNavigateDrawer();
     }
 
     private void animateNavigateDrawer() {
-        drawerLayout.setScrimColor(getResources().getColor(R.color.colorPrimary));
+        drawerLayout.setScrimColor(getResources().getColor(R.color.colorAccent));
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -100,11 +100,9 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerVisible(GravityCompat.START))
-        {
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else
+        } else
             super.onBackPressed();
     }
 
@@ -112,6 +110,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         return true;
     }
+
 
     private void categoriesRecycler() {
 
@@ -123,11 +122,11 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
 
         ArrayList<CategoriesHelperClass> categoriesHelperClasses = new ArrayList<>();
-        categoriesHelperClasses.add(new CategoriesHelperClass(gradient1, R.drawable.cat1, "Programming"));
-        categoriesHelperClasses.add(new CategoriesHelperClass(gradient2, R.drawable.cat1, "Web Design"));
-        categoriesHelperClasses.add(new CategoriesHelperClass(gradient3, R.drawable.cat1, "Shell scripting"));
-        categoriesHelperClasses.add(new CategoriesHelperClass(gradient4, R.drawable.cat1, "Dbms"));
-        categoriesHelperClasses.add(new CategoriesHelperClass(gradient1, R.drawable.cat1, "Operating systems"));
+        categoriesHelperClasses.add(new CategoriesHelperClass(gradient4, R.drawable.dbms, "Dbms"));
+        categoriesHelperClasses.add(new CategoriesHelperClass(gradient1, R.drawable.os, "Operating systems"));
+        categoriesHelperClasses.add(new CategoriesHelperClass(gradient2, R.drawable.web_design, "Web Design"));
+        categoriesHelperClasses.add(new CategoriesHelperClass(gradient3, R.drawable.shell, "Shell script"));
+        categoriesHelperClasses.add(new CategoriesHelperClass(gradient1, R.drawable.programm, "Programming"));
 
 
         categoriesRecycler.setHasFixedSize(true);
@@ -143,16 +142,15 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         mostViewedRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         ArrayList<MostViewedHelperClass> mostViewedLocations = new ArrayList<>();
+        mostViewedLocations.add(new MostViewedHelperClass(R.drawable.machinelearning, "Machine Learning"));
         mostViewedLocations.add(new MostViewedHelperClass(R.drawable.artificial_intelligence, "Artificial Intelligence"));
-        mostViewedLocations.add(new MostViewedHelperClass(R.drawable.artificial_intelligence, "FLAT"));
-        mostViewedLocations.add(new MostViewedHelperClass(R.drawable.artificial_intelligence, "Machine Learning"));
-        mostViewedLocations.add(new MostViewedHelperClass(R.drawable.artificial_intelligence, "IOT"));
+        mostViewedLocations.add(new MostViewedHelperClass(R.drawable.cloudcomputing, "Cloud Computing"));
+        mostViewedLocations.add(new MostViewedHelperClass(R.drawable.iot, "IOT"));
 
         adapter = new MostViewedAdapter(mostViewedLocations);
         mostViewedRecycler.setAdapter(adapter);
 
     }
-
 
     private void featuredRecycler() {
         featuredRecycler.setHasFixedSize(true);
@@ -160,10 +158,10 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
         ArrayList<FeaturedHelperClass> featuredCourses = new ArrayList<>();
 
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.mad, "App development", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.data_analysis, "Data analysis", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
         featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "Artificial Intelligence", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "IOT", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "Data analysis", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
-        featuredCourses.add(new FeaturedHelperClass(R.drawable.artificial_intelligence, "App development", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
+        featuredCourses.add(new FeaturedHelperClass(R.drawable.iot, "IOT", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
 
 
         adapter = new FeaturedAdapter(featuredCourses);

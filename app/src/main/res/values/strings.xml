@@ -30,13 +30,17 @@
     <string name="all_categories">All Categories</string>
     <string name="add_missing_course">Add Missing Course</string>
     <string name="login">Login</string>
-    <string name="profile">Profile</string>
+    <string name="profile">My Account</string>
+    <string name="my_wishlist">My Wishlist</string>
+    <string name="my_learning">My Learning</string>
     <string name="logout">Logout</string>
     <string name="programming">Programming</string>
     <string name="web_design">Web Design</string>
     <string name="shell_scripting">Shell Scripting</string>
     <string name="dbms">DBMS</string>
     <string name="operating_systems">Operating Systems</string>
+    <string name="about_us">About Us</string>
+    <string name="contact_us">Contact Us</string>
     <string name="share">Share</string>
     <string name="rate_us">Rate Us</string>
 </resources>
