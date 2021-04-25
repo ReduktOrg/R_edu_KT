@@ -30,11 +30,11 @@ import com.google.firebase.database.ValueEventListener;
 public class RegisterActivity extends AppCompatActivity {
 
     //variables
-    ImageView backBtn, sideImage;
+    ImageView backBtn;
     Button next;
-    TextView titleText, login;
+    TextView titleText, login,sideImage;
 
-    EditText nameEt, emailEt, phonenumEt, passwordEt;
+    EditText fullnameEt,usernameEt,emailEt,passwordEt;
     Button registerButton;
 
     FirebaseDatabase rootNode;
@@ -57,10 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
         //Hooks end
 
 
-        nameEt = findViewById(R.id.editTextName);
-        emailEt = findViewById(R.id.editTextEmail);
-        phonenumEt = findViewById(R.id.editTextMobile);
-        passwordEt = findViewById(R.id.editTextPaswword);
+        fullnameEt=findViewById(R.id.editTextName);
+        usernameEt=findViewById(R.id.editTextUserName);
+        emailEt=findViewById(R.id.editTextEmail);
+        passwordEt=findViewById(R.id.editTextPaswword);
         registerButton = findViewById(R.id.cirRegisterButton);
 
         ProgressDialog progressDialog;
@@ -92,8 +92,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void callNextSignupScreen(View view) {
+        if(!validateFullName() || !validateUsername() || !validateEmail() || !validatePassword()  )
+            return;
+
         Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
 
+        intent.putExtra("fullName",fullnameEt.getText().toString());
+        intent.putExtra("userName",usernameEt.getText().toString());
+        intent.putExtra("password",passwordEt.getText().toString());
+        intent.putExtra("email",emailEt.getText().toString());
         //Add Transition
         Pair[] pairs = new Pair[5];
 
@@ -111,69 +118,72 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
     }
-//    void register(){
-//        rootNode =FirebaseDatabase.getInstance();
-//        reference=rootNode.getReference("users");
-//       final String name,email,password,phoneNo;
-//        name=nameEt.getText().toString();
-//        email=emailEt.getText().toString();
-//        password=passwordEt.getText().toString();
-//        phoneNo=phonenumEt.getText().toString();
-//
-//         if(TextUtils.isEmpty(name)){
-//            nameEt.setError("Enter your name");
-//            return;
-//        }
-//        else if(TextUtils.isEmpty(email)){
-//            emailEt.setError("Enter your mail");
-//            return;
-//        }
-//        else if(!isValidEmail(email)){
-//            emailEt.setError("Enter correct EmailAddress");
-//            return;
-//         }
-//        else if(TextUtils.isEmpty(phoneNo)){
-//             phonenumEt.setError("Enter your PhoneNumber");
-//             return;
-//         }
-//        else if(TextUtils.isEmpty(password)){
-//            passwordEt.setError("Enter your password");
-//            return;
-//        }
-//        else if(name.length()<6){
-//            nameEt.setError("Name should be atleast 6 characters");
-//            return;
-//         }
-//        else if(phoneNo.length()!=10){
-//            phonenumEt.setError("phone number should contain 10 digits");
-//            return;
-//         }
-//        else if(password.length()<6){
-//            passwordEt.setError("Password should be atleast 6 characters");
-//            return;
-//        }
-//
-//
-//
-//        Query checkUser=reference.orderByChild("name").equalTo(name);
-//        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists()){
-//                    Toast.makeText(RegisterActivity.this,"user already exists",Toast.LENGTH_SHORT).show();
-//                }
-//                else{
-//                    userHelperClass helperClass=new userHelperClass(name,email,phoneNo,password);
-//                    reference.child(name).setValue(helperClass);
-//                    Toast.makeText(RegisterActivity.this,"Register Successfull",Toast.LENGTH_LONG).show();
-//                    Intent intent=new Intent(RegisterActivity.this,LoginActivity.class);
-//                    startActivity(intent);
-//                }
-//            }
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
+
+    public boolean validateFullName(){
+        String val=fullnameEt.getText().toString().trim();
+
+        if(val.isEmpty())
+        {   fullnameEt.setError("Field Cannot be empty");
+            return  false;}
+        else{
+            fullnameEt.setError(null);
+        }
+        return true;
+    }
+
+    public boolean validateUsername(){
+        String val=usernameEt.getText().toString().trim();
+
+        if(val.isEmpty())
+        {   fullnameEt.setError("Field Cannot be empty");
+            return  false;
+        }
+        else if(val.length()>20){
+            usernameEt.setError("Username is too large!");
+            return  false;
+        }
+        else{
+            usernameEt.setError(null);
+//            usernameEt.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    public boolean validateEmail(){
+        String val=emailEt.getText().toString().trim();
+        String checkEmail="[a-zA-Z0-9._-]+@[a-z]+.+[a-z]+";
+
+        if(val.isEmpty())
+        {   emailEt.setError("Field Cannot be empty");
+            return  false;
+        }
+        else if(!val.matches(checkEmail)){
+            emailEt.setError("Invalid Email!");
+            return  false;
+        }
+        else{
+            emailEt.setError(null);
+//            emailEt.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    public boolean validatePassword(){
+        String val=passwordEt.getText().toString();
+
+
+        if(val.isEmpty())
+        {   passwordEt.setError("Field Cannot be empty");
+            return  false;
+        }
+        else if(val.length()<4){
+            passwordEt.setError("Password should contain atleast 4 characters");
+            return  false;
+        }
+        else{
+            passwordEt.setError(null);
+//            password.setErrorEnabled(false);
+        }
+        return true;
+    }
 }

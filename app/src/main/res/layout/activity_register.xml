@@ -8,6 +8,7 @@
     android:background="@color/register_bk_color"
     android:focusableInTouchMode="true"
     android:gravity="center"
+    android:transitionName="transition_signup"
     tools:context=".RegisterActivity">
 
     <ScrollView
@@ -18,37 +19,56 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="40dp"
             android:orientation="vertical"
             android:padding="20dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="130dp">
 
                 <TextView
                     android:id="@+id/sign_up_title_text"
                     style="@style/viewParent.headerText.NoMode"
                     android:layout_alignParentLeft="true"
-                    android:text="Here is\nyour first\nstep with us"
+                    android:layout_centerVertical="true"
+                    android:text="Hey!\nHere are the\nsteps to join us!"
                     android:textColor="@color/whiteTextColor"
-                    android:textSize="22dp"
+                    android:textSize="25dp"
                     android:transitionName="transition_title_text" />
 
-                <ImageView
+                <TextView
                     android:id="@+id/sign_up_side_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_login_hero"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/circle_border"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/ds_digital_bold"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="1/3"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="35sp"
                     android:transitionName="transition_side_image" />
+
+<!--                <ImageView-->
+<!--                    -->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentTop="true"-->
+<!--                    android:layout_alignParentRight="true"-->
+<!--                    android:src="@drawable/ic_login_hero"-->
+<!--                    android:transitionName="transition_side_image" />-->
             </RelativeLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="30dp"
                 app:cardBackgroundColor="@color/whiteTextColor"
                 app:cardCornerRadius="10dp">
 

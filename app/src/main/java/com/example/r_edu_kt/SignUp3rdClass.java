@@ -11,16 +11,23 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class SignUp3rdClass extends AppCompatActivity {
 
 
     //variables
-    ImageView backBtn, sideImage;
+    ImageView backBtn;
     Button next;
-    TextView titleText, login;
+    TextView titleText, login,sideImage;
+
+    EditText phoneNumberEt;
+
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +36,11 @@ public class SignUp3rdClass extends AppCompatActivity {
 
         changeStatusBarColor();
 
-        //Hooks of sign-up page
-        backBtn = findViewById(R.id.sign_up_back_button);
-        next = findViewById(R.id.cirRegisterButton);
-        login = findViewById(R.id.sign_up_login_button);
-        titleText = findViewById(R.id.sign_up_title_text);
-        sideImage = findViewById(R.id.sign_up_side_image);
-        //Hooks end
+        phoneNumberEt=findViewById(R.id.editTextMobile);
+
+        relativeLayout=findViewById(R.id.signup_3rd_screen_scroll_view);
+
+
     }
 
     public void changeStatusBarColor() {
@@ -48,7 +53,35 @@ public class SignUp3rdClass extends AppCompatActivity {
     }
 
     public void callNextSignupScreen(View view) {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
+        if(!validatePhoneNumber()){
+            return;
+        }
+        Intent intent = new Intent(getApplicationContext(), VerifyOTP.class);
+
+        Intent prevIntent=getIntent();
+
+        intent.putExtra("phoneNumber",phoneNumberEt.getText().toString());
+        intent.putExtra("fullName",prevIntent.getStringExtra("fullName"));
+        intent.putExtra("userName",prevIntent.getStringExtra("userName"));
+        intent.putExtra("password",prevIntent.getStringExtra("password"));
+        intent.putExtra("email",prevIntent.getStringExtra("email"));
+        intent.putExtra("gender",prevIntent.getStringExtra("gender"));
+        intent.putExtra("date",prevIntent.getStringExtra("date"));
+
+//Add Transition
+        Pair[] pairs = new Pair[1];
+        pairs[0] = new Pair<View, String>(relativeLayout, "transition_OTP_screen");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignUp3rdClass.this, pairs);
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    public void onLoginClick(View view) {
+        Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
 
         //Add Transition
         Pair[] pairs = new Pair[5];
@@ -65,11 +98,16 @@ public class SignUp3rdClass extends AppCompatActivity {
         } else {
             startActivity(intent);
         }
-
     }
 
-    public void onLoginClick(View view) {
-        startActivity(new Intent(this, SignUp2ndClass.class));
-        overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
+    public boolean validatePhoneNumber(){
+
+        String val=phoneNumberEt.getText().toString();
+        if(val.length()!=10){
+            phoneNumberEt.setError("Phone number must be 10 digits");
+            return  false;
+        }
+        phoneNumberEt.setError(null);
+        return  true;
     }
 }

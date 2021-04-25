@@ -43,4 +43,14 @@
     <string name="contact_us">Contact Us</string>
     <string name="share">Share</string>
     <string name="rate_us">Rate Us</string>
+
+
+    <string name="welcome">Create\nAccount</string>
+
+    //otp
+    <string name="otp_code_text">Code</string>
+    <string name="otp_verification_text">Verification</string>
+
+    //register
+    <string name="enter_full_name">Enter your full name</string>
 </resources>
