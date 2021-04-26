@@ -53,4 +53,18 @@
 
     //register
     <string name="enter_full_name">Enter your full name</string>
+
+    //password
+    <string name="forget_password">Forget password</string>
+    <string name="next_btn">Next</string>
+    <string name="make_selection">Make selection</string>
+    <string name="make_selection_detail">Select which contact detail should we use to reset your password?</string>
+    <string name="via_sms">Via sms:</string>
+    <string name="via_mail">Via mail:</string>
+    <string name="new_credentials">New credentials</string>
+    <string name="new_credentials_detail">Your identity has been verified! Set your new password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password_updated">Password updated</string>
+    <string name="password_updated_success_message">Your password has been updated!</string>
 </resources>

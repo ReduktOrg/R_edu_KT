@@ -100,4 +100,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void callForgetPassword(View view) {
+        Intent i=new Intent(getApplicationContext(),ForgetPassword.class);
+        startActivity(i);
+//        overridePendingTransition(R.anim.slide_in_right,R.anim.stay);
+    }
 }

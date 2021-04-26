@@ -103,7 +103,12 @@ public class SignUp3rdClass extends AppCompatActivity {
     public boolean validatePhoneNumber(){
 
         String val=phoneNumberEt.getText().toString();
-        if(val.length()!=10){
+
+        if(val.isEmpty())
+        {   phoneNumberEt.setError("Field Cannot be empty");
+            return  false;
+        }
+        else if(val.length()!=10){
             phoneNumberEt.setError("Phone number must be 10 digits");
             return  false;
         }

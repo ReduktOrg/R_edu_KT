@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-public class VerifyOTP extends AppCompatActivity {
+public class PasswordOTP extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verify_o_t_p);
+        setContentView(R.layout.activity_password_o_t_p);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             Window window=getWindow();
@@ -25,6 +25,6 @@ public class VerifyOTP extends AppCompatActivity {
     }
 
     public void callNextScreenFromOTP(View view) {
-        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+        startActivity(new Intent(getApplicationContext(),SetNewPassword.class));
     }
 }

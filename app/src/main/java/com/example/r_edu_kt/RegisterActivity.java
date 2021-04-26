@@ -125,6 +125,10 @@ public class RegisterActivity extends AppCompatActivity {
         if(val.isEmpty())
         {   fullnameEt.setError("Field Cannot be empty");
             return  false;}
+        else if(val.length()<5){
+            fullnameEt.setError("Full name should be greater than 5");
+            return  false;
+        }
         else{
             fullnameEt.setError(null);
         }
@@ -135,7 +139,11 @@ public class RegisterActivity extends AppCompatActivity {
         String val=usernameEt.getText().toString().trim();
 
         if(val.isEmpty())
-        {   fullnameEt.setError("Field Cannot be empty");
+        {   usernameEt.setError("Field Cannot be empty");
+            return  false;
+        }
+        else if(val.length()<5){
+            usernameEt.setError("Username should be greater than 5");
             return  false;
         }
         else if(val.length()>20){
@@ -176,8 +184,8 @@ public class RegisterActivity extends AppCompatActivity {
         {   passwordEt.setError("Field Cannot be empty");
             return  false;
         }
-        else if(val.length()<4){
-            passwordEt.setError("Password should contain atleast 4 characters");
+        else if(val.length()<6){
+            passwordEt.setError("Password should contain atleast 6 characters");
             return  false;
         }
         else{
