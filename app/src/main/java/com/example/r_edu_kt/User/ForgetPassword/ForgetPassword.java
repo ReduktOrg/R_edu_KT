@@ -1,16 +1,22 @@
-package com.example.r_edu_kt;
+package com.example.r_edu_kt.User.ForgetPassword;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.User.Login.LoginActivity;
 
 public class ForgetPassword extends AppCompatActivity {
 
@@ -24,6 +30,12 @@ public class ForgetPassword extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            Window window=getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.button_blue));
+        }
 
         screenIcon=findViewById(R.id.forget_password_back_btn);
         passwordIcon=findViewById(R.id.forget_password_icon);
@@ -46,7 +58,7 @@ public class ForgetPassword extends AppCompatActivity {
     }
 
     public void callBackScreenFromForgetPassword(View view) {
-        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 

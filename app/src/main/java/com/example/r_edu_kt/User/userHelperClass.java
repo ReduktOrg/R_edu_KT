@@ -1,4 +1,4 @@
-package com.example.r_edu_kt;
+package com.example.r_edu_kt.User;
 
 public class userHelperClass
 {

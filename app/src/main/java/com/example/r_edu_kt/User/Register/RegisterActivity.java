@@ -1,6 +1,5 @@
-package com.example.r_edu_kt;
+package com.example.r_edu_kt.User.Register;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -18,23 +17,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.User.Login.LoginActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
     //variables
     ImageView backBtn;
     Button next;
-    TextView titleText, login,sideImage;
+    TextView titleText, login, sideImage;
 
-    EditText fullnameEt,usernameEt,emailEt,passwordEt;
+    EditText fullnameEt, usernameEt, emailEt, passwordEt;
     Button registerButton;
 
     FirebaseDatabase rootNode;
@@ -57,10 +53,10 @@ public class RegisterActivity extends AppCompatActivity {
         //Hooks end
 
 
-        fullnameEt=findViewById(R.id.editTextName);
-        usernameEt=findViewById(R.id.editTextUserName);
-        emailEt=findViewById(R.id.editTextEmail);
-        passwordEt=findViewById(R.id.editTextPaswword);
+        fullnameEt = findViewById(R.id.editTextName);
+        usernameEt = findViewById(R.id.editTextUserName);
+        emailEt = findViewById(R.id.editTextEmail);
+        passwordEt = findViewById(R.id.editTextPaswword);
         registerButton = findViewById(R.id.cirRegisterButton);
 
         ProgressDialog progressDialog;
@@ -92,15 +88,15 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void callNextSignupScreen(View view) {
-        if(!validateFullName() || !validateUsername() || !validateEmail() || !validatePassword()  )
+        if (!validateFullName() || !validateUsername() || !validateEmail() || !validatePassword())
             return;
 
         Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
 
-        intent.putExtra("fullName",fullnameEt.getText().toString());
-        intent.putExtra("userName",usernameEt.getText().toString());
-        intent.putExtra("password",passwordEt.getText().toString());
-        intent.putExtra("email",emailEt.getText().toString());
+        intent.putExtra("fullName", fullnameEt.getText().toString());
+        intent.putExtra("userName", usernameEt.getText().toString());
+        intent.putExtra("password", passwordEt.getText().toString());
+        intent.putExtra("email", emailEt.getText().toString());
         //Add Transition
         Pair[] pairs = new Pair[5];
 
@@ -119,76 +115,77 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public boolean validateFullName(){
-        String val=fullnameEt.getText().toString().trim();
+    public boolean validateFullName() {
+        String val = fullnameEt.getText().toString().trim();
 
-        if(val.isEmpty())
-        {   fullnameEt.setError("Field Cannot be empty");
-            return  false;}
-        else if(val.length()<5){
+        if (val.isEmpty()) {
+            fullnameEt.setError("Field Cannot be empty");
+            fullnameEt.requestFocus();
+            return false;
+        } else if (val.length() < 5) {
             fullnameEt.setError("Full name should be greater than 5");
-            return  false;
-        }
-        else{
+            fullnameEt.requestFocus();
+            return false;
+        } else {
             fullnameEt.setError(null);
         }
         return true;
     }
 
-    public boolean validateUsername(){
-        String val=usernameEt.getText().toString().trim();
+    public boolean validateUsername() {
+        String val = usernameEt.getText().toString().trim();
 
-        if(val.isEmpty())
-        {   usernameEt.setError("Field Cannot be empty");
-            return  false;
-        }
-        else if(val.length()<5){
+        if (val.isEmpty()) {
+            usernameEt.setError("Field Cannot be empty");
+            usernameEt.requestFocus();
+            return false;
+        } else if (val.length() < 5) {
             usernameEt.setError("Username should be greater than 5");
-            return  false;
-        }
-        else if(val.length()>20){
+            usernameEt.requestFocus();
+            return false;
+        } else if (val.length() > 20) {
             usernameEt.setError("Username is too large!");
-            return  false;
-        }
-        else{
+            usernameEt.requestFocus();
+            return false;
+        } else {
             usernameEt.setError(null);
 //            usernameEt.setErrorEnabled(false);
         }
         return true;
     }
 
-    public boolean validateEmail(){
-        String val=emailEt.getText().toString().trim();
-        String checkEmail="[a-zA-Z0-9._-]+@[a-z]+.+[a-z]+";
+    public boolean validateEmail() {
+        String val = emailEt.getText().toString().trim();
+        String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+.+[a-z]+";
 
-        if(val.isEmpty())
-        {   emailEt.setError("Field Cannot be empty");
-            return  false;
-        }
-        else if(!val.matches(checkEmail)){
+        if (val.isEmpty()) {
+            emailEt.setError("Field Cannot be empty");
+            emailEt.requestFocus();
+            return false;
+        } else if (!val.matches(checkEmail)) {
             emailEt.setError("Invalid Email!");
-            return  false;
-        }
-        else{
+            emailEt.requestFocus();
+            return false;
+        } else {
             emailEt.setError(null);
 //            emailEt.setErrorEnabled(false);
         }
         return true;
     }
 
-    public boolean validatePassword(){
-        String val=passwordEt.getText().toString();
+    public boolean validatePassword() {
+        String val = passwordEt.getText().toString();
 
 
-        if(val.isEmpty())
-        {   passwordEt.setError("Field Cannot be empty");
-            return  false;
-        }
-        else if(val.length()<6){
+        if (val.isEmpty()) {
+            passwordEt.setError("Field Cannot be empty");
+            passwordEt.requestFocus();
+            return false;
+        } else if (val.length() < 6) {
             passwordEt.setError("Password should contain atleast 6 characters");
-            return  false;
-        }
-        else{
+            passwordEt.requestFocus();
+            return false;
+        } else {
             passwordEt.setError(null);
 //            password.setErrorEnabled(false);
         }

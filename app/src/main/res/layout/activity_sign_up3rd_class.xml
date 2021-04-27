@@ -10,7 +10,7 @@
     android:focusableInTouchMode="true"
     android:gravity="center"
     android:transitionName="transition_OTP_screen"
-    tools:context=".SignUp3rdClass">
+    tools:context=".User.Register.SignUp3rdClass">
 
     <ScrollView
         android:layout_width="wrap_content"

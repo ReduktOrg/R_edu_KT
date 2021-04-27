@@ -1,4 +1,4 @@
-package com.example.r_edu_kt;
+package com.example.r_edu_kt.User.Register;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +17,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.r_edu_kt.R;
 
 import java.util.Calendar;
 
