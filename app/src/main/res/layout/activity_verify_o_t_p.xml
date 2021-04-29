@@ -51,7 +51,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/muli"
             android:includeFontPadding="false"
-            android:text="Enter one time password sent on\n+918317566250"
+            android:id="@+id/msg"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -70,8 +70,8 @@
             android:itemBackground="@color/lightWhite"
             style="@style/PinWidget.PinView"
             android:inputType="number"
+            android:textColor="@color/black"
             android:cursorVisible="true"
-            app:cursorColor="@color/black"
             app:hideLineWhenFilled="true"
             app:itemRadius="5dp"/>
 

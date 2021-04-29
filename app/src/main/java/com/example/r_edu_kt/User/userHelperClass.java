@@ -2,24 +2,35 @@ package com.example.r_edu_kt.User;
 
 public class userHelperClass
 {
-    String name,email,mobileNo,password;
 
-    public userHelperClass() {
-    }
+    String fullName,userName,email,phoneNo,password,date,gender;
 
-    public userHelperClass(String name, String email, String mobileNo, String password) {
-        this.name = name;
+    public  userHelperClass(){}
+
+    public userHelperClass(String fullName, String userName, String email, String phoneNo, String password, String date, String gender) {
+        this.fullName = fullName;
+        this.userName = userName;
         this.email = email;
-        this.mobileNo = mobileNo;
+        this.phoneNo = phoneNo;
         this.password = password;
+        this.date = date;
+        this.gender = gender;
     }
 
-    public String getName() {
-        return name;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
@@ -30,12 +41,12 @@ public class userHelperClass
         this.email = email;
     }
 
-    public String getMobileNo() {
-        return mobileNo;
+    public String getPhoneNo() {
+        return phoneNo;
     }
 
-    public void setMobileNo(String mobileNo) {
-        this.mobileNo = mobileNo;
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
     }
 
     public String getPassword() {
@@ -44,5 +55,21 @@ public class userHelperClass
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }
