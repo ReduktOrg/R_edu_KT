@@ -18,12 +18,12 @@ import com.example.r_edu_kt.User.ForgetPassword.ForgetPassword;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Register.RegisterActivity;
 import com.example.r_edu_kt.User.UserDashboard;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.Query;
+//import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -88,40 +88,43 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
+        startActivity(intent);
 
-        Query checkUser = reference.orderByChild("name").equalTo(name);
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    String passwordFromDB = snapshot.child(name).child("password").getValue(String.class);
-                    if (password.equals(passwordFromDB)) {
-                        String nameFromDB = snapshot.child(name).child("name").getValue(String.class);
-                        String phoneNoFromDB = snapshot.child(name).child("phoneNo").getValue(String.class);
-                        String emailFromDB = snapshot.child(name).child("email").getValue(String.class);
-
-                        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
-                        startActivity(intent);
-
-                    } else {
-                        passwordEt.setError("Wrong Password");
-                        passwordEt.requestFocus();
-                        progressButton.buttonFinished();
-                    }
-                } else {
-                    nameEt.setError("No such user exists");
-                    nameEt.requestFocus();
-                    progressButton.buttonFinished();
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+//
+//        Query checkUser = reference.orderByChild("name").equalTo(name);
+//        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    String passwordFromDB = snapshot.child(name).child("password").getValue(String.class);
+//                    if (password.equals(passwordFromDB)) {
+//                        String nameFromDB = snapshot.child(name).child("name").getValue(String.class);
+//                        String phoneNoFromDB = snapshot.child(name).child("phoneNo").getValue(String.class);
+//                        String emailFromDB = snapshot.child(name).child("email").getValue(String.class);
+//
+//                        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
+//                        startActivity(intent);
+//
+//                    } else {
+//                        passwordEt.setError("Wrong Password");
+//                        passwordEt.requestFocus();
+//                        progressButton.buttonFinished();
+//                    }
+//                } else {
+//                    nameEt.setError("No such user exists");
+//                    nameEt.requestFocus();
+//                    progressButton.buttonFinished();
+//
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
         return true;
     }

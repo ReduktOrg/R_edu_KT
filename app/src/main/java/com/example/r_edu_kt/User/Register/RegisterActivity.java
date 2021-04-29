@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Login.LoginActivity;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -33,9 +33,9 @@ public class RegisterActivity extends AppCompatActivity {
     EditText fullnameEt, usernameEt, emailEt, passwordEt;
     Button registerButton;
 
-    FirebaseDatabase rootNode;
-
-    DatabaseReference reference;
+//    FirebaseDatabase rootNode;
+//
+//    DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

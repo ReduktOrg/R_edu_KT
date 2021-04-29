@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.r_edu_kt.R;
+import com.hbb20.CountryCodePicker;
 
 public class SignUp3rdClass extends AppCompatActivity {
 
@@ -27,6 +28,7 @@ public class SignUp3rdClass extends AppCompatActivity {
     TextView titleText, login, sideImage;
 
     EditText phoneNumberEt;
+    CountryCodePicker countryCodePicker;
 
     RelativeLayout relativeLayout;
 
@@ -38,7 +40,7 @@ public class SignUp3rdClass extends AppCompatActivity {
         changeStatusBarColor();
 
         phoneNumberEt = findViewById(R.id.editTextMobile);
-
+        countryCodePicker=findViewById(R.id.country_code_picker);
         relativeLayout = findViewById(R.id.signup_3rd_screen_scroll_view);
 
 
@@ -49,11 +51,10 @@ public class SignUp3rdClass extends AppCompatActivity {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.register_bk_color));
-
         }
     }
 
-    public void callNextSignupScreen(View view) {
+    public void callVerifyOTPScreen(View view) {
 
         if (!validatePhoneNumber()) {
             return;
@@ -69,6 +70,13 @@ public class SignUp3rdClass extends AppCompatActivity {
         intent.putExtra("email", prevIntent.getStringExtra("email"));
         intent.putExtra("gender", prevIntent.getStringExtra("gender"));
         intent.putExtra("date", prevIntent.getStringExtra("date"));
+
+        String _getUserEnteredPhoneNumber=phoneNumberEt.getText().toString().trim();
+        String _phoneNo="+"+countryCodePicker.getFullNumber()+_getUserEnteredPhoneNumber;
+
+        intent.putExtra("phoneNo", _phoneNo);
+
+
 
 //Add Transition
         Pair[] pairs = new Pair[1];
