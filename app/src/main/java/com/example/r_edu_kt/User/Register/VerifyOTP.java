@@ -63,7 +63,7 @@ public class VerifyOTP extends AppCompatActivity {
 
 
         msgTv.setText("Enter otp sent to \n"+phoneNo);
-        Toast.makeText(VerifyOTP.this,phoneNo+fullName+userName+password+gender+dateOfBirth+email,Toast.LENGTH_LONG).show();
+//        Toast.makeText(VerifyOTP.this,phoneNo+fullName+userName+password+gender+dateOfBirth+email,Toast.LENGTH_LONG).show();
 
         sendVerificationCodeToUser(phoneNo);
     }
@@ -112,7 +112,7 @@ public class VerifyOTP extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Toast.makeText(VerifyOTP.this, "Verificaiton Completed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(VerifyOTP.this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
                             storeNewUsersData();
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         } else {

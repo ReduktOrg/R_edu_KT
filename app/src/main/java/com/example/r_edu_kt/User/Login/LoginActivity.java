@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
     View buttonView;
     ProgressButton progressButton;
 
+    MediaPlayer loginSound;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +49,11 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         setContentView(R.layout.activity_login);
+
+        //login sound
+        loginSound=MediaPlayer.create(this,R.raw.alert);
+
+
         nameEt = findViewById(R.id.editTextName);
         passwordEt = findViewById(R.id.editTextPaswword);
 
@@ -80,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         password = passwordEt.getText().toString();
         name = nameEt.getText().toString();
 
+
         if (TextUtils.isEmpty(name)) {
             nameEt.setError("Enter your username");
             nameEt.requestFocus();
@@ -89,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
             passwordEt.requestFocus();
             return false;
         }
+        passwordEt.onEditorAction(EditorInfo.IME_ACTION_DONE);
         Query checkUser=FirebaseDatabase.getInstance().getReference("Users").orderByChild("userName").equalTo(name);
 
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -101,7 +112,8 @@ public class LoginActivity extends AppCompatActivity {
                     String systemPassword=snapshot.child(name).child("password").getValue(String.class);
                     if(systemPassword.equals(password)){
                         passwordEt.setError(null);
-                        passwordEt.requestFocus();
+                        //passwordEt.requestFocus();
+
                         Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
                         String fullName,email,phoneNumber,gender,date;
                         fullName=snapshot.child(name).child("fullName").getValue(String.class);
@@ -117,13 +129,21 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("gender",gender);
                         intent.putExtra("date",date);
                         startActivity(intent);
+                        Toast.makeText(LoginActivity.this, "Welcome "+fullName+"!", Toast.LENGTH_SHORT).show();
+                        loginSound.start();
                     }
                     else{
-                        Toast.makeText(LoginActivity.this,"Password does not match",Toast.LENGTH_SHORT).show();
+                        passwordEt.setError("Wrong Password");
+                        passwordEt.requestFocus();
+                        progressButton.buttonFinished();
+//                        Toast.makeText(LoginActivity.this,"Password does not match",Toast.LENGTH_SHORT).show();
                     }
                 }
                 else {
-                    Toast.makeText(LoginActivity.this, "No such user exists!", Toast.LENGTH_SHORT).show();
+                    nameEt.setError("No such user exists");
+                    nameEt.requestFocus();
+                    progressButton.buttonFinished();
+//                    Toast.makeText(LoginActivity.this, "No such user exists!", Toast.LENGTH_SHORT).show();
                 }
             }
 

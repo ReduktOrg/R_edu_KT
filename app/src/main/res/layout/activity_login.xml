@@ -58,6 +58,8 @@
                 android:id="@+id/textInputPassword"
                 style="@style/parent"
                 android:layout_marginTop="@dimen/loginViewsMargin"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 app:endIconMode="password_toggle">
 
                 <EditText

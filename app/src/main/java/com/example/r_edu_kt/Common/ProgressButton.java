@@ -37,7 +37,6 @@ public class ProgressButton {
         textView.setText("Please wait...");
     }
     public void buttonFinished(){
-
         progressBar.setVisibility(View.GONE);
         textView.setText("LOGIN");
     }
