@@ -8,22 +8,24 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.r_edu_kt.Common.ProgressButton;
 import com.example.r_edu_kt.User.ForgetPassword.ForgetPassword;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Register.RegisterActivity;
 import com.example.r_edu_kt.User.UserDashboard;
-//import com.google.firebase.database.DataSnapshot;
-//import com.google.firebase.database.DatabaseError;
-//import com.google.firebase.database.DatabaseReference;
-//import com.google.firebase.database.FirebaseDatabase;
-//import com.google.firebase.database.Query;
-//import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -87,46 +89,53 @@ public class LoginActivity extends AppCompatActivity {
             passwordEt.requestFocus();
             return false;
         }
+        Query checkUser=FirebaseDatabase.getInstance().getReference("Users").orderByChild("userName").equalTo(name);
 
-        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
-        startActivity(intent);
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists())
+                {
+                    nameEt.setError(null);
+                    nameEt.requestFocus();
+                    String systemPassword=snapshot.child(name).child("password").getValue(String.class);
+                    if(systemPassword.equals(password)){
+                        passwordEt.setError(null);
+                        passwordEt.requestFocus();
+                        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
+                        String fullName,email,phoneNumber,gender,date;
+                        fullName=snapshot.child(name).child("fullName").getValue(String.class);
+                        email=snapshot.child(name).child("email").getValue(String.class);
+                        phoneNumber=snapshot.child(name).child("phoneNumber").getValue(String.class);
+                        date=snapshot.child(name).child("date").getValue(String.class);
+                        gender=snapshot.child(name).child("gender").getValue(String.class);
+                        intent.putExtra("fullName",fullName);
+                        intent.putExtra("userName",name);
+                        intent.putExtra("password",password);
+                        intent.putExtra("email",email);
+                        intent.putExtra("phoneNumber",phoneNumber);
+                        intent.putExtra("gender",gender);
+                        intent.putExtra("date",date);
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(LoginActivity.this,"Password does not match",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(LoginActivity.this, "No such user exists!", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-//
-//        Query checkUser = reference.orderByChild("name").equalTo(name);
-//        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.exists()) {
-//                    String passwordFromDB = snapshot.child(name).child("password").getValue(String.class);
-//                    if (password.equals(passwordFromDB)) {
-//                        String nameFromDB = snapshot.child(name).child("name").getValue(String.class);
-//                        String phoneNoFromDB = snapshot.child(name).child("phoneNo").getValue(String.class);
-//                        String emailFromDB = snapshot.child(name).child("email").getValue(String.class);
-//
-//                        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
-//                        startActivity(intent);
-//
-//                    } else {
-//                        passwordEt.setError("Wrong Password");
-//                        passwordEt.requestFocus();
-//                        progressButton.buttonFinished();
-//                    }
-//                } else {
-//                    nameEt.setError("No such user exists");
-//                    nameEt.requestFocus();
-//                    progressButton.buttonFinished();
-//
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this,"Database Error ",Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        return true;
+
+        return  true;
+
     }
 
     public void callForgetPassword(View view) {
