@@ -70,7 +70,7 @@
             android:itemBackground="@color/lightWhite"
             style="@style/PinWidget.PinView"
             android:inputType="number"
-            android:textColor="@color/black"
+            android:textColor="@android:color/black"
             android:cursorVisible="true"
             app:hideLineWhenFilled="true"
             app:itemRadius="5dp"/>

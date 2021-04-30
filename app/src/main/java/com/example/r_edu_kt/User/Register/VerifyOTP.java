@@ -114,7 +114,7 @@ public class VerifyOTP extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Toast.makeText(VerifyOTP.this, "Verificaiton Completed", Toast.LENGTH_SHORT).show();
                             storeNewUsersData();
-                            //      startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 Toast.makeText(VerifyOTP.this, "Verification not completed! Try again.", Toast.LENGTH_SHORT).show();

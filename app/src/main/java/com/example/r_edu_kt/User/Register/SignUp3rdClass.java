@@ -71,10 +71,6 @@ public class SignUp3rdClass extends AppCompatActivity {
         intent.putExtra("gender", prevIntent.getStringExtra("gender"));
         intent.putExtra("date", prevIntent.getStringExtra("date"));
 
-        String _getUserEnteredPhoneNumber=phoneNumberEt.getText().toString().trim();
-        String _phoneNo="+"+countryCodePicker.getFullNumber()+_getUserEnteredPhoneNumber;
-
-        intent.putExtra("phoneNo", _phoneNo);
 
 
 
