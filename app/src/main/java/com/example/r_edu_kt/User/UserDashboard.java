@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -52,13 +53,21 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         contentView = findViewById(R.id.content);
         //menu hooks
         drawerLayout = findViewById(R.id.drawer_layout);
+        //codefor hi + userName
         navigationView = findViewById(R.id.navigation_view);
+        View header = navigationView.getHeaderView(0);
+        TextView  app_nameEt=header.findViewById(R.id.app_name);
+        String userName=getIntent().getStringExtra("userName");
+        app_nameEt.setText("Hi "+userName);
+
 
         naviagationDrawer();
 
         featuredRecycler();
         mostViewedRecycler();
         categoriesRecycler();
+
+
     }
 
     private void naviagationDrawer() {
