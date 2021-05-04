@@ -3,10 +3,13 @@ package com.example.r_edu_kt.User;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +27,7 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
 import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -34,7 +38,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
     RecyclerView.Adapter adapter;
     private GradientDrawable gradient1, gradient2, gradient3, gradient4;
-    ImageView menuIcon;
+    ImageView menuIcon,cseIcon;
     LinearLayout contentView;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -42,8 +46,16 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_user_dashboard);
+
+        //STATUS BAR
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
+        }
+
 
         //Hooks
         featuredRecycler = findViewById(R.id.featured_recycler);
@@ -58,7 +70,16 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         View header = navigationView.getHeaderView(0);
         TextView  app_nameEt=header.findViewById(R.id.app_name);
         String userName=getIntent().getStringExtra("userName");
-        app_nameEt.setText("Hi "+userName);
+        app_nameEt.setText("Hi !\n"+userName);
+
+        //course hooks
+        cseIcon=findViewById(R.id.cse);
+        cseIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), CourseOverview.class));
+            }
+        });
 
 
         naviagationDrawer();

@@ -66,15 +66,9 @@ public class LoginActivity extends AppCompatActivity {
                 progressButton = new ProgressButton(LoginActivity.this, buttonView);
 
                 progressButton.buttonActivated();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!login()) {
-                            progressButton.buttonFinished();
-                        }
-                    }
-                }, 500);
+                if (!login()) {
+                    progressButton.buttonFinished();
+                }
             }
         });
     }

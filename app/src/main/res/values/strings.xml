@@ -4,7 +4,7 @@
     <string name="login_password_hint">Password</string>
     <string name="logo_name">ReduKT</string>
     <string name="slogan_name">Learning by doing!</string>
-    <string name="powered_by">Copyright© 2021 | Team JAC</string>
+    <string name="powered_by">Copyright© 2021 | Team ReduKT</string>
 
 
     <!--    strings for dashboard-->
@@ -67,4 +67,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="password_updated">Password updated</string>
     <string name="password_updated_success_message">Your password has been updated!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
