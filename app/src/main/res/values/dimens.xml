@@ -2,5 +2,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="headerTextSize">25sp</dimen>
     <dimen name="newsMoreTextSize">12sp</dimen>
+    <dimen name="design_navigation_padding_top_default">0dp</dimen>
     <dimen name="loginViewsMargin">15dp</dimen>
+    <dimen name="design_navigation_seperator_vertical_padding">0dp</dimen>
+    <dimen name="design_navigation_padding_bottom">0dp</dimen>
 </resources>

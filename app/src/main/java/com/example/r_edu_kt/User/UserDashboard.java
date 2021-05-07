@@ -70,7 +70,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         View header = navigationView.getHeaderView(0);
         TextView  app_nameEt=header.findViewById(R.id.app_name);
         String userName=getIntent().getStringExtra("userName");
-        app_nameEt.setText("Hi !\n"+userName);
+        app_nameEt.setText("Hi ! "+userName);
 
         //course hooks
         cseIcon=findViewById(R.id.cse);

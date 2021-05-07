@@ -15,6 +15,7 @@
         android:theme="@style/navigationTheme"
         android:layout_gravity="start"
         app:headerLayout="@layout/menu_header"
+        android:paddingTop="@dimen/design_navigation_padding_top_default"
         app:menu="@menu/main_menu" />
 
     <LinearLayout
