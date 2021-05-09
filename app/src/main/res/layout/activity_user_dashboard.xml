@@ -2,20 +2,20 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.UserDashboard"
-    android:id="@+id/drawer_layout">
+    tools:context=".User.UserDashboard">
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/lightWhite"
-        android:theme="@style/navigationTheme"
         android:layout_gravity="start"
-        app:headerLayout="@layout/menu_header"
+        android:background="@color/lightWhite"
         android:paddingTop="@dimen/design_navigation_padding_top_default"
+        android:theme="@style/navigationTheme"
+        app:headerLayout="@layout/menu_header"
         app:menu="@menu/main_menu" />
 
     <LinearLayout
@@ -70,34 +70,34 @@
                         android:text="@string/logo_name"
                         android:textSize="30sp" />
 
-<!--                    <RelativeLayout-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="40dp"-->
-<!--                        android:layout_below="@id/app_name"-->
-<!--                        android:layout_marginLeft="40dp"-->
-<!--                        android:layout_marginTop="20dp"-->
-<!--                        android:layout_marginRight="40dp"-->
-<!--                        android:layout_marginBottom="20dp"-->
-<!--                        android:background="@color/white"-->
-<!--                        android:elevation="8dp">-->
+                    <!--                    <RelativeLayout-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="40dp"-->
+                    <!--                        android:layout_below="@id/app_name"-->
+                    <!--                        android:layout_marginLeft="40dp"-->
+                    <!--                        android:layout_marginTop="20dp"-->
+                    <!--                        android:layout_marginRight="40dp"-->
+                    <!--                        android:layout_marginBottom="20dp"-->
+                    <!--                        android:background="@color/white"-->
+                    <!--                        android:elevation="8dp">-->
 
-<!--                        <TextView-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_centerVertical="true"-->
-<!--                            android:layout_marginLeft="15dp"-->
-<!--                            android:text="@string/search_text" />-->
+                    <!--                        <TextView-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:layout_centerVertical="true"-->
+                    <!--                            android:layout_marginLeft="15dp"-->
+                    <!--                            android:text="@string/search_text" />-->
 
-<!--                        <ImageView-->
-<!--                            android:layout_width="30dp"-->
-<!--                            android:layout_height="30dp"-->
-<!--                            android:layout_alignParentRight="true"-->
-<!--                            android:layout_centerVertical="true"-->
-<!--                            android:layout_marginRight="15dp"-->
-<!--                            android:src="@drawable/baseline_search_20" />-->
+                    <!--                        <ImageView-->
+                    <!--                            android:layout_width="30dp"-->
+                    <!--                            android:layout_height="30dp"-->
+                    <!--                            android:layout_alignParentRight="true"-->
+                    <!--                            android:layout_centerVertical="true"-->
+                    <!--                            android:layout_marginRight="15dp"-->
+                    <!--                            android:src="@drawable/baseline_search_20" />-->
 
 
-<!--                    </RelativeLayout>-->
+                    <!--                    </RelativeLayout>-->
                 </RelativeLayout>
 
                 <LinearLayout
@@ -124,8 +124,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_laptop_mac_black_48"
-                                android:tint="@color/home_background"
-                                />
+                                android:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -155,7 +154,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_cable_black_48"
-                                android:tint="@color/home_background"/>
+                                android:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -185,7 +184,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_precision_manufacturing_black_48"
-                                android:tint="@color/home_background"/>
+                                android:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -215,7 +214,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_engineering_black_48"
-                                android:tint="@color/home_background"/>
+                                android:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -245,7 +244,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_science_black_48"
-                                android:tint="@color/home_background"/>
+                                android:tint="@color/home_background" />
 
                         </RelativeLayout>
 

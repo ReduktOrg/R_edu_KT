@@ -69,4 +69,14 @@
     <string name="password_updated_success_message">Your password has been updated!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <!--  strings for personal info  -->
+    <string name="basic_info">Basic info</string>
+    <string name="photo">PHOTO</string>
+    <string name="photo_desc">A photo helps personalize your account</string>
+    <string name="name">NAME</string>
+    <string name="birthday">BIRTHDAY</string>
+    <string name="gender">GENDER</string>
+    <string name="password">PASSWORD</string>
+    <string name="basic_info_desc">Some of your info will be visible to other users of ReduKT</string>
 </resources>

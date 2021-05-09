@@ -28,6 +28,7 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
+import com.example.r_edu_kt.User.MyAccount.MyAccount;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
     RecyclerView.Adapter adapter;
     private GradientDrawable gradient1, gradient2, gradient3, gradient4;
-    ImageView menuIcon,cseIcon;
+    ImageView menuIcon, cseIcon;
     LinearLayout contentView;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -68,12 +69,12 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         //codefor hi + userName
         navigationView = findViewById(R.id.navigation_view);
         View header = navigationView.getHeaderView(0);
-        TextView  app_nameEt=header.findViewById(R.id.app_name);
-        String userName=getIntent().getStringExtra("userName");
-        app_nameEt.setText("Hi ! "+userName);
+        TextView app_nameEt = header.findViewById(R.id.app_name);
+        String userName = getIntent().getStringExtra("userName");
+        app_nameEt.setText("Hi ! " + userName);
 
         //course hooks
-        cseIcon=findViewById(R.id.cse);
+        cseIcon = findViewById(R.id.cse);
         cseIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +138,14 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_profile:
+                startActivity(new Intent(getApplicationContext(), MyAccount.class));
+                overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+                break;
+        }
+
         return true;
     }
 
