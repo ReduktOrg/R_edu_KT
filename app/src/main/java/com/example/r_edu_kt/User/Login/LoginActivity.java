@@ -123,7 +123,8 @@ public class LoginActivity extends AppCompatActivity {
                         intent.putExtra("gender",gender);
                         intent.putExtra("date",date);
                         startActivity(intent);
-                        Toast.makeText(LoginActivity.this, "Welcome "+fullName+"!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "your phone number is "+phoneNumber, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(LoginActivity.this, "Welcome "+fullName+"!", Toast.LENGTH_SHORT).show();
                         loginSound.start();
                     }
                     else{

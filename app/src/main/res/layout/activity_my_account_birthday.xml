@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".User.MyAccount.MyAccountBirthday">
+
+    <ImageView
+        android:id="@+id/account_birthday_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="25dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="25dp"
+        android:src="@drawable/outline_arrow_back_black_36" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/account_birthday_back_btn">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="25dp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/date_of_birth"
+                android:textColor="@color/button_blue"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/dob_desc"
+                android:textColor="@color/colorPrimaryDark" />
+
+
+            <DatePicker
+                android:id="@+id/birthday_age_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:calendarTextColor="@color/button_blue"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner" />
+
+            <Button
+                android:id="@+id/set_new_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/button_blue"
+                android:text="Update"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/cancel_new_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/transparent"
+                android:text="Cancel"
+                android:textColor="@color/button_blue" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".User.MyAccount.MyAccountPhone">
+
+    <ImageView
+        android:id="@+id/account_phone_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="25dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="25dp"
+        android:src="@drawable/outline_arrow_back_black_36" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/account_phone_back_btn">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="25dp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/phone_number"
+                android:textColor="@color/button_blue"
+                android:textSize="30sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="@string/phone_number_desc"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/account_country_code_picker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/blue_border"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_showFlag="true"
+                app:ccp_showFullName="true"
+                app:ccp_showNameCode="true" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/account_phone_number"
+                style="@style/parent">
+
+
+                <EditText
+                    android:id="@+id/account_phone_number_et"
+                    style="@style/modifiedEditText"
+                    android:layout_height="50dp"
+                    android:hint="Mobile no."
+                    android:inputType="number"
+                    android:maxLines="1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/set_new_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/button_blue"
+                android:text="Update"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/cancel_new_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@color/transparent"
+                android:text="Cancel"
+                android:textColor="@color/button_blue" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

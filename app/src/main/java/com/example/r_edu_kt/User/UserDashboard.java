@@ -44,6 +44,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     DrawerLayout drawerLayout;
     NavigationView navigationView;
 
+    String userName,fullName,password,email,phoneNumber,gender,date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +68,21 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         contentView = findViewById(R.id.content);
         //menu hooks
         drawerLayout = findViewById(R.id.drawer_layout);
+
         //codefor hi + userName
         navigationView = findViewById(R.id.navigation_view);
         View header = navigationView.getHeaderView(0);
         TextView app_nameEt = header.findViewById(R.id.app_name);
-        String userName = getIntent().getStringExtra("userName");
+        TextView mail_id = header.findViewById(R.id.mail_id);
+        fullName = getIntent().getStringExtra("fullName");
+        userName = getIntent().getStringExtra("userName");
+        password = getIntent().getStringExtra("password");
+        email = getIntent().getStringExtra("email");
+        phoneNumber = getIntent().getStringExtra("phoneNumber");
+        gender = getIntent().getStringExtra("gender");
+        date = getIntent().getStringExtra("date");
         app_nameEt.setText("Hi ! " + userName);
+        mail_id.setText(phoneNumber);
 
         //course hooks
         cseIcon = findViewById(R.id.cse);
@@ -141,8 +152,16 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_profile:
-                startActivity(new Intent(getApplicationContext(), MyAccount.class));
-                overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+                Intent account_intent=new Intent(getApplicationContext(), MyAccount.class);
+                account_intent.putExtra("userName",userName);
+                account_intent.putExtra("fullName",fullName);
+                account_intent.putExtra("password",password);
+                account_intent.putExtra("email",email);
+                account_intent.putExtra("phoneNumber",phoneNumber);
+                account_intent.putExtra("gender",gender);
+                account_intent.putExtra("date",date);
+                startActivity(account_intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
         }
 

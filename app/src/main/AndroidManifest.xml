@@ -16,7 +16,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".User.MyAccount.MyAccount"></activity>
+        <activity android:name=".User.MyAccount.MyAccountPhone"></activity>
+        <activity android:name=".User.MyAccount.MyAccountEmail" />
+        <activity android:name=".User.MyAccount.MyAccountPassword" />
+        <activity android:name=".User.MyAccount.MyAccountGender" />
+        <activity android:name=".User.MyAccount.MyAccountBirthday" />
+        <activity android:name=".User.MyAccount.MyAccountName" />
+        <activity android:name=".User.MyAccount.MyAccount" />
         <activity android:name=".User.CourseLayout.CourseOverview" />
         <activity android:name=".User.ForgetPassword.ForgetSuccessMessage" />
         <activity android:name=".User.ForgetPassword.PasswordOTP" />

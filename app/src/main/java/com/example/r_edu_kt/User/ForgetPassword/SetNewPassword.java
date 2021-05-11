@@ -22,15 +22,22 @@ public class SetNewPassword extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             Window window=getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.button_blue));
+            window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         }
     }
 
     public void goToHomeFromSetNewPassword(View view) {
-        startActivity(new Intent(getApplicationContext(), PasswordOTP.class));
+        onBackPressed();
     }
 
     public void setNewPasswordBtn(View view) {
         startActivity(new Intent(getApplicationContext(), ForgetSuccessMessage.class));
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }

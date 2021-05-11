@@ -6,4 +6,5 @@
     <dimen name="loginViewsMargin">15dp</dimen>
     <dimen name="design_navigation_seperator_vertical_padding">0dp</dimen>
     <dimen name="design_navigation_padding_bottom">0dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

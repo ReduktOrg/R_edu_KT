@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.r_edu_kt.R;
 import com.hbb20.CountryCodePicker;
@@ -80,8 +81,10 @@ public class SignUp3rdClass extends AppCompatActivity {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignUp3rdClass.this, pairs);
             startActivity(intent, options.toBundle());
+            Toast.makeText(this,"phone number is "+phoneNumberEt.getText().toString(), Toast.LENGTH_SHORT).show();
         } else {
             startActivity(intent);
+            Toast.makeText(this,"phone number is "+phoneNumberEt.getText().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 

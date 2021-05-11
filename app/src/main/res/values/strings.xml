@@ -64,19 +64,41 @@
     <string name="new_credentials">New credentials</string>
     <string name="new_credentials_detail">Your identity has been verified! Set your new password</string>
     <string name="new_password">New Password</string>
+    <string name="current_password">Current Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="password_updated">Password updated</string>
     <string name="password_updated_success_message">Your password has been updated!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    
+
     <!--  strings for personal info  -->
     <string name="basic_info">Basic info</string>
+    <string name="contact_info">Contact info</string>
     <string name="photo">PHOTO</string>
     <string name="photo_desc">A photo helps personalize your account</string>
     <string name="name">NAME</string>
+    <string name="change_your_name">Update your name</string>
     <string name="birthday">BIRTHDAY</string>
+    <string name="date_of_birth">Date Of Birth</string>
     <string name="gender">GENDER</string>
+    <string name="your_gender">Update Gender</string>
     <string name="password">PASSWORD</string>
+    <string name="change_password">Update Password</string>
+    <string name="email">EMAIL</string>
+    <string name="contact_email">Update Email</string>
+    <string name="contact_email_desc">Choose the email address where you want to get information about most of the ReduKT courses you learn with this account.</string>
+    <string name="phone">PHONE</string>
+    <string name="phone_number">Update Number</string>
+    <string name="phone_number_desc">Enter the number you would like to use</string>
     <string name="basic_info_desc">Some of your info will be visible to other users of ReduKT</string>
+    <string name="my_account">My Account</string>
+    <string name="name_desc">Changes to your name will be reflected across your ReduKT Account.</string>
+    <string name="dob_desc">Changes to your date of birth will be reflected across your ReduKT Account.</string>
+    <string name="pass_desc1">Choose a strong password and do not reuse it for other accounts.</string>
+    <string name="pass_desc2">Changing your password will sign you out on your devices, with some exceptions</string>
+    <string name="gender_desc">Changes to your gender will be reflected across your ReduKT Account.</string>
+    <string name="pass_desc3">Use at least 8 characters. Do not use a password from another site, or something too obvious like your pet name.</string>
+    <string name="change_name">CHANGE NAME</string>
+    <string name="title_activity_my_account_birthday">MyAccountBirthday</string>
+
 </resources>
