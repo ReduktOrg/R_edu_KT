@@ -34,4 +34,9 @@
     <color name="card4">#8fbfef</color>
     <color name="card5">#faa31b</color>
 
+    <!--  quiz colors  -->
+    <color name="quiz_blue">#003366</color>
+    <color name="quiz_yellow">#F1D302</color>
+    <color name="red">#D32F2F</color>
+
 </resources>

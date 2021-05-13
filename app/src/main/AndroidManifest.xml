@@ -16,7 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".User.MyAccount.MyAccountPhone"></activity>
+        <activity android:name=".User.Quiz.WonActivity"></activity>
+        <activity android:name=".User.Quiz.QuizDashboard" />
+        <activity android:name=".User.Quiz.QuizIntro" />
+        <activity android:name=".User.MyAccount.MyAccountPhone" />
         <activity android:name=".User.MyAccount.MyAccountEmail" />
         <activity android:name=".User.MyAccount.MyAccountPassword" />
         <activity android:name=".User.MyAccount.MyAccountGender" />

@@ -53,6 +53,10 @@ dependencies {
     //circular image
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    //horizontal progress bar
+    implementation 'com.sasank.roundedhorizontalprogress:roundedhorizontalprogress:1.0.1'
+    implementation 'com.mikhaellopez:circularprogressbar:3.0.3'
+
 
 
 }

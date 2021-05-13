@@ -29,6 +29,7 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
+import com.example.r_edu_kt.User.Quiz.QuizIntro;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
     RecyclerView.Adapter adapter;
     private GradientDrawable gradient1, gradient2, gradient3, gradient4;
-    ImageView menuIcon, cseIcon;
+    ImageView menuIcon, cseIcon,mechIcon;
     LinearLayout contentView;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -82,7 +83,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         gender = getIntent().getStringExtra("gender");
         date = getIntent().getStringExtra("date");
         app_nameEt.setText("Hi ! " + userName);
-        mail_id.setText(phoneNumber);
+        mail_id.setText(email);
 
         //course hooks
         cseIcon = findViewById(R.id.cse);
@@ -93,6 +94,14 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             }
         });
 
+        //quiz hooks
+        mechIcon=findViewById(R.id.mech);
+        mechIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), QuizIntro.class));
+            }
+        });
 
         naviagationDrawer();
 
