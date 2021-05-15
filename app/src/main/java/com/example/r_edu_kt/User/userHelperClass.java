@@ -3,11 +3,9 @@ package com.example.r_edu_kt.User;
 public class userHelperClass
 {
 
-    String fullName,userName,email,phoneNo,password,date,gender;
+    String fullName,userName,email,phoneNo,password,date,gender,userid;
 
-    public  userHelperClass(){}
-
-    public userHelperClass(String fullName, String userName, String email, String phoneNo, String password, String date, String gender) {
+    public userHelperClass(String fullName, String userName, String email, String phoneNo, String password, String date, String gender, String userid) {
         this.fullName = fullName;
         this.userName = userName;
         this.email = email;
@@ -15,6 +13,7 @@ public class userHelperClass
         this.password = password;
         this.date = date;
         this.gender = gender;
+        this.userid = userid;
     }
 
     public String getFullName() {
@@ -71,5 +70,13 @@ public class userHelperClass
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 }

@@ -18,10 +18,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.r_edu_kt.Common.ProgressButton;
+import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.User.ForgetPassword.ForgetPassword;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Register.RegisterActivity;
 import com.example.r_edu_kt.User.UserDashboard;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +39,10 @@ public class LoginActivity extends AppCompatActivity {
     View buttonView;
     ProgressButton progressButton;
 
+    private FirebaseAuth mAuth;
+
     MediaPlayer loginSound;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,20 @@ public class LoginActivity extends AppCompatActivity {
 
         }
         setContentView(R.layout.activity_login);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user=mAuth.getCurrentUser();
+                if(user!=null){
+                    Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        };
 
         //login sound
         loginSound=MediaPlayer.create(this,R.raw.alert);
@@ -85,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (TextUtils.isEmpty(name)) {
-            nameEt.setError("Enter your username");
+            nameEt.setError("Enter your userID");
             nameEt.requestFocus();
             return false;
         } else if (TextUtils.isEmpty(password)) {
@@ -94,34 +114,23 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
         passwordEt.onEditorAction(EditorInfo.IME_ACTION_DONE);
-        Query checkUser=FirebaseDatabase.getInstance().getReference("Users").orderByChild("userName").equalTo(name);
+        Query checkUser=FirebaseDatabase.getInstance().getReference("Users").orderByChild("userid").equalTo(name);
 
         checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists())
+                if(snapshot.getValue()!=null)
                 {
+                    User user= snapshot.getValue(User.class);
+                    String phoneNumber = user.getPhoneNo();
+                    Toast.makeText(LoginActivity.this,"clicked"+phoneNumber,Toast.LENGTH_SHORT).show();
                     nameEt.setError(null);
                     nameEt.requestFocus();
-                    String systemPassword=snapshot.child(name).child("password").getValue(String.class);
+                    String systemPassword=user.getPassword();
                     if(systemPassword.equals(password)){
                         passwordEt.setError(null);
                         //passwordEt.requestFocus();
-
                         Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
-                        String fullName,email,phoneNumber,gender,date;
-                        fullName=snapshot.child(name).child("fullName").getValue(String.class);
-                        email=snapshot.child(name).child("email").getValue(String.class);
-                        phoneNumber=snapshot.child(name).child("phoneNumber").getValue(String.class);
-                        date=snapshot.child(name).child("date").getValue(String.class);
-                        gender=snapshot.child(name).child("gender").getValue(String.class);
-                        intent.putExtra("fullName",fullName);
-                        intent.putExtra("userName",name);
-                        intent.putExtra("password",password);
-                        intent.putExtra("email",email);
-                        intent.putExtra("phoneNumber",phoneNumber);
-                        intent.putExtra("gender",gender);
-                        intent.putExtra("date",date);
                         startActivity(intent);
                         Toast.makeText(LoginActivity.this, "your phone number is "+phoneNumber, Toast.LENGTH_SHORT).show();
 //                        Toast.makeText(LoginActivity.this, "Welcome "+fullName+"!", Toast.LENGTH_SHORT).show();
@@ -157,5 +166,17 @@ public class LoginActivity extends AppCompatActivity {
         Intent i = new Intent(getApplicationContext(), ForgetPassword.class);
         startActivity(i);
 //        overridePendingTransition(R.anim.slide_in_right,R.anim.stay);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(authStateListener);
     }
 }

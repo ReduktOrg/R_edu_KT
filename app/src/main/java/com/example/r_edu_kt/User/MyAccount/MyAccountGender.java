@@ -1,5 +1,6 @@
 package com.example.r_edu_kt.User.MyAccount;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Build;
@@ -10,8 +11,16 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MyAccountGender extends AppCompatActivity {
 
@@ -31,6 +40,20 @@ public class MyAccountGender extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         }
 
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user= snapshot.getValue(User.class);
+                gender=user.getGender();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MyAccountGender.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
         //hooks
 //        radioGroup=findViewById(R.id.account_radio_group);
 //        selectedGender=findViewById(radioGroup.getCheckedRadioButtonId());

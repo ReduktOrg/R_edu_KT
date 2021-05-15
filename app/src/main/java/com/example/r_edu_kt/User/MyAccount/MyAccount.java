@@ -18,12 +18,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.example.r_edu_kt.User.UserDashboard;
+import com.example.r_edu_kt.discussion_home;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MyAccount extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -64,34 +73,48 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
         user_name = header.findViewById(R.id.app_name);
         mail_id = header.findViewById(R.id.mail_id);
 
-        userName = getIntent().getStringExtra("userName");
-        fullName = getIntent().getStringExtra("fullName");
-        password = getIntent().getStringExtra("password");
-        email = getIntent().getStringExtra("email");
-        phoneNumber = getIntent().getStringExtra("phoneNumber");
-        gender = getIntent().getStringExtra("gender");
-        date = getIntent().getStringExtra("date");
 
-        user_name.setText("Hi ! " + userName);
-        mail_id.setText(email);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user= snapshot.getValue(User.class);
+                fullName = user.getFullName();
+                email=user.getEmail();
+                userName = user.getUserName();
+                password = user.getPassword();
+                phoneNumber = user.getPhoneNo();
+                gender = user.getGender();
+                date = user.getDate();
+                user_name.setText("Hi !\n"+fullName);
+                mail_id.setText(email);
+                userFullName=findViewById(R.id.user_full_name);
+                userFullName.setText(fullName.toUpperCase());
+                user_email_header=findViewById(R.id.user_email);
+                user_email_header.setText(email);
+                user_full_name_text=findViewById(R.id.name_text);
+                user_full_name_text.setText(fullName);
+                user_birthday=findViewById(R.id.birthday_text);
+                user_birthday.setText(date);
+                user_gender=findViewById(R.id.gender_text);
+                user_gender.setText(gender);
+                user_password=findViewById(R.id.password_text);
+                user_password.setText(password);
+                user_email=findViewById(R.id.email_text);
+                user_email.setText(email);
+                user_phone=findViewById(R.id.phone_text);
+                user_phone.setText(phoneNumber);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MyAccount.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         //account details
-        userFullName=findViewById(R.id.user_full_name);
-        userFullName.setText(fullName.toUpperCase());
-        user_email_header=findViewById(R.id.user_email);
-        user_email_header.setText(email);
-        user_full_name_text=findViewById(R.id.name_text);
-        user_full_name_text.setText(fullName);
-        user_birthday=findViewById(R.id.birthday_text);
-        user_birthday.setText(date);
-        user_gender=findViewById(R.id.gender_text);
-        user_gender.setText(gender);
-        user_password=findViewById(R.id.password_text);
-        user_password.setText(password);
-        user_email=findViewById(R.id.email_text);
-        user_email.setText(email);
-        user_phone=findViewById(R.id.phone_text);
-        user_phone.setText(phoneNumber);
 
 
         //buttons
@@ -109,7 +132,6 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onClick(View v) {
                 Intent nameIntent=new Intent(getApplicationContext(),MyAccountName.class);
-                nameIntent.putExtra("fullName",fullName);
                 startActivity(nameIntent);
                 in_animation();
             }
@@ -119,7 +141,6 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onClick(View v) {
                 Intent dateIntent=new Intent(getApplicationContext(),MyAccountBirthday.class);
-                dateIntent.putExtra("date",date);
                 startActivity(dateIntent);
                 in_animation();
             }
@@ -129,7 +150,6 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onClick(View v) {
                 Intent genderIntent=new Intent(getApplicationContext(),MyAccountGender.class);
-                genderIntent.putExtra("gender",gender);
                 startActivity(genderIntent);
                 in_animation();
             }
@@ -221,8 +241,20 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.nav_discussion:
+                Intent intent = new Intent(MyAccount.this, discussion_home.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
             case R.id.nav_home:
-                intent_to_dashboard();
+                Intent intent1 = new Intent(MyAccount.this,UserDashboard.class);
+                startActivity(intent1);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+            case R.id.nav_profile:
+                Intent account_intent=new Intent(getApplicationContext(), MyAccount.class);
+                startActivity(account_intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
         }
         return true;
@@ -230,13 +262,6 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
 
     private void intent_to_dashboard() {
         Intent dashboard_intent = new Intent(getApplicationContext(), UserDashboard.class);
-        dashboard_intent.putExtra("userName", userName);
-        dashboard_intent.putExtra("fullName",fullName);
-        dashboard_intent.putExtra("password",password);
-        dashboard_intent.putExtra("email",email);
-        dashboard_intent.putExtra("phoneNumber",phoneNumber);
-        dashboard_intent.putExtra("gender",gender);
-        dashboard_intent.putExtra("date",date);
         startActivity(dashboard_intent);
     }
 }

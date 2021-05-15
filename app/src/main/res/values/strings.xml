@@ -27,6 +27,7 @@
 
     <string name="home">Home</string>
     <string name="search">Search</string>
+    <string name="discussion">Discussion</string>
     <string name="all_categories">All Categories</string>
     <string name="add_missing_course">Add Missing Course</string>
     <string name="login">Login</string>
@@ -100,5 +101,25 @@
     <string name="pass_desc3">Use at least 8 characters. Do not use a password from another site, or something too obvious like your pet name.</string>
     <string name="change_name">CHANGE NAME</string>
     <string name="title_activity_my_account_birthday">MyAccountBirthday</string>
+
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string-array name="topics">
+        <item>select branch</item>
+        <item>cse</item>
+        <item>ece</item>
+        <item>mech</item>
+        <item>civil</item>
+        <item>chemical</item>
+    </string-array>
+
+    <string-array name="choice">
+        <item>Abusive/Harassment</item>
+        <item>content is spam</item>
+        <item>Insincere</item>
+        <item>Violates post policy</item>
+    </string-array>
+
 
 </resources>

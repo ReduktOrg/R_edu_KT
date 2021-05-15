@@ -3,6 +3,7 @@ package com.example.r_edu_kt.User.Register;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,8 +27,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +41,10 @@ public class VerifyOTP extends AppCompatActivity {
     PinView pinFromUser;
     String CodeBySystem;
     TextView msgTv;
+    String userid="";
+
+    private FirebaseAuth mAuth;
+    private String onlineuserID;
 
     String phoneNo,fullName,userName,password,dateOfBirth,email,gender;
 
@@ -51,6 +60,8 @@ public class VerifyOTP extends AppCompatActivity {
         }
 
         pinFromUser = findViewById(R.id.pin_view);
+
+        mAuth = FirebaseAuth.getInstance();
 
         msgTv=findViewById(R.id.msg);
         phoneNo = "+91"+getIntent().getStringExtra("phoneNumber");
@@ -68,13 +79,37 @@ public class VerifyOTP extends AppCompatActivity {
         sendVerificationCodeToUser(phoneNo);
     }
 
-    private void sendVerificationCodeToUser(String phoneNo) {
-        PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                phoneNo,
-                60,
-                TimeUnit.SECONDS,
-                this,
-                mCallbacks);
+    private void sendVerificationCodeToUser(final String phoneNo) {
+        final ProgressDialog pd = new ProgressDialog(VerifyOTP.this);
+        pd.setMessage("Verifying Phone Number");
+        pd.show();
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference("Users");
+        Query query=reference.orderByChild("phoneNo").equalTo(phoneNo);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue()!=null){
+                    Toast.makeText(VerifyOTP.this,"Phone Number already used!. Try again with new number",Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                    finish();
+                    Intent intent=new Intent(VerifyOTP.this,SignUp3rdClass.class);
+                    startActivity(intent);
+                }else {
+                    PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                            phoneNo,
+                            60,
+                            TimeUnit.SECONDS,
+                            VerifyOTP.this,
+                            mCallbacks);
+                    pd.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks =
@@ -112,8 +147,12 @@ public class VerifyOTP extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            onlineuserID=mAuth.getCurrentUser().getUid();
+                            userid=onlineuserID;
+
                             Toast.makeText(VerifyOTP.this, "Registered Successfully!", Toast.LENGTH_SHORT).show();
                             storeNewUsersData();
+                            finish();
                             startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
@@ -139,8 +178,8 @@ public class VerifyOTP extends AppCompatActivity {
     public  void storeNewUsersData(){
         FirebaseDatabase rootNode=FirebaseDatabase.getInstance();
         DatabaseReference reference= rootNode.getReference("Users");
-        userHelperClass addNewUser=new userHelperClass(fullName,userName,email,phoneNo,password,dateOfBirth,gender);
-        reference.child(userName).setValue(addNewUser);
+        userHelperClass addNewUser=new userHelperClass(fullName,userName,email,phoneNo,password,dateOfBirth,gender,userid);
+        reference.child(onlineuserID).setValue(addNewUser);
     }
 
 }

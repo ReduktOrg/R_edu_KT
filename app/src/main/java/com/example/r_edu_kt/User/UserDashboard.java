@@ -14,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -26,11 +27,19 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
+import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
 import com.example.r_edu_kt.User.Quiz.QuizIntro;
+import com.example.r_edu_kt.discussion_home;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -44,8 +53,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     LinearLayout contentView;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-
-    String userName,fullName,password,email,phoneNumber,gender,date;
+    String fullName,email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,17 +81,26 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         //codefor hi + userName
         navigationView = findViewById(R.id.navigation_view);
         View header = navigationView.getHeaderView(0);
-        TextView app_nameEt = header.findViewById(R.id.app_name);
-        TextView mail_id = header.findViewById(R.id.mail_id);
-        fullName = getIntent().getStringExtra("fullName");
-        userName = getIntent().getStringExtra("userName");
-        password = getIntent().getStringExtra("password");
-        email = getIntent().getStringExtra("email");
-        phoneNumber = getIntent().getStringExtra("phoneNumber");
-        gender = getIntent().getStringExtra("gender");
-        date = getIntent().getStringExtra("date");
-        app_nameEt.setText("Hi ! " + userName);
-        mail_id.setText(email);
+        final TextView app_nameEt = header.findViewById(R.id.app_name);
+        final TextView mail_id = header.findViewById(R.id.mail_id);
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                User user= snapshot.getValue(User.class);
+                fullName = user.getFullName();
+                email=user.getEmail();
+                app_nameEt.setText("Hi !\n"+fullName);
+                mail_id.setText(email);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserDashboard.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         //course hooks
         cseIcon = findViewById(R.id.cse);
@@ -162,14 +179,18 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         switch (item.getItemId()) {
             case R.id.nav_profile:
                 Intent account_intent=new Intent(getApplicationContext(), MyAccount.class);
-                account_intent.putExtra("userName",userName);
-                account_intent.putExtra("fullName",fullName);
-                account_intent.putExtra("password",password);
-                account_intent.putExtra("email",email);
-                account_intent.putExtra("phoneNumber",phoneNumber);
-                account_intent.putExtra("gender",gender);
-                account_intent.putExtra("date",date);
-                startActivity(account_intent);
+               startActivity(account_intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+            case R.id.nav_discussion:
+                Intent intent = new Intent(UserDashboard.this, discussion_home.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+
+            case R.id.nav_home:
+                Intent intent1 = new Intent(UserDashboard.this,UserDashboard.class);
+                startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
         }
