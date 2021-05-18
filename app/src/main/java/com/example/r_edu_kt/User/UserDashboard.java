@@ -3,11 +3,13 @@ package com.example.r_edu_kt.User;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -42,6 +44,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -60,7 +63,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     String fullName,email;
-    CircleImageView pro_img;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         categoriesRecycler = findViewById(R.id.categories_recycler);
         menuIcon = findViewById(R.id.menu_icon);
         contentView = findViewById(R.id.content);
-        pro_img = findViewById(R.id.pro_img);
         //menu hooks
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -91,13 +93,14 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         View header = navigationView.getHeaderView(0);
         final TextView app_nameEt = header.findViewById(R.id.app_name);
         final TextView mail_id = header.findViewById(R.id.mail_id);
+        final CircleImageView pro_img = findViewById(R.id.pro_img);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
-                //Glide.with(mcontext).load(user.getProfileimage()).into(pro_img);
+                //Picasso.get().load(user.getProfileimage()).into(pro_img);
                 fullName = user.getFullName();
                 email=user.getEmail();
                 app_nameEt.setText("Hi !\n"+fullName);
@@ -202,6 +205,13 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
+
+            case R.id.nav_logout:
+                View view = LayoutInflater.from(context).inflate(R.layout.logoutdialog,null);
+                final AlertDialog dialog = new AlertDialog.Builder(context)
+                        .setView(view).setCancelable(false).create();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.show();
         }
 
         return true;

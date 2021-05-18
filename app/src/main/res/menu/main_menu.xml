@@ -12,7 +12,6 @@
             android:title="@string/discussion"
             android:icon="@drawable/ic_discussion"/>
 
-
         <item
             android:id="@+id/nav_all_categories"
             android:title="@string/all_categories"
