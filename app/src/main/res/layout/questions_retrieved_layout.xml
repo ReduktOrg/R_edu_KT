@@ -6,9 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="10dp"
     android:layout_margin="10dp"
-    android:elevation="18dp"
-    app:cardCornerRadius="10dp"
-    android:id="@+id/cardView">
+    android:id="@+id/cardView"
+    app:cardCornerRadius="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +25,8 @@
                 android:layout_height="35dp"
                 android:id="@+id/publisher_profile_image"
                 android:src="@drawable/profile_image"
-                app:civ_border_color="@color/button_blue"/>
+                app:civ_border_color="@color/colorAccent"
+                app:civ_border_width="2dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

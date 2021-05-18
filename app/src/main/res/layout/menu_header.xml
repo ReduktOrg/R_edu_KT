@@ -37,12 +37,13 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="80dp"
+        android:id="@+id/pro_img"
         android:layout_height="80dp"
         android:layout_above="@id/app_name"
         android:layout_marginBottom="8dp"
         android:src="@drawable/boy_dp"
-        android:elevation="8dp"
         android:layout_marginLeft="15dp"
+        android:elevation="8dp"
         app:civ_border_color="@color/colorAccent"
         app:civ_border_width="4dp" />
 

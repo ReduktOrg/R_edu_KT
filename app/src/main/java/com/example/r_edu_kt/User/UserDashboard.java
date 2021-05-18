@@ -3,6 +3,7 @@ package com.example.r_edu_kt.User;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -21,6 +22,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.CategoriesAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.CategoriesHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedAdapter;
@@ -43,7 +45,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    Context mcontext;
 
     static final float END_SCALE = 0.7f;
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
@@ -54,6 +60,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     String fullName,email;
+    CircleImageView pro_img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         categoriesRecycler = findViewById(R.id.categories_recycler);
         menuIcon = findViewById(R.id.menu_icon);
         contentView = findViewById(R.id.content);
+        pro_img = findViewById(R.id.pro_img);
         //menu hooks
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -89,6 +97,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
+                //Glide.with(mcontext).load(user.getProfileimage()).into(pro_img);
                 fullName = user.getFullName();
                 email=user.getEmail();
                 app_nameEt.setText("Hi !\n"+fullName);

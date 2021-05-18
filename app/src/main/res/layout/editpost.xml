@@ -5,15 +5,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".AskQuestionActivity">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:elevation="10dp"
+        android:layout_margin="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+    <soup.neumorphism.NeumorphCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        app:neumorph_shapeType="flat"
+        style="@style/Widget.Neumorph.CardView"
+        android:layout_margin="6dp"
+        android:id="@+id/ed">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:text="Update Question!"
+        android:padding="12dp" />
+    </soup.neumorphism.NeumorphCardView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_above="@+id/lin">
+        android:id="@+id/lin"
+        android:layout_below="@+id/ed">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -23,7 +53,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="6dp"
                 android:text="previously selected Branch:"
                 android:textSize="20dp"
                 android:textStyle="bold"/>
@@ -33,51 +63,69 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv"
                 android:text="hello"
-                android:layout_margin="10dp"
+                android:layout_margin="6dp"
                 android:textColor="#000"
                 android:textSize="16dp" />
         </LinearLayout>
 
+        <soup.neumorphism.NeumorphCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Neumorph.CardView"
+            app:neumorph_shapeType="flat"
+            android:layout_margin="6dp">
         <Spinner
             android:id="@+id/spin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:padding="7dp"
             android:entries="@array/topics"
             android:layout_gravity="center_horizontal"/>
+        </soup.neumorphism.NeumorphCardView>
 
 
+        <soup.neumorphism.NeumorphCardView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Neumorph.CardView"
+            app:neumorph_shapeType="basin"
+            android:layout_margin="6dp">
 
         <EditText
             android:id="@+id/questtext"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
             android:hint="Enter your question here"
+            android:textCursorDrawable="@drawable/cursor"
+            android:background="@color/transparent"
             android:textColor="#000"
             android:textSize="18sp"
             android:imeOptions="actionDone"/>
+        </soup.neumorphism.NeumorphCardView>
 
         <ImageView
             android:id="@+id/que_img"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_image" />
+            android:src="@drawable/ic_image"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lin"
-        android:orientation="horizontal"
-       android:layout_alignParentBottom="true">
+        android:layout_below="@+id/lin"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/canc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="6dp"
             android:layout_weight="1"
             android:background="@drawable/bg_cancel"
             android:text="Cancel"
@@ -89,7 +137,7 @@
             android:id="@+id/postQ"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="6dp"
             android:layout_weight="1"
             android:background="@drawable/bg_upload"
             android:text="Update Question"
@@ -97,5 +145,8 @@
             android:textColor="#fff"
             android:textSize="20sp" />
     </LinearLayout>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

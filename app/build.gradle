@@ -65,6 +65,6 @@ dependencies {
     implementation 'com.sasank.roundedhorizontalprogress:roundedhorizontalprogress:1.0.1'
     implementation 'com.mikhaellopez:circularprogressbar:3.0.3'
 
-
+    implementation 'com.github.fornewid:neumorphism:0.3.0'
 
 }

@@ -1,44 +1,35 @@
 package com.example.r_edu_kt.Adapters;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.r_edu_kt.AskQuestionActivity;
 import com.example.r_edu_kt.CommentsActivity;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
-import com.example.r_edu_kt.User.Register.VerifyOTP;
-import com.example.r_edu_kt.User.UserDashboard;
-import com.example.r_edu_kt.discussion_home;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,7 +49,6 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -67,7 +57,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
     public List<Post> mPostList;
     private FirebaseUser firebaseUser;
     String selected="",name="";
-    private int reportCount=0;
+    RadioButton radioButton;
+    RadioGroup radioGroup;
 
     public PostAdapter(Context mContext, List<Post> mPostList) {
         this.mContext = mContext;
@@ -97,7 +88,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         holder.askedOnTextview.setText(post.getDate());
 
 
-        publisherInformation(holder.asked_by_Textview,post.getPublisher());
+        publisherInformation(holder.asked_by_Textview,post.getPublisher(),holder.profile_image);
         isLiked(post.getPostid(),holder.like);
         isDisLiked(post.getPostid(),holder.dislike);
         getLikes(holder.likes,post.getPostid());
@@ -169,39 +160,40 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                 popupMenu.getMenu().findItem(R.id.edit).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        final DialogPlus dialogPlus=DialogPlus.newDialog(holder.more.getContext())
-                                .setContentHolder(new ViewHolder(R.layout.editpost))
-                                .setExpanded(true,1300)
-                                .create();
+
+                        View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.editpost,null);
 
                         final String postid=post.getPostid();
 
-                        View myview=dialogPlus.getHolderView();
-                        final ImageView qimage=myview.findViewById(R.id.que_img);
-                        final Spinner sp=myview.findViewById(R.id.spin);
-                        final EditText question=myview.findViewById(R.id.questtext);
-                        final  TextView tv=myview.findViewById(R.id.tv);
-                        Button submit=myview.findViewById(R.id.postQ);
-                        Button canc=myview.findViewById(R.id.canc);
+                        final ImageView qimage=view.findViewById(R.id.que_img);
+                        final Spinner sp=view.findViewById(R.id.spin);
+                        final EditText question=view.findViewById(R.id.questtext);
+                        final  TextView tv=view.findViewById(R.id.tv);
+                        Button submit=view.findViewById(R.id.postQ);
+                        Button canc=view.findViewById(R.id.canc);
+
+                        final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
+                                .setView(view).setCancelable(false).create();
 
                         // Intent intent = new Intent(mContext, editpost.class);
                         //((Activity)mContext).startActivityForResult(intent,requestCode);
 
-                        Glide.with(mContext).load(post.getQuestionimage()).into(qimage);
-                        if(post.getQuestionimage()==null){
-                            qimage.setImageResource(R.drawable.ic_image);
+                        if(post.getQuestionimage()!=null){
+                            qimage.setVisibility(View.VISIBLE);
                         }
+                        Glide.with(mContext).load(post.getQuestionimage()).into(qimage);
                         question.setText(post.getQuestion());
                         tv.setText(post.getTopic());
 
-
-                        dialogPlus.show();
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
+                        dialog.show();
 
 
                         canc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialogPlus.dismiss();
+                                dialog.dismiss();
                             }
                         });
                         FirebaseDatabase database= FirebaseDatabase.getInstance();
@@ -231,14 +223,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(mContext,"question updated successfully",Toast.LENGTH_SHORT).show();
-                                                    dialogPlus.dismiss();
+                                                    dialog.dismiss();
                                                     pd.dismiss();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(mContext,"could not update question",Toast.LENGTH_SHORT).show();
-                                            dialogPlus.dismiss();
+                                            dialog.dismiss();
                                             pd.dismiss();
                                         }
                                     });
@@ -255,26 +247,32 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         final String postid=post.getPostid();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(holder.more.getContext());
-                        builder.setTitle("Delete Panel");
-                        builder.setMessage("Delete...?");
 
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.deletedialog,null);
+
+                        Button submit=view.findViewById(R.id.postd);
+                        Button canc=view.findViewById(R.id.canceld);
+
+                        final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
+                                .setView(view).setCancelable(false).create();
+
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.show();
+
+                        canc.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FirebaseDatabase.getInstance().getReference("questions posts").child(postid).removeValue();
-
+                            public void onClick(View v) {
+                                dialog.dismiss();
                             }
                         });
 
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-
-                        builder.show();
+                       submit.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               FirebaseDatabase.getInstance().getReference("questions posts").child(postid).removeValue();
+                               dialog.dismiss();
+                           }
+                       });
                         return true;
                     }
                 });
@@ -283,46 +281,56 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         final String postid=post.getPostid();
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(holder.more.getContext());
-                        final String[] list=holder.more.getContext().getResources().getStringArray(R.array.choice);
-                        builder.setTitle("Report Panel");
-                        builder.setSingleChoiceItems(list, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                selected=list[which];
-                            }
-                        });
-                        builder.setPositiveButton("report", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String mDate= DateFormat.getDateInstance().format(new Date());
-                                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("questions_report");
-                                String questions_reportid= ref.push().getKey();
 
-                                HashMap<String, Object> hashMap = new HashMap<>();
-                                hashMap.put("questions_reportid",questions_reportid);
-                                hashMap.put("report",selected);
-                                hashMap.put("date",mDate);
-                                ref.child(postid).child(questions_reportid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(mContext,"Reported Successfully", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            Toast.makeText(mContext,task.getException().toString(),Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.show();
+                        final View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.reportdialog,null);
+                        Button submit=view.findViewById(R.id.postr);
+                        Button canc=view.findViewById(R.id.cancelr);
+                        radioGroup = view.findViewById(R.id.radio);
+
+                        final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
+                                .setView(view).setCancelable(false).create();
+
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.show();
+
+                       submit.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               int selected = radioGroup.getCheckedRadioButtonId();
+                               radioButton=view.findViewById(selected);
+
+                               if(selected == -1){
+                                   Toast.makeText(mContext,"please select any one of the option to report",Toast.LENGTH_SHORT).show();
+                               }else {
+                                   String mDate= DateFormat.getDateInstance().format(new Date());
+                                   DatabaseReference ref=FirebaseDatabase.getInstance().getReference("questions_report");
+                                   String questions_reportid= ref.push().getKey();
+
+                                   HashMap<String, Object> hashMap = new HashMap<>();
+                                   hashMap.put("questions_reportid",questions_reportid);
+                                   hashMap.put("report",radioButton.getText());
+                                   hashMap.put("date",mDate);
+                                   ref.child(postid).child(questions_reportid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                       @Override
+                                       public void onComplete(@NonNull Task<Void> task) {
+                                           if(task.isSuccessful()){
+                                               Toast.makeText(mContext,"Reported Successfully", Toast.LENGTH_SHORT).show();
+                                           }else {
+                                               Toast.makeText(mContext,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                           }
+                                       }
+                                   });
+                                   dialog.dismiss();
+                               }
+                           }
+                       });
+
+                       canc.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               dialog.dismiss();
+                           }
+                       });
                         return true;
                     }
                 });
@@ -336,7 +344,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
     }
 
     public class viewHolder extends RecyclerView.ViewHolder{
-        public CircleImageView publisher_profile_image;
+        public CircleImageView profile_image;
         public TextView asked_by_Textview,likes,dislikes,comments;
         public ImageView more,like,dislike,comment;
         public ImageView questionImage;
@@ -348,8 +356,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         public viewHolder(@NonNull View itemView) {
             super(itemView);
 
-            publisher_profile_image=itemView.findViewById(R.id.publisher_profile_image);
-            asked_by_Textview = itemView.findViewById(R.id.asked_by_Textview);
+            profile_image=itemView.findViewById(R.id.publisher_profile_image);
             likes=itemView.findViewById(R.id.likes);
             dislikes=itemView.findViewById(R.id.dislikes);
             comments=itemView.findViewById(R.id.comments);
@@ -369,13 +376,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
     }
 
 
-    private void publisherInformation(final TextView askedBy, String userName){
+    private void publisherInformation(final TextView askedBy, String userName, final CircleImageView profile_image){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(userName);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user=snapshot.getValue(User.class);
-                //Glide.with(mContext).load(user.getProfileimage()).into(publisherImage);
+                Glide.with(mContext).load(user.getProfileimage()).into(profile_image);
                 askedBy.setText(user.getUserName());
 
             }

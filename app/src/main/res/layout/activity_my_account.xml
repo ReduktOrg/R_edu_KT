@@ -44,7 +44,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:src="@drawable/baseline_menu_black_48"
-                    android:tint="@color/white" />
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -87,6 +87,7 @@
                         android:layout_marginBottom="10dp"
                         android:elevation="8dp"
                         android:src="@drawable/boy_dp"
+                        android:id="@+id/promy_img"
                         app:civ_border_color="@color/transparent" />
 
                     <TextView
@@ -162,7 +163,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
                                             android:src="@drawable/baseline_school_black_18"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -220,7 +221,7 @@
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
                                             android:src="@drawable/baseline_verified_black_18"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                         <TextView
                                             android:layout_width="wrap_content"
@@ -340,6 +341,7 @@
                                             android:layout_width="60dp"
                                             android:layout_height="60dp"
                                             android:layout_gravity="end"
+                                            android:id="@+id/proimg"
                                             android:src="@drawable/boy_dp"
                                             app:civ_border_color="@color/button_blue"
                                             app:civ_border_width="1dp" />
@@ -417,7 +419,7 @@
                                             android:layout_gravity="end"
                                             android:padding="2dp"
                                             android:src="@drawable/baseline_chevron_right_24"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                     </LinearLayout>
 
@@ -492,7 +494,7 @@
                                             android:layout_gravity="end"
                                             android:padding="2dp"
                                             android:src="@drawable/baseline_chevron_right_24"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                     </LinearLayout>
 
@@ -567,7 +569,7 @@
                                             android:layout_gravity="end"
                                             android:padding="2dp"
                                             android:src="@drawable/baseline_chevron_right_24"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                     </LinearLayout>
 
@@ -642,7 +644,7 @@
                                             android:layout_gravity="end"
                                             android:padding="2dp"
                                             android:src="@drawable/baseline_chevron_right_24"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                     </LinearLayout>
 
@@ -736,7 +738,7 @@
                                             android:layout_gravity="end"
                                             android:padding="2dp"
                                             android:src="@drawable/baseline_chevron_right_24"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                     </LinearLayout>
 
@@ -811,7 +813,7 @@
                                             android:layout_gravity="end"
                                             android:padding="2dp"
                                             android:src="@drawable/baseline_chevron_right_24"
-                                            android:tint="@color/button_blue" />
+                                            app:tint="@color/button_blue" />
 
                                     </LinearLayout>
 

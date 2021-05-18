@@ -23,6 +23,9 @@ import com.example.r_edu_kt.User.ForgetPassword.ForgetPassword;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Register.RegisterActivity;
 import com.example.r_edu_kt.User.UserDashboard;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -105,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         if (TextUtils.isEmpty(name)) {
-            nameEt.setError("Enter your userID");
+            nameEt.setError("Enter your Email");
             nameEt.requestFocus();
             return false;
         } else if (TextUtils.isEmpty(password)) {
@@ -114,53 +117,25 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
         passwordEt.onEditorAction(EditorInfo.IME_ACTION_DONE);
-        Query checkUser=FirebaseDatabase.getInstance().getReference("Users").orderByChild("userid").equalTo(name);
 
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        mAuth.signInWithEmailAndPassword(name,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.getValue()!=null)
-                {
-                    User user= snapshot.getValue(User.class);
-                    String phoneNumber = user.getPhoneNo();
-                    Toast.makeText(LoginActivity.this,"clicked"+phoneNumber,Toast.LENGTH_SHORT).show();
-                    nameEt.setError(null);
-                    nameEt.requestFocus();
-                    String systemPassword=user.getPassword();
-                    if(systemPassword.equals(password)){
-                        passwordEt.setError(null);
-                        //passwordEt.requestFocus();
-                        Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
-                        startActivity(intent);
-                        Toast.makeText(LoginActivity.this, "your phone number is "+phoneNumber, Toast.LENGTH_SHORT).show();
-//                        Toast.makeText(LoginActivity.this, "Welcome "+fullName+"!", Toast.LENGTH_SHORT).show();
-                        loginSound.start();
-                    }
-                    else{
-                        passwordEt.setError("Wrong Password");
-                        passwordEt.requestFocus();
-                        progressButton.buttonFinished();
-//                        Toast.makeText(LoginActivity.this,"Password does not match",Toast.LENGTH_SHORT).show();
-                    }
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    Intent intent = new Intent(LoginActivity.this,UserDashboard.class);
+                    startActivity(intent);
+                    finish();
+                    Toast.makeText(LoginActivity.this,"Welcome"+mAuth.getCurrentUser().getEmail(),Toast.LENGTH_SHORT).show();
+                    loginSound.start();
                 }
                 else {
-                    nameEt.setError("No such user exists");
-                    nameEt.requestFocus();
-                    progressButton.buttonFinished();
-//                    Toast.makeText(LoginActivity.this, "No such user exists!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this,"login failed"+task.getException().toString(),Toast.LENGTH_SHORT).show();
                 }
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(LoginActivity.this,"Database Error ",Toast.LENGTH_SHORT).show();
-            }
         });
-
-
-        return  true;
-
+        return true;
     }
+
 
     public void callForgetPassword(View view) {
         Intent i = new Intent(getApplicationContext(), ForgetPassword.class);

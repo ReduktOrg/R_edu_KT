@@ -10,8 +10,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.Adapters.PostAdapter;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
@@ -53,16 +56,22 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+import soup.neumorphism.NeumorphCardView;
+
 
 public class discussion_home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer_layout;
     private FloatingActionButton fab;
+    Context mcontext;
 
     private RecyclerView recyclerView;
     private ProgressBar progress_circular;
     ImageView menuIcon,search,search2;
     NavigationView navigationView;
     EditText et;
+    NeumorphCardView cardView;
+    CircleImageView pro_img;
     String s="";
     static final float END_SCALE = 0.7f;
 
@@ -93,6 +102,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         search=findViewById(R.id.search);
         search2=findViewById(R.id.search2);
         et=findViewById(R.id.searchtext);
+        cardView=findViewById(R.id.card);
         drawer_layout=findViewById(R.id.drawer_layout);
 
 
@@ -102,6 +112,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
+        ((SimpleItemAnimator)recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         recyclerView.setLayoutManager(linearLayoutManager);
 
 
@@ -117,6 +128,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
                 fullName = user.getFullName();
+                //Glide.with(mcontext).load(user.getProfileimage()).into(pro_img);
                 email=user.getEmail();
                 app_nameEt.setText("Hi !\n"+fullName);
                 mail_id.setText(email);
@@ -151,9 +163,9 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 BounceInterpolator interpolator = new BounceInterpolator();
                 animation.setInterpolator(interpolator);
                 search.startAnimation(animation);
-                et.setVisibility(View.VISIBLE);
-                et.requestFocus();
+                cardView.setVisibility(View.VISIBLE);
                 search2.setVisibility(View.VISIBLE);
+                et.requestFocus();
                 s=et.getText().toString().toLowerCase();
                 DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");
                 Query query=reference.orderByChild("topic").startAt(s).endAt(s+"\uf8ff");
@@ -180,7 +192,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             @Override
             public void onClick(View v) {
                 s="";
-                et.setVisibility(View.GONE);
+                cardView.setVisibility(View.GONE);
                 et.setText("");
                 search2.setVisibility(View.GONE);
                 DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");

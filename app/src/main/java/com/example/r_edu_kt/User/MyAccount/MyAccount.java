@@ -7,6 +7,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
@@ -34,16 +36,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MyAccount extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
     Button nameButton,birthdayButton,genderButton,passwordButton,emailButton,phoneButton;
+    Context mcontext;
 
 
     DrawerLayout drawerLayout;
     LinearLayout contentView;
     NavigationView navigationView;
     ImageView menuIcon;
+    CircleImageView pro_img,promy_img,proimg;
     TextView userFullName,user_name,mail_id,user_email_header,user_full_name_text,user_birthday,user_gender,user_password,user_email,user_phone;
     static final float END_SCALE = 0.7f;
 
@@ -72,6 +78,8 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
         View header = navigationView.getHeaderView(0);
         user_name = header.findViewById(R.id.app_name);
         mail_id = header.findViewById(R.id.mail_id);
+        promy_img=findViewById(R.id.promy_img);
+        proimg=findViewById(R.id.proimg);
 
 
 
@@ -80,6 +88,9 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
+                //Glide.with(mcontext).load(user.getProfileimage()).into(pro_img);
+                //Glide.with(mcontext).load(user.getProfileimage()).into(promy_img);
+                //Glide.with(mcontext).load(user.getProfileimage()).into(proimg);
                 fullName = user.getFullName();
                 email=user.getEmail();
                 userName = user.getUserName();

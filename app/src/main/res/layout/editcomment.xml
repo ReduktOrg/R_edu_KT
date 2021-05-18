@@ -1,43 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".AskQuestionActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="20dp"
+        android:elevation="10dp"
+        android:layout_margin="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <soup.neumorphism.NeumorphCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                app:neumorph_shapeType="flat"
+                style="@style/Widget.Neumorph.CardView"
+                android:layout_margin="6dp"
+                android:id="@+id/ed">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:text="Update Comment!"
+                    android:padding="12dp" />
+            </soup.neumorphism.NeumorphCardView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_above="@+id/lin">
+        android:id="@+id/lin"
+        android:layout_below="@+id/ed">
 
+        <soup.neumorphism.NeumorphCardView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            style="@style/Widget.Neumorph.CardView"
+            app:neumorph_shapeType="basin"
+            android:layout_margin="6dp">
 
         <EditText
             android:id="@+id/comenttext"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
             android:hint="Edit your comment here"
             android:textColor="#000"
             android:textSize="18sp"
+            android:textCursorDrawable="@drawable/cursor"
+            android:background="@color/transparent"
             android:imeOptions="actionDone"/>
+        </soup.neumorphism.NeumorphCardView>
 
         <ImageView
             android:id="@+id/coment_img"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_image" />
+            android:src="@drawable/ic_image"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/lin"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_below="@+id/lin"
+        android:orientation="horizontal">
 
 
         <Button
@@ -64,5 +106,7 @@
             android:textColor="#fff"
             android:textSize="20sp" />
     </LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

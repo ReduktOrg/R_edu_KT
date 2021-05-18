@@ -79,6 +79,24 @@
                     android:layout_margin="10dp"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Please select profile image"
+                        android:textColor="#000"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="3dp"/>
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/profile_image"
+                        android:layout_marginBottom="10dp"
+                        android:id="@+id/profile_img"/>
+
+
                     <com.hbb20.CountryCodePicker
                         android:id="@+id/country_code_picker"
                         android:layout_width="match_parent"
@@ -110,7 +128,7 @@
                         style="@style/loginButton"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/loginViewsMargin"
-                        android:text="Next"
+                        android:text="Register"
                         android:onClick="callVerifyOTPScreen"
                         app:initialCornerAngle="27dp"
                         app:spinning_bar_color="#fff"

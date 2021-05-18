@@ -1,5 +1,6 @@
 package com.example.r_edu_kt.User.Register;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityOptions;
@@ -17,9 +18,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Login.LoginActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 
@@ -91,26 +99,47 @@ public class RegisterActivity extends AppCompatActivity {
         if (!validateFullName() || !validateUsername() || !validateEmail() || !validatePassword())
             return;
 
-        Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
+        else {
 
-        intent.putExtra("fullName", fullnameEt.getText().toString());
-        intent.putExtra("userName", usernameEt.getText().toString());
-        intent.putExtra("password", passwordEt.getText().toString());
-        intent.putExtra("email", emailEt.getText().toString());
-        //Add Transition
-        Pair[] pairs = new Pair[5];
+            String val = usernameEt.getText().toString().trim();
+            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+            Query query = reference.orderByChild("userName").equalTo(val);
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.getValue() != null) {
+                        usernameEt.setError("Username already used! Try with another one");
+                        usernameEt.requestFocus();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
 
-        pairs[0] = new Pair<View, String>(backBtn, "transition_back_btn");
-        pairs[1] = new Pair<View, String>(next, "transition_next_btn");
-        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
-        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
-        pairs[4] = new Pair<View, String>(sideImage, "transition_side_image");
+                        intent.putExtra("fullName", fullnameEt.getText().toString());
+                        intent.putExtra("userName", usernameEt.getText().toString());
+                        intent.putExtra("password", passwordEt.getText().toString());
+                        intent.putExtra("email", emailEt.getText().toString());
+                        //Add Transition
+                        Pair[] pairs = new Pair[5];
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterActivity.this, pairs);
-            startActivity(intent, options.toBundle());
-        } else {
-            startActivity(intent);
+                        pairs[0] = new Pair<View, String>(backBtn, "transition_back_btn");
+                        pairs[1] = new Pair<View, String>(next, "transition_next_btn");
+                        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
+                        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
+                        pairs[4] = new Pair<View, String>(sideImage, "transition_side_image");
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterActivity.this, pairs);
+                            startActivity(intent, options.toBundle());
+                        } else {
+                            startActivity(intent);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
 
     }

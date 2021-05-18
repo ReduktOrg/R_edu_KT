@@ -50,7 +50,7 @@
                 <EditText
                     android:id="@+id/editTextName"
                     style="@style/modifiedEditText"
-                    android:hint="User name"
+                    android:hint="Email"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 

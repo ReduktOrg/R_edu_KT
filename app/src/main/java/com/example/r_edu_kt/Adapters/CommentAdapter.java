@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +55,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     private String postid,selected="",name="";
     private int reportCount=0;
     private FirebaseUser firebaseUser;
+    RadioGroup radioGroup;
+    RadioButton radioButton;
 
     public CommentAdapter(Context mContext, List<Comment> mCommentList, String postid) {
         this.mContext = mContext;
@@ -81,7 +85,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         Glide.with(mContext).load(comment.getCommentimage()).into(holder.commentimage);
         holder.commentor_comment.setText(comment.getComment());
         holder.commentDate.setText(comment.getDate());
-        getUserInformation(holder.commentorUserName, comment.getPublisher());
+        getUserInformation(holder.commentorUserName, comment.getPublisher(),holder.commentor_profile_image);
 
         holder.more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,35 +104,38 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 popupMenu.getMenu().findItem(R.id.edit).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        final DialogPlus dialogPlus=DialogPlus.newDialog(holder.more.getContext())
-                                .setContentHolder(new com.orhanobut.dialogplus.ViewHolder(R.layout.editcomment))
-                                .setExpanded(true,1100)
-                                .create();
+                        View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.editcomment,null);
+                        final String commentid=comment.getCommentid();
+                        final String postid=comment.getPostid();
 
-                        View myview=dialogPlus.getHolderView();
-                        final ImageView cimage=myview.findViewById(R.id.coment_img);
-                        final EditText comment1=myview.findViewById(R.id.comenttext);
-                        Button submit=myview.findViewById(R.id.postC);
-                        Button canc=myview.findViewById(R.id.cance);
+
+                        final ImageView cimage=view.findViewById(R.id.coment_img);
+                        final EditText comment1=view.findViewById(R.id.comenttext);
+                        Button submit=view.findViewById(R.id.postC);
+                        Button canc=view.findViewById(R.id.cance);
+
+                        final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
+                                .setView(view).setCancelable(false).create();
 
                         // Intent intent = new Intent(mContext, editpost.class);
                         //((Activity)mContext).startActivityForResult(intent,requestCode);
 
-                        Glide.with(mContext).load(comment.getCommentimage()).into(cimage);
-                        if(comment.getCommentimage()==null){
-                            cimage.setImageResource(R.drawable.ic_image);
+                        if(comment.getCommentimage()!=null){
+                            cimage.setVisibility(View.VISIBLE);
                         }
+                        Glide.with(mContext).load(comment.getCommentimage()).into(cimage);
                         comment1.setText(comment.getComment());
 
-                        final String commentid=comment.getCommentid();
-                        final String postid=comment.getPostid();
 
-                        dialogPlus.show();
+
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
+                        dialog.show();
 
                         canc.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                dialogPlus.dismiss();
+                                dialog.dismiss();
                             }
                         });
 
@@ -154,14 +161,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
                                                     Toast.makeText(mContext,"comment updated successfully",Toast.LENGTH_SHORT).show();
-                                                    dialogPlus.dismiss();
+                                                    dialog.dismiss();
                                                     pd.dismiss();
                                                 }
                                             }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Toast.makeText(mContext,"could not update comment",Toast.LENGTH_SHORT).show();
-                                            dialogPlus.dismiss();
+                                            dialog.dismiss();
                                             pd.dismiss();
 
                                         }
@@ -179,26 +186,33 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     public boolean onMenuItemClick(MenuItem item) {
                         final String commentid=comment.getCommentid();
                         final String postid = comment.getPostid();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(holder.more.getContext());
-                        builder.setTitle("Delete Panel");
-                        builder.setMessage("Delete...?");
 
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FirebaseDatabase.getInstance().getReference("comments").child(postid).child(commentid).removeValue();
-                            }
-                        });
+                        View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.deletedialog,null);
 
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                        Button submit=view.findViewById(R.id.postd);
+                        Button canc=view.findViewById(R.id.canceld);
 
-                            }
-                        });
+                        final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
+                                .setView(view).setCancelable(false).create();
 
-                        builder.show();
-                        return true;
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.show();
+
+                       canc.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               dialog.dismiss();
+                           }
+                       });
+
+                       submit.setOnClickListener(new View.OnClickListener() {
+                           @Override
+                           public void onClick(View v) {
+                               FirebaseDatabase.getInstance().getReference("comments").child(postid).child(commentid).removeValue();
+                               dialog.dismiss();
+                           }
+                       });
+                       return true;
                     }
                 });
 
@@ -207,46 +221,57 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     public boolean onMenuItemClick(MenuItem item) {
                         final String commentid=comment.getCommentid();
                         final String postid=comment.getPostid();;
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(holder.more.getContext());
-                        final String[] list=holder.more.getContext().getResources().getStringArray(R.array.choice);
-                        builder.setTitle("Report Panel");
-                        builder.setSingleChoiceItems(list, 0, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                selected=list[which];
-                            }
-                        });
-                        builder.setPositiveButton("report", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String mDate= DateFormat.getDateInstance().format(new Date());
-                                DatabaseReference ref=FirebaseDatabase.getInstance().getReference("comments_report");
-                                String comments_reportid= ref.push().getKey();
 
-                                HashMap<String, Object> hashMap = new HashMap<>();
-                                hashMap.put("comments_reportid",comments_reportid);
-                                hashMap.put("report",selected);
-                                hashMap.put("date",mDate);
-                                ref.child(postid).child(commentid).child(comments_reportid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(mContext,"Reported Successfully", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            Toast.makeText(mContext,task.getException().toString(),Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        final View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.reportdialog,null);
+                        Button submit=view.findViewById(R.id.postr);
+                        Button canc=view.findViewById(R.id.cancelr);
+                        radioGroup = view.findViewById(R.id.radio);
+
+                        final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
+                                .setView(view).setCancelable(false).create();
+
+                        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                        dialog.show();
+
+                        submit.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(View v) {
+
+                                int selected = radioGroup.getCheckedRadioButtonId();
+                                radioButton=view.findViewById(selected);
+
+                                if(selected == -1){
+                                    Toast.makeText(mContext,"please select any one of the option to report",Toast.LENGTH_SHORT).show();
+                                }else {
+                                    String mDate= DateFormat.getDateInstance().format(new Date());
+                                    DatabaseReference ref=FirebaseDatabase.getInstance().getReference("comments_report");
+                                    String comments_reportid= ref.push().getKey();
+
+                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                    hashMap.put("comments_reportid",comments_reportid);
+                                    hashMap.put("report",radioButton.getText());
+                                    hashMap.put("date",mDate);
+                                    ref.child(postid).child(commentid).child(comments_reportid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(mContext,"Reported Successfully", Toast.LENGTH_SHORT).show();
+                                            }else {
+                                                Toast.makeText(mContext,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
+
+                        canc.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
                                 dialog.dismiss();
                             }
                         });
-                        builder.show();
                         return true;
                     }
                 });
@@ -278,13 +303,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         }
     }
 
-    private  void getUserInformation(final TextView username, String publisherid){
+    private  void getUserInformation(final TextView username, String publisherid, final CircleImageView circleImageView){
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(publisherid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user=snapshot.getValue(User.class);
-                // Glide.with(mContext).load(user.getProfileimage()).into(circleImageView);
+                Glide.with(mContext).load(user.getProfileimage()).into(circleImageView);
                 username.setText(user.getUserName());
 
             }

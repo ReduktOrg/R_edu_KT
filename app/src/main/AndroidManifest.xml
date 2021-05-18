@@ -35,7 +35,6 @@
         <activity android:name=".User.ForgetPassword.SetNewPassword" />
         <activity android:name=".User.ForgetPassword.MakeSelection" />
         <activity android:name=".User.ForgetPassword.ForgetPassword" />
-        <activity android:name=".User.Register.VerifyOTP" />
         <activity android:name=".User.Register.SignUp3rdClass" />
         <activity android:name=".User.Register.SignUp2ndClass" />
         <activity android:name=".User.UserDashboard" />
