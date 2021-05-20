@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view"
@@ -7,125 +7,147 @@
     android:layout_height="match_parent"
     tools:context=".AskQuestionActivity">
 
-    <View
-        android:id="@+id/topview"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:background="#faa31b"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <View
-        android:id="@+id/view2"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:background="@drawable/waveask"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topview"/>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="150dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <soup.neumorphism.NeumorphCardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            style="@style/Widget.Neumorph.CardView"
-            app:neumorph_shapeType="flat"
-            android:layout_margin="10dp">
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="7dp"
-            android:entries="@array/topics"
-            android:layout_gravity="center_horizontal" />
-        </soup.neumorphism.NeumorphCardView>
-
-        <soup.neumorphism.NeumorphCardView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_gravity="center_horizontal"
-            style="@style/Widget.Neumorph.CardView"
-            app:neumorph_shapeType="basin"
-            android:layout_margin="10dp">
-        <EditText
-            android:id="@+id/question_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="Enter your question here"
-            android:textCursorDrawable="@drawable/cursor"
-            android:background="@color/transparent"
-            android:padding="10dp"
-            android:textColor="#000"
-            android:textSize="18sp" />
-        </soup.neumorphism.NeumorphCardView>
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/questionImage"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:src="@drawable/ic_image" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="25dp">
+            <View
+                android:id="@+id/topview"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/colorAccent" />
 
-            <Button
-                android:id="@+id/cancel"
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@id/topview"
+                android:background="@drawable/waveask"
+                android:backgroundTint="@color/colorAccent" />
+
+            <LinearLayout
+                android:id="@+id/main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/view2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/spinlayout"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/blue_border"
+                    android:gravity="center">
+
+
+                    <!--        <soup.neumorphism.NeumorphCardView-->
+                    <!--            android:layout_width="wrap_content"-->
+                    <!--            android:layout_height="wrap_content"-->
+                    <!--            android:layout_gravity="center_horizontal"-->
+                    <!--            style="@style/Widget.Neumorph.CardView"-->
+                    <!--            app:neumorph_shapeType="flat"-->
+                    <!--            android:layout_margin="10dp">-->
+
+
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:entries="@array/topics"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp" />
+                    <!--        </soup.neumorphism.NeumorphCardView>-->
+                </LinearLayout>
+
+                <!--        <soup.neumorphism.NeumorphCardView-->
+                <!--            style="@style/Widget.Neumorph.CardView"-->
+                <!--            android:layout_width="match_parent"-->
+                <!--            android:layout_height="100dp"-->
+                <!--            android:layout_gravity="center_horizontal"-->
+                <!--            android:layout_margin="10dp"-->
+                <!--            app:neumorph_shapeType="basin">-->
+
+                <EditText
+                    android:id="@+id/question_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="15dp"
+                    android:background="@drawable/blue_border"
+                    android:hint="Enter your question here"
+                    android:maxLines="5"
+                    android:padding="10dp"
+                    android:textColor="#000"
+                    android:textCursorDrawable="@drawable/cursor"
+                    android:textSize="18sp" />
+                <!--        </soup.neumorphism.NeumorphCardView>-->
+
+                <ImageView
+                    android:id="@+id/questionImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:scaleType="fitCenter"
+                    android:layout_gravity="center"
+                    android:layout_margin="15dp"
+                    android:src="@drawable/ic_image"
+                    />
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:weightSum="4">
+
+                    <Button
+                        android:id="@+id/cancel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_weight="2"
+                        android:background="@color/transparent"
+                        android:text="Cancel"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/PostQuestion"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/bg_upload"
+                        android:backgroundTint="@color/colorAccent"
+                        android:text="Post Question"
+                        android:textAllCaps="false"
+                        android:textColor="#fff"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_cancel"
-                android:text="Cancel"
+                android:layout_margin="20dp"
+                android:text="Ask A Question"
                 android:textAllCaps="false"
-                android:textColor="#fff"
-                android:textSize="20sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/PostQuestion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/bg_upload"
-                android:text="Post Question"
-                android:textAllCaps="false"
-                android:textColor="#fff"
-                android:textSize="20sp" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="Ask A Question"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/view2"
-        app:layout_constraintEnd_toStartOf="@+id/topview"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topview"
-        app:layout_constraintVertical_bias="0.452" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

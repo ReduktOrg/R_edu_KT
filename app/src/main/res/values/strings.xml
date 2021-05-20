@@ -107,11 +107,11 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string-array name="topics">
         <item>select branch</item>
-        <item>cse</item>
-        <item>ece</item>
-        <item>mech</item>
-        <item>civil</item>
-        <item>chemical</item>
+        <item>Cse</item>
+        <item>Ece</item>
+        <item>Mech</item>
+        <item>Civil</item>
+        <item>Chemical</item>
     </string-array>
 
     <string-array name="choice">

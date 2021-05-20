@@ -49,6 +49,10 @@
                 android:src="@drawable/baseline_search_black_48" />
         </RelativeLayout>
 
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -125,7 +129,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_laptop_mac_black_48"
-                                android:tint="@color/home_background" />
+                                app:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -155,7 +159,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_cable_black_48"
-                                android:tint="@color/home_background" />
+                                app:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -186,7 +190,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_precision_manufacturing_black_48"
-                                android:tint="@color/home_background" />
+                                app:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -216,7 +220,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_engineering_black_48"
-                                android:tint="@color/home_background" />
+                                app:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -246,7 +250,7 @@
                                 android:layout_height="25dp"
                                 android:layout_centerInParent="true"
                                 android:src="@drawable/baseline_science_black_48"
-                                android:tint="@color/home_background" />
+                                app:tint="@color/home_background" />
 
                         </RelativeLayout>
 
@@ -376,6 +380,19 @@
             </LinearLayout>
         </ScrollView>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="16dp"
+            app:fabSize="normal"
+            android:src="@drawable/ic_discussion"
+            android:tint="@color/white"
+            app:backgroundTint="@color/button_blue"
+            android:layout_gravity="bottom|end"
+            android:id="@+id/user_dashboard_to_discussion"/>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </LinearLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

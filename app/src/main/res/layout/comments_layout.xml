@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="5dp"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/lineview">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@id/main_rel_lay"
+            android:layout_marginBottom="8dp"
+            android:background="#EFECEC" />
+    </LinearLayout>
+
 
     <RelativeLayout
+        android:id="@+id/main_rel_lay"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lineview"
+        >
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
             android:id="@+id/commentor_profile_image"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:src="@drawable/profile_image"
             app:civ_border_color="@color/colorAccent"
-            app:civ_border_width="2dp"/>
+            app:civ_border_width="2dp" />
 
         <LinearLayout
             android:id="@+id/commentlinear"
@@ -29,54 +45,65 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/commentorUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="username"
-                android:textColor="#000"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/commentorUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:text="username"
+                    android:textColor="#000"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/commentDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/more"
-                android:text="nov 23, 2020"
-                android:textColor="#000" />
-            <ImageView
-                android:id="@+id/more"
-                android:layout_width="37dp"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/ic_more" />
+                <TextView
+                    android:id="@+id/commentDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/commentorUserName"
+                    android:layout_marginTop="0dp"
+                    android:text="nov 23, 2020"
+                    android:textColor="#000"
+                    android:textSize="10sp" />
+
+                <ImageView
+                    android:id="@+id/more"
+                    android:layout_width="37dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="end"
+                    android:src="@drawable/ic_more" />
             </RelativeLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_below="@+id/commentlinear"
-            android:layout_marginStart="35dp">
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_toEndOf="@+id/commentor_profile_image"
+            android:orientation="vertical">
 
             <TextView
+                android:id="@+id/commentor_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/commentor_comment"
-                android:textColor="#000"
-                android:text="commentor_comment"/>
+                android:layout_marginTop="10dp"
+                android:text="commentor_comment"
+                android:textColor="#000" />
 
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/retrieved_commentimage"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:src="@drawable/ic_image"
-                android:visibility="gone"/>
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
         </LinearLayout>
 
     </RelativeLayout>
+
 
 </RelativeLayout>

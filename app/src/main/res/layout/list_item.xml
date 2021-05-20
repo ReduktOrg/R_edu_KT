@@ -54,7 +54,8 @@
         android:padding="4dp"
         android:layout_alignParentEnd="true"
         android:src="@drawable/password_updated"
-        android:tint="#43A047" />
+        android:tint="#43A047"
+        />
 
 
 </RelativeLayout>

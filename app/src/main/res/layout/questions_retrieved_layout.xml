@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardElevation="10dp"
-    android:layout_margin="10dp"
-    android:id="@+id/cardView"
-    app:cardCornerRadius="16dp">
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,180 +23,216 @@
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
                 android:id="@+id/publisher_profile_image"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
                 android:src="@drawable/profile_image"
                 app:civ_border_color="@color/colorAccent"
-                app:civ_border_width="2dp"/>
+                app:civ_border_width="2dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/asked_by_Textview"
-                android:gravity="center"
-                android:text="asked by"
-                android:textStyle="bold"
-                android:textSize="12dp"
-                android:textColor="#03254c"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/publisher_profile_image"/>
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/publisher_profile_image"
+                android:orientation="vertical"
+                android:paddingLeft="2dp">
+
+                <TextView
+                    android:id="@+id/asked_by_Textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="asked by"
+                    android:textColor="#03254c"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Branch: "
+                        android:textColor="#000"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/topicTextview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="branch name"
+                        android:textColor="#000"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/askedOnTextview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Apr 04,2021"
+                    android:textColor="#000"
+                    android:textSize="8sp" />
+
+            </LinearLayout>
+
 
             <ImageView
                 android:id="@+id/more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_more"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_more" />
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Branch: "
-                android:textColor="#000"
-                android:textSize="12dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="branch name"
-                android:gravity="center"
-                android:textColor="#000"
-                android:id="@+id/topicTextview"
-                android:textSize="12dp"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/askedOnTextview"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Apr 04,2021"
-                android:textColor="#000"
-                android:textSize="12dp" />
-
-        </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/linear">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+
             <com.ms.square.android.expandabletextview.ExpandableTextView
                 android:id="@+id/expand_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:maxCollapsedLines="1"
-                app:animDuration="200">
+                app:animDuration="200"
+                app:maxCollapsedLines="3">
 
                 <TextView
+                    android:id="@+id/expandable_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/expandable_text"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:textSize="15dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:text="what is c language?"
-                    android:textColor="#000" />
+                    android:textColor="#000"
+                    android:textSize="15dp" />
 
                 <ImageButton
+                    android:id="@+id/expand_collapse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/expand_collapse"
-                    android:padding="10dp"
                     android:layout_gravity="right|bottom"
-                    android:background="@android:color/transparent"/>
+                    android:background="@android:color/transparent"
+                    android:padding="2dp"
+                    android:layout_marginRight="10dp"/>
 
 
             </com.ms.square.android.expandabletextview.ExpandableTextView>
 
             <ImageView
-                android:layout_width="200dp"
-                android:layout_height="90dp"
                 android:id="@+id/questionImage"
-                android:src="@drawable/ic_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_image"
                 android:visibility="gone" />
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="0dp"
-                android:id="@+id/like"
-                android:src="@drawable/ic_thumb_up"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-            <ImageView
-                android:layout_width="0dp"
-                android:id="@+id/dislike"
-                android:src="@drawable/ic_dislike"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-            <ImageView
-                android:layout_width="0dp"
-                android:id="@+id/comment"
-                android:src="@drawable/ic_comment"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:background="#CFCDCD" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:weightSum="6">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="likes"
-                android:textColor="#000"
-                android:textSize="12dp"
-                android:id="@+id/likes"
-                android:textStyle="bold"
-                android:layout_marginStart="30dp"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="dislikes"
-                android:textColor="#000"
-                android:textSize="12dp"
-                android:id="@+id/dislikes"
-                android:textStyle="bold"
-                android:layout_marginStart="50dp"/>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="view comments"
-                android:textColor="#000"
-                android:textSize="12dp"
-                android:id="@+id/comments"
-                android:textStyle="bold"
-                android:layout_marginStart="30dp"/>
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/like"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_thumb_up" />
+
+                <TextView
+                    android:id="@+id/likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Likes"
+                    android:textColor="#000"
+                    android:textSize="8sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/dislike"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:padding="2dp"
+                    android:src="@drawable/ic_dislike" />
+
+                <TextView
+                    android:id="@+id/dislikes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dislikes"
+                    android:textColor="#000"
+                    android:textSize="8sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/comment"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
+                    android:src="@drawable/ic_comment" />
+
+                <TextView
+                    android:id="@+id/comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comments"
+                    android:textColor="#000"
+                    android:textSize="8sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

@@ -5,7 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -145,10 +148,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         });
 
         holder.more.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext,v);
                 popupMenu.inflate(R.menu.post_menu);
+                popupMenu.setGravity(Gravity.END);
 
                 if(!post.getPublisher().equals(firebaseUser.getUid())){
                     popupMenu.getMenu().findItem(R.id.edit).setVisible(false);

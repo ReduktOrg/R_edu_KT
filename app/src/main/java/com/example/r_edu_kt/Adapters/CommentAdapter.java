@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -88,10 +91,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         getUserInformation(holder.commentorUserName, comment.getPublisher(),holder.commentor_profile_image);
 
         holder.more.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(mContext,v);
                 popupMenu.inflate(R.menu.comment_menu);
+                popupMenu.setGravity(Gravity.END);
 
                 if(!comment.getPublisher().equals(firebaseUser.getUid())){
                     popupMenu.getMenu().findItem(R.id.edit).setVisible(false);

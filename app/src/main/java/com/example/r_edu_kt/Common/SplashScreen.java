@@ -24,8 +24,6 @@ public class SplashScreen extends AppCompatActivity {
     ImageView backgroundImage;
     TextView poweredByLine;
 
-    //Animations
-    Animation sideAnim,bottomAnim;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,14 +41,6 @@ public class SplashScreen extends AppCompatActivity {
         //Hooks
         backgroundImage=findViewById(R.id.background_image);
         poweredByLine=findViewById(R.id.powered_by_line);
-
-        //Animations
-        sideAnim= AnimationUtils.loadAnimation(this,R.anim.side_anim);
-        bottomAnim=AnimationUtils.loadAnimation(this,R.anim.bottom_anim);
-
-        //set animations on elements
-        backgroundImage.setAnimation(sideAnim);
-        poweredByLine.setAnimation(bottomAnim);
 
         new Handler().postDelayed(new Runnable() {
             @Override

@@ -37,6 +37,7 @@ import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
 import com.example.r_edu_kt.User.Quiz.QuizIntro;
 import com.example.r_edu_kt.discussion_home;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +66,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     String fullName,email;
     Context context;
 
+    FloatingActionButton toDiso;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,17 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         }
+
+        //to discussion forum
+        toDiso=findViewById(R.id.user_dashboard_to_discussion);
+        toDiso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent todisco=new Intent(getApplicationContext(),discussion_home.class);
+                startActivity(todisco);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+        });
 
 
         //Hooks
@@ -206,12 +220,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
 
-            case R.id.nav_logout:
-                View view = LayoutInflater.from(context).inflate(R.layout.logoutdialog,null);
-                final AlertDialog dialog = new AlertDialog.Builder(context)
-                        .setView(view).setCancelable(false).create();
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                dialog.show();
+
         }
 
         return true;
