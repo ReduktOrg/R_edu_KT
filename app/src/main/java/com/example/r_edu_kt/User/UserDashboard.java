@@ -3,13 +3,10 @@ package com.example.r_edu_kt.User;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -17,43 +14,27 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.CategoriesAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.CategoriesHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
-import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
 import com.example.r_edu_kt.User.Quiz.QuizIntro;
-import com.example.r_edu_kt.discussion_home;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    Context mcontext;
 
     static final float END_SCALE = 0.7f;
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
@@ -63,10 +44,8 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
     LinearLayout contentView;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    String fullName,email;
-    Context context;
 
-    FloatingActionButton toDiso;
+    String userName,fullName,password,email,phoneNumber,gender,date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,17 +60,6 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         }
 
-        //to discussion forum
-        toDiso=findViewById(R.id.user_dashboard_to_discussion);
-        toDiso.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent todisco=new Intent(getApplicationContext(),discussion_home.class);
-                startActivity(todisco);
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-        });
-
 
         //Hooks
         featuredRecycler = findViewById(R.id.featured_recycler);
@@ -105,28 +73,17 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         //codefor hi + userName
         navigationView = findViewById(R.id.navigation_view);
         View header = navigationView.getHeaderView(0);
-        final TextView app_nameEt = header.findViewById(R.id.app_name);
-        final TextView mail_id = header.findViewById(R.id.mail_id);
-        final CircleImageView pro_img = findViewById(R.id.pro_img);
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user= snapshot.getValue(User.class);
-                //Picasso.get().load(user.getProfileimage()).into(pro_img);
-                fullName = user.getFullName();
-                email=user.getEmail();
-                app_nameEt.setText("Hi !\n"+fullName);
-                mail_id.setText(email);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(UserDashboard.this,error.getMessage(),Toast.LENGTH_SHORT).show();
-
-            }
-        });
+        TextView app_nameEt = header.findViewById(R.id.app_name);
+        TextView mail_id = header.findViewById(R.id.mail_id);
+        fullName = getIntent().getStringExtra("fullName");
+        userName = getIntent().getStringExtra("userName");
+        password = getIntent().getStringExtra("password");
+        email = getIntent().getStringExtra("email");
+        phoneNumber = getIntent().getStringExtra("phoneNumber");
+        gender = getIntent().getStringExtra("gender");
+        date = getIntent().getStringExtra("date");
+        app_nameEt.setText("Hi ! " + userName);
+        mail_id.setText(email);
 
         //course hooks
         cseIcon = findViewById(R.id.cse);
@@ -205,22 +162,16 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         switch (item.getItemId()) {
             case R.id.nav_profile:
                 Intent account_intent=new Intent(getApplicationContext(), MyAccount.class);
-               startActivity(account_intent);
+                account_intent.putExtra("userName",userName);
+                account_intent.putExtra("fullName",fullName);
+                account_intent.putExtra("password",password);
+                account_intent.putExtra("email",email);
+                account_intent.putExtra("phoneNumber",phoneNumber);
+                account_intent.putExtra("gender",gender);
+                account_intent.putExtra("date",date);
+                startActivity(account_intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
-            case R.id.nav_discussion:
-                Intent intent = new Intent(UserDashboard.this, discussion_home.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                break;
-
-            case R.id.nav_home:
-                Intent intent1 = new Intent(UserDashboard.this,UserDashboard.class);
-                startActivity(intent1);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                break;
-
-
         }
 
         return true;
@@ -262,7 +213,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         mostViewedLocations.add(new MostViewedHelperClass(R.drawable.cloudcomputing, "Cloud Computing"));
         mostViewedLocations.add(new MostViewedHelperClass(R.drawable.iot, "IOT"));
 
-        adapter = new MostViewedAdapter(mostViewedLocations);
+        adapter = new MostViewedAdapter(mostViewedLocations,getApplicationContext());
         mostViewedRecycler.setAdapter(adapter);
 
     }
@@ -279,7 +230,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         featuredCourses.add(new FeaturedHelperClass(R.drawable.iot, "IOT", "asbkd asudhlasn saudnas jasdjasl hisajdl asjdlnas"));
 
 
-        adapter = new FeaturedAdapter(featuredCourses);
+        adapter = new FeaturedAdapter(featuredCourses,getApplicationContext());
         featuredRecycler.setAdapter(adapter);
 
 

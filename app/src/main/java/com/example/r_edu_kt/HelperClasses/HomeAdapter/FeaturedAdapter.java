@@ -1,5 +1,7 @@
 package com.example.r_edu_kt.HelperClasses.HomeAdapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 
 import java.util.ArrayList;
 
 public class FeaturedAdapter extends RecyclerView.Adapter<FeaturedAdapter.FeaturedViewHolder> {
 
     ArrayList<FeaturedHelperClass> featuredCourses;
-
-    public FeaturedAdapter(ArrayList<FeaturedHelperClass> featuredCourses) {
+    Context context;
+    public FeaturedAdapter(ArrayList<FeaturedHelperClass> featuredCourses, Context applicationContext) {
         this.featuredCourses = featuredCourses;
+        this.context=applicationContext;
     }
 
     @NonNull
@@ -32,11 +36,23 @@ public class FeaturedAdapter extends RecyclerView.Adapter<FeaturedAdapter.Featur
     @Override
     public void onBindViewHolder(@NonNull FeaturedViewHolder holder, int position) {
 
-        FeaturedHelperClass featuredHelperClass =featuredCourses.get(position);
+        final FeaturedHelperClass featuredHelperClass =featuredCourses.get(position);
 
         holder.image.setImageResource(featuredHelperClass.getImage());
         holder.title.setText(featuredHelperClass.getTitle());
         holder.desc.setText(featuredHelperClass.getDescription());
+
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(context, CourseOverview.class);
+                intent.putExtra("courseimage",featuredHelperClass.getImage());
+                intent.putExtra("title",featuredHelperClass.getTitle());
+                intent.putExtra("description",featuredHelperClass.getDescription());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
