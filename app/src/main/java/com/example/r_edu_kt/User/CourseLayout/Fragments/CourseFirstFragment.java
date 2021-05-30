@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.R;
 
 import java.util.ArrayList;
@@ -25,6 +26,10 @@ public class CourseFirstFragment extends Fragment {
     String title;
     private RecyclerView myrecyclerview;
     private List<CourseModel> lstCourse;
+
+
+    ArrayList<String> imageLinks;
+
 
     ListView list;
 
@@ -39,6 +44,11 @@ public class CourseFirstFragment extends Fragment {
         v = inflater.inflate(R.layout.fragment_course_first, container, false);
         Bundle bundle=this.getArguments();
         title=bundle.getString("key");
+
+
+
+
+
         lstCourse = new ArrayList<>();
         lstCourse.add(new CourseModel(" video1", "Video - 03:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
         lstCourse.add(new CourseModel("video2", "Video - 03:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
@@ -47,7 +57,6 @@ public class CourseFirstFragment extends Fragment {
         lstCourse.add(new CourseModel("video5", "Video - 06:10mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
         lstCourse.add(new CourseModel("video6", "Video - 04:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
         lstCourse.add(new CourseModel("video7", "Video - 04:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
-
         lstCourse.add(new CourseModel("video8", "Video - 03:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
         lstCourse.add(new CourseModel("video9", "Video - 03:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
         lstCourse.add(new CourseModel("video10", "Video - 03:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
@@ -69,9 +78,42 @@ public class CourseFirstFragment extends Fragment {
         }
 
         myrecyclerview = (RecyclerView) v.findViewById(R.id.course_first_recyclerview);
-        CourseRecyclerViewAdapter courseRecyclerViewAdapter = new CourseRecyclerViewAdapter(getContext(), lstCourse);
+        CourseRecyclerViewAdapter courseRecyclerViewAdapter = new CourseRecyclerViewAdapter(getContext(), lstCourse,
+                new CourseRecyclerViewAdapter.onItemClickListenerInterface(){
+                    @Override
+                    public  void onItemClick(int position){
+//                        Toast.makeText(getActivity(),"hello",Toast.LENGTH_SHORT).show();
+                        ImageView imgView=(ImageView) getActivity().findViewById(R.id.image);
+
+                        int md=position%5;
+//                        if(md==0)
+//                            imgView.setImageResource(R.drawable.app5);
+//                        else if(md==1)
+//                            imgView.setImageResource(R.drawable.app1);
+//                        else if(md==2)
+//                            imgView.setImageResource(R.drawable.app2);
+//                        else if(md==3)
+//                            imgView.setImageResource(R.drawable.app3);
+//                        else
+//                            imgView.setImageResource(R.drawable.app4);
+
+                        Glide.with(getActivity())
+                                .load(imageLinks.get(md)).into(imgView);
+//                        imgView.setImageResource((int)(appDevImages.get(position%3)));
+                    }
+                });
         myrecyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
         myrecyclerview.setAdapter(courseRecyclerViewAdapter);
+
+
+
+
+
         return v;
     }
+
+    void  setMyData(ArrayList<String> list){
+        imageLinks=list;
+    }
+
 }
