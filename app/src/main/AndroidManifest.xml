@@ -29,7 +29,9 @@
         <activity android:name=".User.MyAccount.MyAccountBirthday" />
         <activity android:name=".User.MyAccount.MyAccountName" />
         <activity android:name=".User.MyAccount.MyAccount" />
-        <activity android:name=".User.CourseLayout.CourseOverview" />
+        <activity
+            android:name=".User.CourseLayout.CourseOverview"
+            android:configChanges="orientation|screenSize|layoutDirection" />
         <activity android:name=".User.ForgetPassword.ForgetSuccessMessage" />
         <activity android:name=".User.ForgetPassword.PasswordOTP" />
         <activity android:name=".User.ForgetPassword.SetNewPassword" />
