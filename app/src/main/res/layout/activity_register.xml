@@ -119,12 +119,18 @@
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/textInputPassword"
                         style="@style/parent"
                         android:layout_marginTop="@dimen/loginViewsMargin"
                         app:endIconMode="password_toggle">
+
+                        <ImageView
+                            android:layout_marginStart="15dp"
+                            android:id="@+id/password_gen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/pass_gen" />
 
                         <EditText
                             android:id="@+id/editTextPaswword"

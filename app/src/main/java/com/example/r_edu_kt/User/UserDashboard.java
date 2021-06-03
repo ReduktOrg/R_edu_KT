@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,9 +36,12 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
+import com.example.r_edu_kt.User.Login.LoginActivity;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
+import com.example.r_edu_kt.User.MyAccount.MyAccountEmail;
 import com.example.r_edu_kt.User.Quiz.QuizIntro;
 import com.example.r_edu_kt.discussion_home;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,9 +50,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -102,22 +110,30 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         //menu hooks
         drawerLayout = findViewById(R.id.drawer_layout);
 
+        FirebaseMessaging.getInstance().subscribeToTopic(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
         //codefor hi + userName
         navigationView = findViewById(R.id.navigation_view);
-        View header = navigationView.getHeaderView(0);
+        final View header = navigationView.getHeaderView(0);
         final TextView app_nameEt = header.findViewById(R.id.app_name);
         final TextView mail_id = header.findViewById(R.id.mail_id);
-        final CircleImageView pro_img = findViewById(R.id.pro_img);
+        final CircleImageView pro_img = header.findViewById(R.id.pro_img);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
-                //Picasso.get().load(user.getProfileimage()).into(pro_img);
+                Glide.with(header.getContext()).load(user.getProfileimage()).into(pro_img);
                 fullName = user.getFullName();
                 email=user.getEmail();
                 app_nameEt.setText("Hi !\n"+fullName);
+                if(!email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                    final HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    reference.updateChildren(hashMap);
+                }
+                email=user.getEmail();
                 mail_id.setText(email);
             }
 
@@ -220,7 +236,35 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
+            case R.id.nav_logout:
+                View view = LayoutInflater.from(this).inflate(R.layout.logoutdialog,null);
 
+                Button submit=view.findViewById(R.id.postl);
+                Button canc=view.findViewById(R.id.cancell);
+
+                final AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setView(view).setCancelable(false).create();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.show();
+
+                canc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent=new Intent(UserDashboard.this, LoginActivity.class);
+                        dialog.dismiss();
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                break;
 
         }
 

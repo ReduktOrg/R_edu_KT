@@ -89,6 +89,17 @@
                         android:src="@drawable/boy_dp"
                         android:id="@+id/promy_img"
                         app:civ_border_color="@color/transparent" />
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="update"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:padding="7dp"
+                        android:id="@+id/update_photo"
+                        android:background="@color/button_blue"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:id="@+id/user_full_name"
@@ -335,7 +346,7 @@
                                         android:layout_gravity="center"
                                         android:layout_weight="0.30"
                                         android:gravity="center"
-                                        android:orientation="vertical">
+                                        android:orientation="horizontal">
 
                                         <de.hdodenhof.circleimageview.CircleImageView
                                             android:layout_width="60dp"

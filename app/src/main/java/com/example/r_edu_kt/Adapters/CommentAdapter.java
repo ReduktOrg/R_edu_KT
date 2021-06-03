@@ -3,7 +3,7 @@ package com.example.r_edu_kt.Adapters;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -13,11 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +26,8 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.r_edu_kt.CommentReply;
 import com.example.r_edu_kt.Model.Comment;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
@@ -41,8 +43,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -55,8 +57,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
     private Context mContext;
     private List<Comment> mCommentList;
-    private String postid,selected="",name="";
-    private int reportCount=0;
+    private String postid,name="";
     private FirebaseUser firebaseUser;
     RadioGroup radioGroup;
     RadioButton radioButton;
@@ -79,6 +80,26 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         final Comment comment = mCommentList.get(position);
+
+        final String commentpostid=comment.getPostid();
+        final String commentid=comment.getCommentid();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments_report").child(commentpostid).child(commentid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long count= snapshot.getChildrenCount();
+                if(count==25){
+                    FirebaseDatabase.getInstance().getReference("comments").child(commentpostid).child(commentid).removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         if(comment.getCommentimage() == null){
             holder.commentimage.setVisibility(View.GONE);
         }
@@ -86,9 +107,122 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             holder.commentimage.setVisibility(View.VISIBLE);
         }
         Glide.with(mContext).load(comment.getCommentimage()).into(holder.commentimage);
+
+        isLiked(comment.getCommentid(),comment.getPostid(),holder.like);
+        isDisLiked(comment.getCommentid(),comment.getPostid(),holder.dislike);
+        getLikes(holder.likes,comment.getCommentid(),comment.getPostid());
+        getDisLikes(holder.dislikes,comment.getCommentid(),comment.getPostid());
+        getComments(holder.replies,comment.getPostid(),comment.getCommentid());
+
+         holder.commentimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View view = LayoutInflater.from(holder.commentimage.getContext()).inflate(R.layout.imagedialog,null);
+
+                final PhotoView img=view.findViewById(R.id.img);
+                final ImageButton close =view.findViewById(R.id.close);
+                Glide.with(img.getContext()).load(comment.getCommentimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+
+                final AlertDialog dialog = new AlertDialog.Builder(holder.commentimage.getContext())
+                        .setView(view).setCancelable(false).create();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.show();
+
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+
         holder.commentor_comment.setText(comment.getComment());
         holder.commentDate.setText(comment.getDate());
         getUserInformation(holder.commentorUserName, comment.getPublisher(),holder.commentor_profile_image);
+
+        holder.reply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(comment.getPublisher());
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            User user = snapshot.getValue(User.class);
+                            String commentor_username = user.getUserName();
+                            Intent intent=new Intent(mContext, CommentReply.class);
+                            intent.putExtra("postid",comment.getPostid());
+                            intent.putExtra("commentid",comment.getCommentid());
+                            intent.putExtra("comment_publisher_username",commentor_username);
+                            mContext.startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+
+        holder.replies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(comment.getPublisher());
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists()){
+                            User user = snapshot.getValue(User.class);
+                            String commentor_username = user.getUserName();
+                            Intent intent=new Intent(mContext, CommentReply.class);
+                            intent.putExtra("postid",comment.getPostid());
+                            intent.putExtra("commentid",comment.getCommentid());
+                            intent.putExtra("comment_publisher_username",commentor_username);
+                            mContext.startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+
+         holder.like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.like.getTag().equals("like") && holder.dislike.getTag().equals("dislike")){
+                    FirebaseDatabase.getInstance().getReference().child("comment likes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).setValue(true);
+                }
+                else if(holder.like.getTag().equals("like") && holder.dislike.getTag().equals("disliked")){
+                    FirebaseDatabase.getInstance().getReference().child("comment dislikes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child("comment likes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).setValue(true);
+                }
+                else {
+                    FirebaseDatabase.getInstance().getReference().child("comment likes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).removeValue();
+                }
+            }
+        });
+
+        holder.dislike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.dislike.getTag().equals("dislike") && holder.like.getTag().equals("like")){
+                    FirebaseDatabase.getInstance().getReference().child("comment dislikes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).setValue(true);
+                }else if (holder.dislike.getTag().equals("dislike") && holder.like.getTag().equals("liked")){
+                    FirebaseDatabase.getInstance().getReference().child("comment likes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).removeValue();
+                    FirebaseDatabase.getInstance().getReference().child("comment dislikes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).setValue(true);
+                }else {
+                    FirebaseDatabase.getInstance().getReference().child("comment dislikes").child(comment.getPostid()).child(comment.getCommentid()).child(firebaseUser.getUid()).removeValue();
+                }
+            }
+        });
+
 
         holder.more.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -162,22 +296,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                     hashMap.put("comment",comment1.getText().toString());
 
                                     reference.child(postid).child(commentid).updateChildren(hashMap)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(mContext,"comment updated successfully",Toast.LENGTH_SHORT).show();
-                                                    dialog.dismiss();
-                                                    pd.dismiss();
+                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Toast.makeText(mContext,"comment updated successfully",Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                        pd.dismiss();
+                                                    }
+                                                    else {
+                                                        Toast.makeText(mContext,"could not update comment",Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                        pd.dismiss();
+                                                    }
                                                 }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(mContext,"could not update comment",Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                            pd.dismiss();
-
-                                        }
-                                    });
+                                            });
                                 }
                             }
                         });
@@ -225,7 +358,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         final String commentid=comment.getCommentid();
-                        final String postid=comment.getPostid();;
+                        final String postid=comment.getPostid();
 
                         final View view = LayoutInflater.from(holder.more.getContext()).inflate(R.layout.reportdialog,null);
                         Button submit=view.findViewById(R.id.postr);
@@ -292,9 +425,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public CircleImageView commentor_profile_image;
-        public TextView commentorUserName, commentor_comment, commentDate;
-        public PhotoView commentimage;
-        public ImageView more;
+        public TextView commentorUserName, commentor_comment, commentDate,likes,dislikes,replies;
+        public ImageButton commentimage;
+        public ImageView more,like,dislike,reply;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -305,6 +438,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             commentDate = itemView.findViewById(R.id.commentDate);
             commentimage = itemView.findViewById(R.id.retrieved_commentimage);
             more = itemView.findViewById(R.id.more);
+            likes = itemView.findViewById(R.id.likes);
+            dislikes = itemView.findViewById(R.id.dislikes);
+            replies = itemView.findViewById(R.id.replies);
+            like = itemView.findViewById(R.id.like);
+            dislike = itemView.findViewById(R.id.dislike);
+            reply = itemView.findViewById(R.id.reply);
         }
     }
 
@@ -316,7 +455,78 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 User user=snapshot.getValue(User.class);
                 Glide.with(mContext).load(user.getProfileimage()).into(circleImageView);
                 username.setText(user.getUserName());
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mContext,error.getMessage(),Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+    }
+
+
+    private void isLiked(String commentid,String postid, final ImageView imageView){
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("comment likes").child(postid).child(commentid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(firebaseUser.getUid()).exists()){
+                    imageView.setImageResource(R.drawable.ic_liked);
+                    imageView.setTag("liked");
+                }else {
+                    imageView.setImageResource(R.drawable.ic_thumb_up);
+                    imageView.setTag("like");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void isDisLiked(String commentid, String postid, final ImageView imageView){
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference().child("comment dislikes").child(postid).child(commentid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.child(firebaseUser.getUid()).exists()){
+                    imageView.setImageResource(R.drawable.ic_disliked);
+                    imageView.setTag("disliked");
+                }else {
+                    imageView.setImageResource(R.drawable.ic_dislike);
+                    imageView.setTag("dislike");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getLikes(final TextView likes,String commentid, String postid){
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comment likes").child(postid).child(commentid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    long numberOfLikes = snapshot.getChildrenCount();
+                    int NOL = (int) numberOfLikes;
+                    if (NOL > 1) {
+                        likes.setText(snapshot.getChildrenCount() + "likes");
+                    } else {
+                        likes.setText("1like");
+                    }
+                }else{
+                    likes.setText("0 likes");
+                }
             }
 
             @Override
@@ -325,6 +535,56 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
             }
         });
+    }
 
+    private void getDisLikes(final TextView dislikes, String commentid, String postid) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comment dislikes").child(postid).child(commentid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    long numberOfDisLikes = snapshot.getChildrenCount();
+                    int NOD = (int) numberOfDisLikes;
+                    if (NOD > 1) {
+                        dislikes.setText(snapshot.getChildrenCount() + "dislikes");
+                    } else {
+                        dislikes.setText("1dislike");
+                    }
+                }else {
+                    dislikes.setText("0 dislikes");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void getComments(final TextView replies, String postid, String commentid) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments reply").child(postid).child(commentid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long numberOfComments = snapshot.getChildrenCount();
+                int NOC = (int) numberOfComments;
+                if (NOC > 1) {
+                    replies.setText(snapshot.getChildrenCount() + "replies");
+                } else if (NOC == 0) {
+                    replies.setText("0 replies");
+                } else {
+                    replies.setText(snapshot.getChildrenCount() + "reply");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 }

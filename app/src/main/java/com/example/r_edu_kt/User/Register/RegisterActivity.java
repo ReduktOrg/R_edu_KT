@@ -22,28 +22,35 @@ import android.widget.Toast;
 
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.Login.LoginActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-//import com.google.firebase.database.DatabaseReference;
-//import com.google.firebase.database.FirebaseDatabase;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 public class RegisterActivity extends AppCompatActivity {
 
     //variables
-    ImageView backBtn;
+    ImageView backBtn,password_gen;
     Button next;
     TextView titleText, login, sideImage;
 
     EditText fullnameEt, usernameEt, emailEt, passwordEt;
     Button registerButton;
-
-//    FirebaseDatabase rootNode;
-//
-//    DatabaseReference reference;
+    private ProgressDialog loader;
+    String passcode,pas;
+    int num;
+    Random random;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         login = findViewById(R.id.sign_up_login_button);
         titleText = findViewById(R.id.sign_up_title_text);
         sideImage = findViewById(R.id.sign_up_side_image);
+        loader = new ProgressDialog(this);
         //Hooks end
 
 
@@ -66,15 +74,52 @@ public class RegisterActivity extends AppCompatActivity {
         emailEt = findViewById(R.id.editTextEmail);
         passwordEt = findViewById(R.id.editTextPaswword);
         registerButton = findViewById(R.id.cirRegisterButton);
+        password_gen = findViewById(R.id.password_gen);
 
-        ProgressDialog progressDialog;
+        random = new Random();
 
-//        registerButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                register();
-//            }
-//        });
+        password_gen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                num = random.nextInt(5)+5;
+                passcode = generate(num);
+                check(passcode,passwordEt);
+            }
+        });
+    }
+
+    private void check(final String passcode, final EditText passwordEt) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+        Query query = reference.orderByChild("password").equalTo(passcode);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(snapshot.getValue() != null){
+                    num = random.nextInt(5)+5;
+                    pas = generate(num);
+                    check(pas,passwordEt);
+                }else {
+                    passwordEt.setTransformationMethod(null);
+                    passwordEt.setText(passcode);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private String generate(int num) {
+        char[] chars = "QWERTYUIOPASDFGHJJKLZXCVBNMmnbvcxzlkjhgfdsapoiuytrewq1234567890:$#@&%!*".toCharArray();
+        StringBuilder stringBuilder = new StringBuilder();
+        Random random = new Random();
+        for(int i=0; i<num; i++){
+            char c =chars[random.nextInt(chars.length)];
+            stringBuilder.append(c);
+        }
+        return stringBuilder.toString();
     }
 
     public void changeStatusBarColor() {
@@ -100,38 +145,63 @@ public class RegisterActivity extends AppCompatActivity {
             return;
 
         else {
+            loader.setMessage("Checking! the Database");
+            loader.setCanceledOnTouchOutside(false);
+            loader.show();
 
             String val = usernameEt.getText().toString().trim();
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-            Query query = reference.orderByChild("userName").equalTo(val);
+            final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+            final Query query = reference.orderByChild("userName").equalTo(val);
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.getValue() != null) {
                         usernameEt.setError("Username already used! Try with another one");
                         usernameEt.requestFocus();
+                        loader.dismiss();
                     } else {
-                        Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
+                        String mail = emailEt.getText().toString();
+                        Query query1 = reference.orderByChild("email").equalTo(mail);
+                        query1.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                                if (snapshot.getValue() != null) {
+                                    emailEt.setError("Email already used! Try with another one");
+                                    emailEt.requestFocus();
+                                    loader.dismiss();
+                                } else {
+                                    Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
 
-                        intent.putExtra("fullName", fullnameEt.getText().toString());
-                        intent.putExtra("userName", usernameEt.getText().toString());
-                        intent.putExtra("password", passwordEt.getText().toString());
-                        intent.putExtra("email", emailEt.getText().toString());
-                        //Add Transition
-                        Pair[] pairs = new Pair[5];
+                                    intent.putExtra("fullName", fullnameEt.getText().toString());
+                                    intent.putExtra("userName", usernameEt.getText().toString());
+                                    intent.putExtra("password", passwordEt.getText().toString());
+                                    intent.putExtra("email", emailEt.getText().toString());
+                                    //Add Transition
+                                    Pair[] pairs = new Pair[5];
 
-                        pairs[0] = new Pair<View, String>(backBtn, "transition_back_btn");
-                        pairs[1] = new Pair<View, String>(next, "transition_next_btn");
-                        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
-                        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
-                        pairs[4] = new Pair<View, String>(sideImage, "transition_side_image");
+                                    pairs[0] = new Pair<View, String>(backBtn, "transition_back_btn");
+                                    pairs[1] = new Pair<View, String>(next, "transition_next_btn");
+                                    pairs[2] = new Pair<View, String>(login, "transition_login_btn");
+                                    pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
+                                    pairs[4] = new Pair<View, String>(sideImage, "transition_side_image");
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterActivity.this, pairs);
-                            startActivity(intent, options.toBundle());
-                        } else {
-                            startActivity(intent);
-                        }
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(RegisterActivity.this, pairs);
+                                        loader.dismiss();
+                                        startActivity(intent, options.toBundle());
+                                    } else {
+                                        loader.dismiss();
+                                        startActivity(intent);
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                            }
+                        });
                     }
                 }
 
@@ -141,8 +211,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
+
 
     public boolean validateFullName() {
         String val = fullnameEt.getText().toString().trim();

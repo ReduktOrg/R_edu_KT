@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.r_edu_kt.Common.ProgressButton;
@@ -35,9 +36,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity {
 
     EditText nameEt, passwordEt;
+    TextView tv;
+    String Uname="",userid;
 
     View buttonView;
     ProgressButton progressButton;
@@ -66,9 +71,25 @@ public class LoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user=mAuth.getCurrentUser();
                 if(user!=null){
+                    userid = user.getUid();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
                     Intent intent = new Intent(LoginActivity.this, UserDashboard.class);
                     startActivity(intent);
                     finish();
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            Uname = user.getUserName();
+                            Toast.makeText(LoginActivity.this,"Welcome "+Uname+"!",Toast.LENGTH_SHORT).show();
+                            loginSound.start();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             }
         };
@@ -79,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
         nameEt = findViewById(R.id.editTextName);
         passwordEt = findViewById(R.id.editTextPaswword);
+        tv = findViewById(R.id.textView);
 
 
         //loading
@@ -91,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                 progressButton.buttonActivated();
                 if (!login()) {
                     progressButton.buttonFinished();
+                    tv.setText("Login");
                 }
             }
         });
@@ -120,16 +143,49 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth.signInWithEmailAndPassword(name,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+            public void onComplete(@NonNull final Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     Intent intent = new Intent(LoginActivity.this,UserDashboard.class);
                     startActivity(intent);
                     finish();
-                    Toast.makeText(LoginActivity.this,"Welcome"+mAuth.getCurrentUser().getEmail(),Toast.LENGTH_SHORT).show();
-                    loginSound.start();
+                    userid = mAuth.getCurrentUser().getUid();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            Uname = user.getUserName();
+                            Toast.makeText(LoginActivity.this,"Welcome "+Uname+"!",Toast.LENGTH_SHORT).show();
+                            loginSound.start();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
-                else {
-                    Toast.makeText(LoginActivity.this,"login failed"+task.getException().toString(),Toast.LENGTH_SHORT).show();
+                else{
+                    final String email_error = "com.google.firebase.auth.FirebaseAuthInvalidUserException: There is no user record corresponding to this identifier. The user may have been deleted.";
+                    final String password_error = "com.google.firebase.auth.FirebaseAuthInvalidCredentialsException: The password is invalid or the user does not have a password.";
+                    String exception = task.getException().toString();
+                    if(email_error.equals(exception)){
+                        nameEt.setError("Entered email is wrong");
+                        nameEt.requestFocus();
+                        progressButton.buttonFinished();
+                        tv.setText("Login");
+                    }
+                    else if (password_error.equals(exception)){
+                        passwordEt.setError("Entered password is wrong");
+                        passwordEt.requestFocus();
+                        progressButton.buttonFinished();
+                        tv.setText("Login");
+                    }
+                    else {
+                        Toast.makeText(LoginActivity.this,exception,Toast.LENGTH_SHORT).show();
+                        progressButton.buttonFinished();
+                        tv.setText("Login");
+                    }
                 }
             }
         });

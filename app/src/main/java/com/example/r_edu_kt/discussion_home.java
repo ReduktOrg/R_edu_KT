@@ -1,38 +1,31 @@
 package com.example.r_edu_kt;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.Menu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.Interpolator;
-import android.view.animation.LayoutAnimationController;
+import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,18 +33,21 @@ import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.Adapters.PostAdapter;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
+import com.example.r_edu_kt.User.Login.LoginActivity;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
 import com.example.r_edu_kt.User.UserDashboard;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,27 +59,28 @@ import soup.neumorphism.NeumorphCardView;
 public class discussion_home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer_layout;
     private FloatingActionButton fab;
-    Context mcontext;
 
     private RecyclerView recyclerView;
-    private ProgressBar progress_circular;
-    ImageView menuIcon,search,search2;
+    private ProgressBar progress_circular, progress;
+    ImageView menuIcon,search,search2,up;
     NavigationView navigationView;
     EditText et;
+    TextView load_more;
     NeumorphCardView cardView;
-    CircleImageView pro_img;
     String s="";
     static final float END_SCALE = 0.7f;
+    Boolean total_items_loaded = false;
+
+    private static int total_items_to_load = 7;
+    private int mcurrentpage = 1,count = 0;
 
     String fullName,email;
+    SwipeRefreshLayout splayout;
 
     private PostAdapter postAdapter;
     private List<Post> postList;
 
     LinearLayout contentView;
-
-    int [] animList = {R.anim.layout_animation};
-    int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +101,10 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         et=findViewById(R.id.searchtext);
         cardView=findViewById(R.id.card);
         drawer_layout=findViewById(R.id.drawer_layout);
-
+        splayout = findViewById(R.id.splayout);
+        load_more = findViewById(R.id.load_more);
+        progress = findViewById(R.id.progress);
+        up=findViewById(R.id.up);
 
         progress_circular=findViewById(R.id.progress_circular);
         recyclerView=findViewById(R.id.recyclerview);
@@ -112,15 +112,14 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
-        ((SimpleItemAnimator)recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         recyclerView.setLayoutManager(linearLayoutManager);
-
 
         navigationView = findViewById(R.id.nav_view);
         final View header = navigationView.getHeaderView(0);
         navigationView.setNavigationItemSelectedListener(this);
         final TextView app_nameEt=header.findViewById(R.id.app_name);
         final TextView mail_id = header.findViewById(R.id.mail_id);
+        final CircleImageView pro_img = header.findViewById(R.id.pro_img);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         reference.addValueEventListener(new ValueEventListener() {
@@ -128,7 +127,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
                 fullName = user.getFullName();
-                //Glide.with(mcontext).load(user.getProfileimage()).into(pro_img);
+                Glide.with(header.getContext()).load(user.getProfileimage()).into(pro_img);
                 email=user.getEmail();
                 app_nameEt.setText("Hi !\n"+fullName);
                 mail_id.setText(email);
@@ -141,11 +140,25 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             }
         });
 
+        load_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mcurrentpage++;
+                load_more.setVisibility(View.GONE);
+                progress.setVisibility(View.VISIBLE);
+                readQuestionsPosts();
+            }
+        });
 
 
-        // ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer_layout,toolbar,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
-        // drawer_layout.addDrawerListener(toggle);
-        // toggle.syncState();
+        splayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                postList.clear();
+                readQuestionsPosts();
+                recyclerView.scrollToPosition(postList.size() - ((mcurrentpage -1 ) * total_items_to_load));
+            }
+        });
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +179,8 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 cardView.setVisibility(View.VISIBLE);
                 search2.setVisibility(View.VISIBLE);
                 et.requestFocus();
-                s=et.getText().toString().toLowerCase();
+                String val=et.getText().toString();
+                s = StringUtils.capitalize(val);
                 DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");
                 Query query=reference.orderByChild("topic").startAt(s).endAt(s+"\uf8ff");
                 query.addValueEventListener(new ValueEventListener() {
@@ -187,22 +201,45 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             }
         });
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE && !total_items_loaded){
+                    load_more.setVisibility(View.VISIBLE);
+                    up.setVisibility(View.VISIBLE);
+                }
+                else if(total_items_loaded){
+                    load_more.setVisibility(View.GONE);
+                    up.setVisibility(View.VISIBLE);
+                }
+                if(!recyclerView.canScrollVertically(-1)){
+                    up.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.smoothScrollToPosition(postList.size()-1);
+            }
+        });
+
 
         search2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                s="";
                 cardView.setVisibility(View.GONE);
                 et.setText("");
                 search2.setVisibility(View.GONE);
                 DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");
-                Query query=reference.orderByChild("topic").startAt(s).endAt(s+"\uf8ff");
-                query.addValueEventListener(new ValueEventListener() {
+                reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         postList.clear();
                         for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            Post post=dataSnapshot.getValue(Post.class);
+                            Post post= dataSnapshot.getValue(Post.class);
                             postList.add(post);
                         }
                         postAdapter.notifyDataSetChanged();
@@ -210,6 +247,8 @@ public class discussion_home extends AppCompatActivity implements NavigationView
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(discussion_home.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+
                     }
                 });
             }
@@ -263,29 +302,46 @@ public class discussion_home extends AppCompatActivity implements NavigationView
     }
 
     private void readQuestionsPosts() {
-        DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");
-        reference.addValueEventListener(new ValueEventListener() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("questions posts");
+
+        Query question_query = reference.limitToLast(mcurrentpage * total_items_to_load);
+        question_query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 postList.clear();
-                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    Post post= dataSnapshot.getValue(Post.class);
+                count=0;
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    count++;
+                    Post post = dataSnapshot.getValue(Post.class);
                     postList.add(post);
                 }
-                final LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(discussion_home.this,animList[i]);
-                recyclerView.setLayoutAnimation(controller);
                 postAdapter.notifyDataSetChanged();
-                recyclerView.scheduleLayoutAnimation();
+                recyclerView.scrollToPosition(postList.size() - ((mcurrentpage -1 ) * total_items_to_load));
+                splayout.setRefreshing(false);
+                progress.setVisibility(View.GONE);
+                load_more.setVisibility(View.GONE);
                 progress_circular.setVisibility(View.GONE);
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
                 Toast.makeText(discussion_home.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                if(count >= snapshot.getChildrenCount()){
+                    total_items_loaded = true;
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         });
     }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -305,6 +361,35 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 Intent account_intent=new Intent(getApplicationContext(), MyAccount.class);
                 startActivity(account_intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+            case R.id.nav_logout:
+                View view = LayoutInflater.from(this).inflate(R.layout.logoutdialog,null);
+
+                Button submit=view.findViewById(R.id.postl);
+                Button canc=view.findViewById(R.id.cancell);
+
+                final AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setView(view).setCancelable(false).create();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.show();
+
+                canc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent=new Intent(discussion_home.this, LoginActivity.class);
+                        dialog.dismiss();
+                        startActivity(intent);
+                        finish();
+                    }
+                });
                 break;
         }
         return true;

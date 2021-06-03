@@ -7,10 +7,15 @@
     android:background="@color/home_background"
     tools:context=".CommentsActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+       <androidx.core.widget.NestedScrollView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:layout_marginBottom="50dp">
 
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:orientation="vertical">
         <RelativeLayout
             android:id="@+id/linear"
             android:layout_width="match_parent"
@@ -45,25 +50,34 @@
                 android:layout_height="200dp"
                 android:layout_below="@+id/text1"
                 android:layout_margin="10dp"
+                android:gravity="center"
                 android:background="@color/transparent"
                 android:orientation="vertical">
 
-                <com.github.chrisbanes.photoview.PhotoView
+                <ImageView
                     android:id="@+id/image"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true" />
 
             </LinearLayout>
 
+
         </RelativeLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/reccycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/bottom"
-            android:layout_below="@+id/linear" />
+            android:layout_below="@+id/linear"
+            android:paddingBottom="10dp"/>
+
+
+           </LinearLayout>
+
+       </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/bottom"
@@ -86,7 +100,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/profile_image" />
+                    android:src="@drawable/profile_image"
+                    app:civ_border_color="@color/button_blue"
+                    app:civ_border_width="1dp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -138,7 +154,5 @@
             </LinearLayout>
 
         </LinearLayout>
-
-    </RelativeLayout>
 
 </RelativeLayout>

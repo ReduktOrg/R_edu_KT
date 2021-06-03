@@ -3,7 +3,6 @@ package com.example.r_edu_kt.Adapters;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -29,10 +29,12 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.r_edu_kt.CommentsActivity;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
+import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -45,10 +47,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
-import com.orhanobut.dialogplus.DialogPlus;
-import com.orhanobut.dialogplus.ViewHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,13 +62,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
     public Context mContext;
     public List<Post> mPostList;
     private FirebaseUser firebaseUser;
-    String selected="",name="";
+    String name="";
     RadioButton radioButton;
     RadioGroup radioGroup;
+
 
     public PostAdapter(Context mContext, List<Post> mPostList) {
         this.mContext = mContext;
         this.mPostList = mPostList;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -79,6 +84,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
     public void onBindViewHolder(@NonNull final viewHolder holder, final int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         final Post post = mPostList.get(position);
+
+        final String postid = post.getPostid();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("questions_report").child(postid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long count= snapshot.getChildrenCount();
+                if(count==25){
+                    FirebaseDatabase.getInstance().getReference("questions posts").child(postid).removeValue();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         if(post.getQuestionimage() == null){
             holder.questionImage.setVisibility(View.GONE);
         }
@@ -86,6 +110,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             holder.questionImage.setVisibility(View.VISIBLE);
         }
         Glide.with(mContext).load(post.getQuestionimage()).into(holder.questionImage);
+        holder.questionImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View view = LayoutInflater.from(holder.questionImage.getContext()).inflate(R.layout.imagedialog,null);
+
+                final PhotoView img=view.findViewById(R.id.img);
+                final ImageButton close =view.findViewById(R.id.close);
+                Glide.with(img.getContext()).load(post.getQuestionimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+
+                final AlertDialog dialog = new AlertDialog.Builder(holder.questionImage.getContext())
+                        .setView(view).setCancelable(false).create();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.show();
+
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
         holder.expandable_text.setText(post.getQuestion());
         holder.topicTextview.setText(post.getTopic());
         holder.askedOnTextview.setText(post.getDate());
@@ -96,6 +142,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         isDisLiked(post.getPostid(),holder.dislike);
         getLikes(holder.likes,post.getPostid());
         getDisLikes(holder.dislikes,post.getPostid());
+        getComments(holder.comments,post.getPostid());
 
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,22 +271,21 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                                     hashMap.put("topic",sp.getSelectedItem().toString());
 
                                     reference.child(postid).updateChildren(hashMap)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    Toast.makeText(mContext,"question updated successfully",Toast.LENGTH_SHORT).show();
-                                                    dialog.dismiss();
-                                                    pd.dismiss();
+                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                    if(task.isSuccessful()){
+                                                        Toast.makeText(mContext,"question updated successfully",Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                        pd.dismiss();
+                                                    }
+                                                    else {
+                                                        Toast.makeText(mContext,"could not update question",Toast.LENGTH_SHORT).show();
+                                                        dialog.dismiss();
+                                                        pd.dismiss();
+                                                    }
                                                 }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(mContext,"could not update question",Toast.LENGTH_SHORT).show();
-                                            dialog.dismiss();
-                                            pd.dismiss();
-                                        }
-                                    });
-
+                                            });
                                 }
                             }
                         });
@@ -348,11 +394,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         return mPostList.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return mPostList.get(position).hashCode();
+    }
+
     public class viewHolder extends RecyclerView.ViewHolder{
         public CircleImageView profile_image;
         public TextView asked_by_Textview,likes,dislikes,comments;
         public ImageView more,like,dislike,comment;
-        public ImageView questionImage;
+        public ImageButton questionImage;
         public TextView topicTextview,askedOnTextview;
         public ExpandableTextView expandable_text;
         public CardView mCardView;
@@ -407,12 +458,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child(firebaseUser.getUid()).exists()){
-                    imageView.setImageResource(R.drawable.ic_liked);
-                    imageView.setTag("liked");
-                }else {
-                    imageView.setImageResource(R.drawable.ic_thumb_up);
-                    imageView.setTag("like");
+                if (firebaseUser != null) {
+                    if(snapshot.child(firebaseUser.getUid()).exists()){
+                        imageView.setImageResource(R.drawable.ic_liked);
+                        imageView.setTag("liked");
+                    }else {
+                        imageView.setImageResource(R.drawable.ic_thumb_up);
+                        imageView.setTag("like");
+                    }
                 }
             }
 
@@ -429,14 +482,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.child(firebaseUser.getUid()).exists()){
-                    imageView.setImageResource(R.drawable.ic_disliked);
-                    imageView.setTag("disliked");
-                }else {
-                    imageView.setImageResource(R.drawable.ic_dislike);
-                    imageView.setTag("dislike");
+                if (firebaseUser != null) {
+                    if(snapshot.child(firebaseUser.getUid()).exists()){
+                        imageView.setImageResource(R.drawable.ic_disliked);
+                        imageView.setTag("disliked");
+                    }else {
+                        imageView.setImageResource(R.drawable.ic_dislike);
+                        imageView.setTag("dislike");
+                    }
                 }
-
             }
 
             @Override
@@ -484,6 +538,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                     dislikes.setText("0 dislikes");
                 } else {
                     dislikes.setText(snapshot.getChildrenCount() + "dislike");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+    }
+
+    private void getComments(final TextView comments, String postid) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments").child(postid);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long numberOfComments = snapshot.getChildrenCount();
+                int NOC = (int) numberOfComments;
+                if (NOC > 1) {
+                    comments.setText(snapshot.getChildrenCount() + "comments");
+                } else if (NOC == 0) {
+                    comments.setText("0 comments");
+                } else {
+                    comments.setText(snapshot.getChildrenCount() + "comment");
                 }
 
             }

@@ -41,6 +41,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:background="@color/transparent"
+                    android:inputType="textCapSentences"
                     android:hint="Search Posts"
                     android:padding="7dp"
                     android:textCursorDrawable="@drawable/cursor" />
@@ -86,15 +87,65 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="63dp"
                 android:src="@drawable/ic_add"
                 app:backgroundTint="@color/button_blue"
                 app:fabSize="normal" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerview"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/splayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_marginBottom="20dp"
+                app:layout_anchor="@+id/progress_circular"
+                app:layout_anchorGravity="center">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="bottom">
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/progress"
+                    android:visibility="gone"/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Load More"
+                        android:textColor="@color/button_blue"
+                        android:textStyle="italic"
+                        android:textSize="18sp"
+                        android:id="@+id/load_more"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/up"
+                        android:layout_alignParentEnd="true"
+                        android:id="@+id/up"
+                        android:visibility="gone"
+                        android:layout_marginRight="10dp"/>
+
+                </RelativeLayout>
+            </LinearLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

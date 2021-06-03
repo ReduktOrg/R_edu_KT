@@ -129,8 +129,8 @@
                         android:id="@+id/age_picker"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:datePickerMode="spinner"
-                        android:calendarViewShown="false"/>
+                        android:calendarViewShown="false"
+                        android:datePickerMode="spinner" />
 
                     <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
                         android:id="@+id/cirRegisterButton"

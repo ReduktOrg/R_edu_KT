@@ -1,20 +1,29 @@
 package com.example.r_edu_kt.User.MyAccount;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,8 +34,14 @@ import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
+import com.example.r_edu_kt.User.Login.LoginActivity;
+import com.example.r_edu_kt.User.Register.SignUp3rdClass;
 import com.example.r_edu_kt.User.UserDashboard;
 import com.example.r_edu_kt.discussion_home;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +50,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -42,8 +68,10 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
 
 
     Button nameButton,birthdayButton,genderButton,passwordButton,emailButton,phoneButton;
-    Context mcontext;
-
+    private Uri resultUri;
+    private ProgressDialog loader;
+    private DatabaseReference reference;
+    String onlineuserid="";
 
     DrawerLayout drawerLayout;
     LinearLayout contentView;
@@ -54,6 +82,7 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
     static final float END_SCALE = 0.7f;
 
     String userName,fullName,password,email,phoneNumber,gender,date;
+    Button update_photo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,22 +104,27 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
         naviagationDrawer();
 
         //data from userdashboard
-        View header = navigationView.getHeaderView(0);
+        final View header = navigationView.getHeaderView(0);
         user_name = header.findViewById(R.id.app_name);
         mail_id = header.findViewById(R.id.mail_id);
         promy_img=findViewById(R.id.promy_img);
         proimg=findViewById(R.id.proimg);
+        pro_img=header.findViewById(R.id.pro_img);
+        update_photo = findViewById(R.id.update_photo);
+
+        loader = new ProgressDialog(this);
+
+        onlineuserid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(onlineuserid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
-                //Glide.with(mcontext).load(user.getProfileimage()).into(pro_img);
-                //Glide.with(mcontext).load(user.getProfileimage()).into(promy_img);
-                //Glide.with(mcontext).load(user.getProfileimage()).into(proimg);
+                Glide.with(header.getContext()).load(user.getProfileimage()).into(pro_img);
+                Glide.with(MyAccount.this).load(user.getProfileimage()).into(promy_img);
+                Glide.with(MyAccount.this).load(user.getProfileimage()).into(proimg);
                 fullName = user.getFullName();
                 email=user.getEmail();
                 userName = user.getUserName();
@@ -136,9 +170,17 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
         emailButton=findViewById(R.id.email_button);
         phoneButton=findViewById(R.id.phone_button);
 
-
-
         //button onclicks
+       promy_img.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               Intent intent=new Intent(Intent.ACTION_PICK);
+               intent.setType("image/*");
+               startActivityForResult(intent, 1);
+           }
+       });
+
+
         nameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,8 +237,81 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             }
         });
 
+        update_photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                update_image();
+                update_photo.setVisibility(View.GONE);
+            }
+        });
+
 
     }
+
+
+    private void update_image() {
+        loader.setMessage("updating profile image");
+        loader.setCanceledOnTouchOutside(false);
+        loader.show();
+
+        final StorageReference filepath = FirebaseStorage.getInstance().getReference().child("profile images").child(onlineuserid);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), resultUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+            byte[] data = byteArrayOutputStream.toByteArray();
+            UploadTask uploadTask = filepath.putBytes(data);
+
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    if (taskSnapshot.getMetadata().getReference() != null) {
+                        final Task<Uri> result = taskSnapshot.getStorage().getDownloadUrl();
+                        result.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String imageuri = uri.toString();
+                                Map hashMap = new HashMap();
+                                hashMap.put("profileimage", imageuri);
+                                reference = FirebaseDatabase.getInstance().getReference().child("Users").child(onlineuserid);
+                                reference.updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete(@NonNull Task task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(MyAccount.this, "profile image updated successfully", Toast.LENGTH_SHORT).show();
+                                            loader.dismiss();
+                                        } else {
+                                            Toast.makeText(MyAccount.this, "process failed" + task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                            loader.dismiss();
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+            update_photo.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+            resultUri = data.getData();
+            promy_img.setImageURI(resultUri);
+            update_photo.setVisibility(View.VISIBLE);
+        }
+        else {
+            Toast.makeText(MyAccount.this,"something went wrong",Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void in_animation() {
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -216,16 +331,6 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             }
         });
         animateNavigateDrawer();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            intent_to_dashboard();
-        }
-
     }
 
     private void animateNavigateDrawer() {
@@ -267,6 +372,36 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
                 startActivity(account_intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
+
+            case R.id.nav_logout:
+                View view = LayoutInflater.from(this).inflate(R.layout.logoutdialog,null);
+
+                Button submit=view.findViewById(R.id.postl);
+                Button canc=view.findViewById(R.id.cancell);
+
+                final AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setView(view).setCancelable(false).create();
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.show();
+
+                canc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent=new Intent(MyAccount.this, LoginActivity.class);
+                        dialog.dismiss();
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                break;
         }
         return true;
     }
@@ -274,5 +409,13 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
     private void intent_to_dashboard() {
         Intent dashboard_intent = new Intent(getApplicationContext(), UserDashboard.class);
         startActivity(dashboard_intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else
+            super.onBackPressed();
     }
 }

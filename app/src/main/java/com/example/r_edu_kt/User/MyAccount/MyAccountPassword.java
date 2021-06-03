@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,8 +27,11 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MyAccountPassword extends AppCompatActivity {
 
-    Button nextBtn;
+    Button nextBtn,cancel;
     ImageView back;
+    EditText current_passwordEt;
+    String current_password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,27 +44,47 @@ public class MyAccountPassword extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         }
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user= snapshot.getValue(User.class);
-               String password = user.getPassword();
-            }
+        nextBtn = findViewById(R.id.account_next_btn);
+        cancel = findViewById(R.id.cancel_password_change);
+        current_passwordEt = findViewById(R.id.full_name);
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MyAccountPassword.this,error.getMessage(),Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        nextBtn=findViewById(R.id.account_next_btn);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newPasswordIntent=new Intent(getApplicationContext(), SetNewPassword.class);
-                startActivity(newPasswordIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                current_password = current_passwordEt.getText().toString();
+                if (TextUtils.isEmpty(current_password)) {
+                    Toast.makeText(MyAccountPassword.this, "Required Password", Toast.LENGTH_SHORT).show();
+                } else {
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    reference.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            User user = snapshot.getValue(User.class);
+                            String password = user.getPassword();
+                            if(current_password.equals(password)){
+                                Intent newPasswordIntent = new Intent(getApplicationContext(), SetNewPassword.class);
+                                startActivity(newPasswordIntent);
+                                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                                finish();
+                            }
+                            else {
+                                current_passwordEt.setError("Entered password is not matching with current password");
+                                current_passwordEt.requestFocus();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MyAccountPassword.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 
