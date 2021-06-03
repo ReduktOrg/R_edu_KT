@@ -69,7 +69,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
     NeumorphCardView cardView;
     String s="";
     static final float END_SCALE = 0.7f;
-    Boolean total_items_loaded = false;
+    Boolean total_items_loaded = false, isSearching = false;
 
     private static int total_items_to_load = 7;
     private int mcurrentpage = 1,count = 0;
@@ -176,6 +176,9 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 BounceInterpolator interpolator = new BounceInterpolator();
                 animation.setInterpolator(interpolator);
                 search.startAnimation(animation);
+                isSearching = true;
+                total_items_loaded=false;
+                splayout.setEnabled(false);
                 cardView.setVisibility(View.VISIBLE);
                 search2.setVisibility(View.VISIBLE);
                 et.requestFocus();
@@ -191,6 +194,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                             Post post=dataSnapshot.getValue(Post.class);
                             postList.add(post);
                         }
+                        recyclerView.scrollToPosition(postList.size()-1);
                         postAdapter.notifyDataSetChanged();
                     }
 
@@ -205,11 +209,11 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             @Override
             public void onScrollStateChanged(@NonNull @NotNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE && !total_items_loaded){
+                if(!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE && !total_items_loaded && !isSearching){
                     load_more.setVisibility(View.VISIBLE);
                     up.setVisibility(View.VISIBLE);
                 }
-                else if(total_items_loaded){
+                else if(total_items_loaded || isSearching){
                     load_more.setVisibility(View.GONE);
                     up.setVisibility(View.VISIBLE);
                 }
@@ -233,28 +237,14 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 cardView.setVisibility(View.GONE);
                 et.setText("");
                 search2.setVisibility(View.GONE);
-                DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");
-                reference.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        postList.clear();
-                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            Post post= dataSnapshot.getValue(Post.class);
-                            postList.add(post);
-                        }
-                        postAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(discussion_home.this,error.getMessage(),Toast.LENGTH_SHORT).show();
-
-                    }
-                });
+                postList.clear();
+                mcurrentpage = 1;
+                isSearching = false;
+                splayout.setEnabled(true);
+                readQuestionsPosts();
+                recyclerView.scrollToPosition(postList.size()-1);
             }
         });
-
-
 
         naviagationDrawer();
 
@@ -262,7 +252,6 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         postAdapter = new PostAdapter(discussion_home.this,postList);
         recyclerView.setAdapter(postAdapter);
         readQuestionsPosts();
-
     }
 
     private void naviagationDrawer() {
