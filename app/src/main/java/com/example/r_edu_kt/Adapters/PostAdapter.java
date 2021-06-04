@@ -460,10 +460,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (firebaseUser != null) {
                     if(snapshot.child(firebaseUser.getUid()).exists()){
-                        imageView.setImageResource(R.drawable.ic_liked);
+                        imageView.setImageResource(R.drawable.ic_outline_thumb_up_blue);
                         imageView.setTag("liked");
                     }else {
-                        imageView.setImageResource(R.drawable.ic_thumb_up);
+                        imageView.setImageResource(R.drawable.ic_like_outline);
                         imageView.setTag("like");
                     }
                 }
@@ -484,10 +484,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (firebaseUser != null) {
                     if(snapshot.child(firebaseUser.getUid()).exists()){
-                        imageView.setImageResource(R.drawable.ic_disliked);
+                        imageView.setImageResource(R.drawable.ic_outline_thumb_down_blue);
                         imageView.setTag("disliked");
                     }else {
-                        imageView.setImageResource(R.drawable.ic_dislike);
+                        imageView.setImageResource(R.drawable.ic_dislike_outline);
                         imageView.setTag("dislike");
                     }
                 }
@@ -508,11 +508,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                 long numberOfLikes = snapshot.getChildrenCount();
                 int NOL = (int) numberOfLikes;
                 if(NOL >1){
-                    likes.setText(snapshot.getChildrenCount()+"likes");
+                    likes.setText(snapshot.getChildrenCount()+"");
                 } else if(NOL == 0){
-                    likes.setText("0 likes");
+                    likes.setText("0");
                 }else{
-                    likes.setText(snapshot.getChildrenCount()+"like");
+                    likes.setText(snapshot.getChildrenCount()+"");
                 }
 
             }
@@ -533,11 +533,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                 long numberOfDisLikes = snapshot.getChildrenCount();
                 int NOD = (int) numberOfDisLikes;
                 if (NOD > 1) {
-                    dislikes.setText(snapshot.getChildrenCount() + "dislikes");
+                    dislikes.setText(snapshot.getChildrenCount() + " Dislikes");
                 } else if (NOD == 0) {
-                    dislikes.setText("0 dislikes");
+                    dislikes.setText("");
                 } else {
-                    dislikes.setText(snapshot.getChildrenCount() + "dislike");
+                    dislikes.setText(snapshot.getChildrenCount() + " Dislike");
                 }
 
             }
@@ -558,11 +558,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                 long numberOfComments = snapshot.getChildrenCount();
                 int NOC = (int) numberOfComments;
                 if (NOC > 1) {
-                    comments.setText(snapshot.getChildrenCount() + "comments");
+                    comments.setText(snapshot.getChildrenCount() + " Comments");
                 } else if (NOC == 0) {
-                    comments.setText("0 comments");
+                    comments.setText("");
                 } else {
-                    comments.setText(snapshot.getChildrenCount() + "comment");
+                    comments.setText(snapshot.getChildrenCount() + " Comment");
                 }
 
             }

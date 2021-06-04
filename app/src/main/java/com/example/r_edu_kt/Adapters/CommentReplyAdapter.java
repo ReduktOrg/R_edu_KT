@@ -435,12 +435,12 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                     long numberOfDisLikes = snapshot.getChildrenCount();
                     int NOD = (int) numberOfDisLikes;
                     if (NOD > 1) {
-                        dislikes.setText(snapshot.getChildrenCount() + "dislikes");
+                        dislikes.setText(snapshot.getChildrenCount() + "");
                     } else {
-                        dislikes.setText("1dislike");
+                        dislikes.setText("1");
                     }
                 }else {
-                    dislikes.setText("0 dislikes");
+                    dislikes.setText("");
                 }
             }
 
@@ -461,12 +461,12 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                     long numberOfLikes = snapshot.getChildrenCount();
                     int NOL = (int) numberOfLikes;
                     if (NOL > 1) {
-                        likes.setText(snapshot.getChildrenCount() + "likes");
+                        likes.setText(snapshot.getChildrenCount() + "");
                     } else {
-                        likes.setText("1like");
+                        likes.setText("1");
                     }
                 }else{
-                    likes.setText("0 likes");
+                    likes.setText("");
                 }
             }
 
@@ -485,10 +485,10 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(firebaseUser.getUid()).exists()){
-                    dislike.setImageResource(R.drawable.ic_disliked);
+                    dislike.setImageResource(R.drawable.ic_outline_thumb_down_blue);
                     dislike.setTag("disliked");
                 }else {
-                    dislike.setImageResource(R.drawable.ic_dislike);
+                    dislike.setImageResource(R.drawable.ic_dislike_outline);
                     dislike.setTag("dislike");
                 }
 
@@ -508,10 +508,10 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(firebaseUser.getUid()).exists()){
-                    like.setImageResource(R.drawable.ic_liked);
+                    like.setImageResource(R.drawable.ic_outline_thumb_up_blue);
                     like.setTag("liked");
                 }else {
-                    like.setImageResource(R.drawable.ic_thumb_up);
+                    like.setImageResource(R.drawable.ic_like_outline);
                     like.setTag("like");
                 }
             }
@@ -526,7 +526,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
     private void performvalidations(EditText editText,String username, String pre_comment) {
         String commentText = editText.getText().toString();
         if (TextUtils.isEmpty(commentText)) {
-            editText.setError("please type something");
+            editText.setError("Please type something");
         }
         else {
             uploadComment(commentText,editText,username,pre_comment);

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
+    android:background="#EFF1F3"
     android:layout_height="match_parent"
     tools:context=".discussion_home">
 
@@ -41,8 +42,8 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:background="@color/transparent"
-                    android:inputType="textCapSentences"
                     android:hint="Search Posts"
+                    android:inputType="textCapSentences"
                     android:padding="7dp"
                     android:textCursorDrawable="@drawable/cursor" />
 
@@ -109,40 +110,43 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="bottom">
+                android:layout_gravity="bottom"
+                android:orientation="vertical">
 
                 <ProgressBar
+                    android:id="@+id/progress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:id="@+id/progress"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+
+                    >
 
                     <TextView
+                        android:id="@+id/load_more"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/roboto_medium"
+
                         android:text="Load More"
                         android:textColor="@color/button_blue"
-                        android:textStyle="italic"
                         android:textSize="18sp"
-                        android:id="@+id/load_more"
-                        android:visibility="gone"
-                        android:layout_centerInParent="true"/>
+                        android:visibility="gone" />
 
                     <ImageView
+                        android:id="@+id/up"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/up"
                         android:layout_alignParentEnd="true"
-                        android:id="@+id/up"
-                        android:visibility="gone"
-                        android:layout_marginRight="10dp"/>
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/up"
+                        android:tint="@color/quiz_blue"
+                        android:visibility="gone" />
 
                 </RelativeLayout>
             </LinearLayout>

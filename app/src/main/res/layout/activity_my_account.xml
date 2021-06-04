@@ -85,17 +85,18 @@
                         android:layout_gravity="center"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="10dp"
-                        android:elevation="8dp"
+
+                        android:elevation="10dp"
                         android:src="@drawable/boy_dp"
                         android:id="@+id/promy_img"
                         app:civ_border_color="@color/transparent" />
                     <Button
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="update"
                         android:textColor="@color/white"
                         android:textSize="18sp"
-                        android:padding="7dp"
+                        android:padding="5dp"
                         android:id="@+id/update_photo"
                         android:background="@color/button_blue"
                         android:layout_gravity="center"

@@ -73,14 +73,14 @@ public class CommentsActivity extends AppCompatActivity {
     private CircleImageView circleImageView;
     private EditText editText;
     ImageView photoView;
-    ImageView commentimage,imageView;
+    ImageView commentimage, imageView;
     TextView tv;
-    private String myurl = "",comment;
+    private String myurl = "", comment;
     private Uri resulturi;
     StorageTask uploadTask;
     StorageReference storageReference;
     LinearLayout linearimage;
-    String Url="https://fcm.googleapis.com/fcm/send";
+    String Url = "https://fcm.googleapis.com/fcm/send";
     RequestQueue requestQueue;
 
     private ProgressDialog loader;
@@ -103,25 +103,25 @@ public class CommentsActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.colorAccent));
         }
 
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         postid = intent.getStringExtra("postid");
 
         requestQueue = Volley.newRequestQueue(this);
 
         circleImageView = findViewById(R.id.comment_profile_image);
         photoView = findViewById(R.id.image);
-        commentimage=findViewById(R.id.commentimage);
-        tv=findViewById(R.id.text1);
+        commentimage = findViewById(R.id.commentimage);
+        tv = findViewById(R.id.text1);
         imageView = findViewById(R.id.commenting_post_textview);
         editText = findViewById(R.id.adding_comment);
         linearimage = findViewById(R.id.linearimage);
-        loader=new ProgressDialog(this);
+        loader = new ProgressDialog(this);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user= snapshot.getValue(User.class);
+                User user = snapshot.getValue(User.class);
                 Glide.with(CommentsActivity.this).load(user.getProfileimage()).into(circleImageView);
             }
 
@@ -133,22 +133,22 @@ public class CommentsActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.reccycler_view);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        storageReference= FirebaseStorage.getInstance().getReference("comments");
+        storageReference = FirebaseStorage.getInstance().getReference("comments");
 
         commentList = new ArrayList<>();
-        commentAdapter = new CommentAdapter(CommentsActivity.this,commentList,postid);
+        commentAdapter = new CommentAdapter(CommentsActivity.this, commentList, postid);
         recyclerView.setAdapter(commentAdapter);
 
         commentimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_PICK);
+                Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, 1);
             }
@@ -161,11 +161,11 @@ public class CommentsActivity extends AppCompatActivity {
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Post post= snapshot.getValue(Post.class);
-                        View view = LayoutInflater.from(CommentsActivity.this).inflate(R.layout.imagedialog,null);
+                        Post post = snapshot.getValue(Post.class);
+                        View view = LayoutInflater.from(CommentsActivity.this).inflate(R.layout.imagedialog, null);
 
-                        final PhotoView img=view.findViewById(R.id.img);
-                        final ImageButton close =view.findViewById(R.id.close);
+                        final PhotoView img = view.findViewById(R.id.img);
+                        final ImageButton close = view.findViewById(R.id.close);
                         Glide.with(img.getContext()).load(post.getQuestionimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
 
                         final AlertDialog dialog = new AlertDialog.Builder(CommentsActivity.this)
@@ -183,7 +183,7 @@ public class CommentsActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(CommentsActivity.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CommentsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -198,59 +198,57 @@ public class CommentsActivity extends AppCompatActivity {
         });
 
 
-
         getquestionImage();
         readComments();
     }
 
     private void performvalidations() {
-      String commentText = editText.getText().toString();
-        if(TextUtils.isEmpty(commentText)){
+        String commentText = editText.getText().toString();
+        if (TextUtils.isEmpty(commentText)) {
             editText.setError("please type something");
-        }else if (!TextUtils.isEmpty(commentText) && resulturi == null){
+        } else if (!TextUtils.isEmpty(commentText) && resulturi == null) {
             uploadCommentwithNoImage();
-        } else if (!TextUtils.isEmpty(commentText) && resulturi != null){
+        } else if (!TextUtils.isEmpty(commentText) && resulturi != null) {
             uploadCommentwithImage();
         }
 
     }
 
-    private void startloader(){
+    private void startloader() {
         loader.setMessage("posting your comment");
         loader.setCanceledOnTouchOutside(false);
         loader.show();
     }
 
-    private String getFileExtension(Uri uri){
+    private String getFileExtension(Uri uri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
 
-
-    private void uploadCommentwithNoImage(){
+    private void uploadCommentwithNoImage() {
         startloader();
         comment = editText.getText().toString();
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("comments").child(postid);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("comments").child(postid);
         final String commentid = ref.push().getKey();
         String date = DateFormat.getDateInstance().format(new Date());
         HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("comment",comment);
+        hashMap.put("comment", comment);
         hashMap.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
-        hashMap.put("commentid",commentid);
-        hashMap.put("postid",postid);
-        hashMap.put("date",date);
+        hashMap.put("commentid", commentid);
+        hashMap.put("postid", postid);
+        hashMap.put("date", date);
 
         ref.child(commentid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     sendNotification(comment);
-                    Toast.makeText(CommentsActivity.this,"Comment Posted Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CommentsActivity.this, "Comment Posted Successfully", Toast.LENGTH_SHORT).show();
                     loader.dismiss();
-                }else {
-                    Toast.makeText(CommentsActivity.this,"error posting comment"+task.getException().toString(),Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CommentsActivity.this, "error posting comment" + task.getException().toString(), Toast.LENGTH_SHORT).show();
                     loader.dismiss();
                 }
                 editText.setText("");
@@ -261,65 +259,65 @@ public class CommentsActivity extends AppCompatActivity {
     private void sendNotification(String toString) {
         final JSONObject jsonObject = new JSONObject();
         comment = editText.getText().toString();
-        final DatabaseReference ref= FirebaseDatabase.getInstance().getReference("questions posts").child(postid);
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("questions posts").child(postid);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     Post post = snapshot.getValue(Post.class);
                     final String q = post.getQuestion();
                     final String d = post.getDate();
                     final String b = post.getTopic();
                     final String touserid = post.getPublisher();
-                    final String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    DatabaseReference reference= FirebaseDatabase.getInstance().getReference("Users").child(uid);
+                    final String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(uid);
                     reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.exists()){
+                            if (snapshot.exists()) {
                                 User user = snapshot.getValue(User.class);
                                 final String username = user.getUserName();
-                                            try {
-                                                jsonObject.put("to","/topics/"+touserid);
-                                                JSONObject jsonObject1 = new JSONObject();
-                                                jsonObject1.put("title",username+" commented to your post");
-                                                jsonObject1.put("body","Branch: "+b+"     "+"posted on: "+d+"\n"+"post: "+q+"\n"+"comment: "+comment);
+                                try {
+                                    jsonObject.put("to", "/topics/" + touserid);
+                                    JSONObject jsonObject1 = new JSONObject();
+                                    jsonObject1.put("title", username + " commented to your post");
+                                    jsonObject1.put("body", "Branch: " + b + "     " + "posted on: " + d + "\n" + "post: " + q + "\n" + "comment: " + comment);
 
-                                                JSONObject jsonObject2 = new JSONObject();
-                                                jsonObject2.put("postid",postid);
-                                                jsonObject2.put("type","comment");
+                                    JSONObject jsonObject2 = new JSONObject();
+                                    jsonObject2.put("postid", postid);
+                                    jsonObject2.put("type", "comment");
 
-                                                jsonObject.put("notification",jsonObject1);
-                                                jsonObject.put("data",jsonObject2);
+                                    jsonObject.put("notification", jsonObject1);
+                                    jsonObject.put("data", jsonObject2);
 
-                                                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,Url,jsonObject,new Response.Listener<JSONObject>() {
-                                                    @Override
-                                                    public void onResponse(JSONObject response) {
-
-                                                    }
-                                                }, new Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-
-                                                    }
-                                                }){
-                                                    @Override
-                                                    public Map<String, String> getHeaders() throws AuthFailureError {
-
-                                                        Map<String,String> map = new HashMap<>();
-                                                        map.put("content-type","application/json");
-                                                        map.put("authorization","key=AAAA-dvHGuQ:APA91bEZ7cs9ngnzPHw05YvX1hKvWsF3hO9Xhr_GI9LCl7gKRCSc8p8jjapY3vRXdffMPquMlmv6gE9Xo4V7ZL-F46P5RlQYHlZJacjyVjN6CQczyhSBCMMPYLmIMsEcAYIKklnpE9hM ");
-                                                        return map;
-                                                    }
-                                                };
-                                                requestQueue.add(request);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
+                                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, Url, jsonObject, new Response.Listener<JSONObject>() {
+                                        @Override
+                                        public void onResponse(JSONObject response) {
 
                                         }
+                                    }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
 
-                                    }
+                                        }
+                                    }) {
+                                        @Override
+                                        public Map<String, String> getHeaders() throws AuthFailureError {
+
+                                            Map<String, String> map = new HashMap<>();
+                                            map.put("content-type", "application/json");
+                                            map.put("authorization", "key=AAAA-dvHGuQ:APA91bEZ7cs9ngnzPHw05YvX1hKvWsF3hO9Xhr_GI9LCl7gKRCSc8p8jjapY3vRXdffMPquMlmv6gE9Xo4V7ZL-F46P5RlQYHlZJacjyVjN6CQczyhSBCMMPYLmIMsEcAYIKklnpE9hM ");
+                                            return map;
+                                        }
+                                    };
+                                    requestQueue.add(request);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+                        }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
@@ -337,16 +335,16 @@ public class CommentsActivity extends AppCompatActivity {
 
     }
 
-    private void uploadCommentwithImage(){
+    private void uploadCommentwithImage() {
         startloader();
-        comment=editText.getText().toString();
+        comment = editText.getText().toString();
         final StorageReference fileReference;
         fileReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(resulturi));
         uploadTask = fileReference.putFile(resulturi);
         uploadTask.continueWithTask(new Continuation() {
             @Override
             public Object then(@NonNull Task task) throws Exception {
-                if(!task.isComplete()){
+                if (!task.isComplete()) {
                     throw task.getException();
                 }
                 return fileReference.getDownloadUrl();
@@ -354,31 +352,31 @@ public class CommentsActivity extends AppCompatActivity {
         }).addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     sendNotification(comment);
-                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference("comments").child(postid);
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("comments").child(postid);
                     final Uri downloadUri = (Uri) task.getResult();
-                    myurl=downloadUri.toString();
+                    myurl = downloadUri.toString();
 
                     String commentid = ref.push().getKey();
                     String date = DateFormat.getDateInstance().format(new Date());
                     HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("comment",comment);
+                    hashMap.put("comment", comment);
                     hashMap.put("publisher", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    hashMap.put("commentid",commentid);
-                    hashMap.put("postid",postid);
-                    hashMap.put("date",date);
-                    hashMap.put("commentimage",myurl);
+                    hashMap.put("commentid", commentid);
+                    hashMap.put("postid", postid);
+                    hashMap.put("date", date);
+                    hashMap.put("commentimage", myurl);
 
                     ref.child(commentid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(CommentsActivity.this,"Comment Posted Successfully", Toast.LENGTH_SHORT).show();
+                            if (task.isSuccessful()) {
+                                Toast.makeText(CommentsActivity.this, "Comment Posted Successfully", Toast.LENGTH_SHORT).show();
                                 loader.dismiss();
                                 resulturi = null;
-                            }else {
-                                Toast.makeText(CommentsActivity.this,"could not upload image"+task.getException().toString(),Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(CommentsActivity.this, "could not upload image" + task.getException().toString(), Toast.LENGTH_SHORT).show();
                                 loader.dismiss();
                             }
                             editText.setText("");
@@ -390,20 +388,20 @@ public class CommentsActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CommentsActivity.this,"Error posting the Comment",Toast.LENGTH_SHORT).show();
+                Toast.makeText(CommentsActivity.this, "Error posting the Comment", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void  getquestionImage(){
+    private void getquestionImage() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("questions posts").child(postid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Post post= snapshot.getValue(Post.class);
+                Post post = snapshot.getValue(Post.class);
                 tv.setText(post.getQuestion());
                 Glide.with(CommentsActivity.this).load(post.getQuestionimage()).into(photoView);
-                if(post.getQuestionimage()==null){
+                if (post.getQuestionimage() == null) {
                     linearimage.setVisibility(View.GONE);
                 }
 
@@ -411,20 +409,20 @@ public class CommentsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CommentsActivity.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(CommentsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    private void readComments(){
-        DatabaseReference reference=FirebaseDatabase.getInstance().getReference("comments").child(postid);
+    private void readComments() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("comments").child(postid);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 commentList.clear();
-                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
-                    Comment comment=dataSnapshot.getValue(Comment.class);
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Comment comment = dataSnapshot.getValue(Comment.class);
                     commentList.add(comment);
                 }
                 commentAdapter.notifyDataSetChanged();
@@ -433,7 +431,7 @@ public class CommentsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CommentsActivity.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(CommentsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -445,7 +443,7 @@ public class CommentsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             resulturi = data.getData();
             commentimage.setImageURI(resulturi);
         }

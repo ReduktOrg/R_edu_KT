@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -236,6 +237,18 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
                 startActivity(intent1);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 break;
+            case R.id.nav_contact_us:
+
+                String[] redukt_mail={"teamredukt@gmail.com"};
+                String mailSubject="Help needed for "+fullName.toUpperCase();
+                String chooseOne="Choose one email application";
+                Intent mailIntent=new Intent(Intent.ACTION_SENDTO);
+                mailIntent.setData(Uri.parse("mailto:"));
+                mailIntent.putExtra(Intent.EXTRA_EMAIL,redukt_mail);
+                mailIntent.putExtra(Intent.EXTRA_SUBJECT,mailSubject);
+                startActivity(Intent.createChooser(mailIntent,chooseOne));
+                break;
+
             case R.id.nav_logout:
                 View view = LayoutInflater.from(this).inflate(R.layout.logoutdialog,null);
 

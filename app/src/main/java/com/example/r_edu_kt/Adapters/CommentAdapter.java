@@ -473,10 +473,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(firebaseUser.getUid()).exists()){
-                    imageView.setImageResource(R.drawable.ic_liked);
+                    imageView.setImageResource(R.drawable.ic_outline_thumb_up_blue);
                     imageView.setTag("liked");
                 }else {
-                    imageView.setImageResource(R.drawable.ic_thumb_up);
+                    imageView.setImageResource(R.drawable.ic_like_outline);
                     imageView.setTag("like");
                 }
             }
@@ -495,10 +495,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.child(firebaseUser.getUid()).exists()){
-                    imageView.setImageResource(R.drawable.ic_disliked);
+                    imageView.setImageResource(R.drawable.ic_outline_thumb_down_blue);
                     imageView.setTag("disliked");
                 }else {
-                    imageView.setImageResource(R.drawable.ic_dislike);
+                    imageView.setImageResource(R.drawable.ic_dislike_outline);
                     imageView.setTag("dislike");
                 }
 
@@ -520,12 +520,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     long numberOfLikes = snapshot.getChildrenCount();
                     int NOL = (int) numberOfLikes;
                     if (NOL > 1) {
-                        likes.setText(snapshot.getChildrenCount() + "likes");
+                        likes.setText(snapshot.getChildrenCount() + "");
                     } else {
-                        likes.setText("1like");
+                        likes.setText("1");
                     }
                 }else{
-                    likes.setText("0 likes");
+                    likes.setText("");
                 }
             }
 
@@ -546,12 +546,12 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     long numberOfDisLikes = snapshot.getChildrenCount();
                     int NOD = (int) numberOfDisLikes;
                     if (NOD > 1) {
-                        dislikes.setText(snapshot.getChildrenCount() + "dislikes");
+                        dislikes.setText(snapshot.getChildrenCount() + "");
                     } else {
-                        dislikes.setText("1dislike");
+                        dislikes.setText("1");
                     }
                 }else {
-                    dislikes.setText("0 dislikes");
+                    dislikes.setText("");
                 }
             }
 
@@ -571,11 +571,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 long numberOfComments = snapshot.getChildrenCount();
                 int NOC = (int) numberOfComments;
                 if (NOC > 1) {
-                    replies.setText(snapshot.getChildrenCount() + "replies");
+                    replies.setText(snapshot.getChildrenCount() + "");
                 } else if (NOC == 0) {
-                    replies.setText("0 replies");
+                    replies.setText("");
                 } else {
-                    replies.setText(snapshot.getChildrenCount() + "reply");
+                    replies.setText(snapshot.getChildrenCount() + "");
                 }
 
             }
