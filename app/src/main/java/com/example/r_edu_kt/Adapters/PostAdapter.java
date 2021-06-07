@@ -4,13 +4,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -29,11 +32,15 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.CommentsActivity;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.discussion_home;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -117,7 +124,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
 
                 final PhotoView img=view.findViewById(R.id.img);
                 final ImageButton close =view.findViewById(R.id.close);
-                Glide.with(img.getContext()).load(post.getQuestionimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+                final ImageButton rotate = view.findViewById(R.id.rotate);
+                Glide.with(img.getContext()).load(post.getQuestionimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(img);
 
                 final AlertDialog dialog = new AlertDialog.Builder(holder.questionImage.getContext())
                         .setView(view).setCancelable(false).create();
@@ -128,6 +136,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                    }
+                });
+
+                rotate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        img.setRotationBy(90);
                     }
                 });
             }
@@ -220,22 +235,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                         final ImageView qimage=view.findViewById(R.id.que_img);
                         final Spinner sp=view.findViewById(R.id.spin);
                         final EditText question=view.findViewById(R.id.questtext);
-                        final  TextView tv=view.findViewById(R.id.tv);
                         Button submit=view.findViewById(R.id.postQ);
                         Button canc=view.findViewById(R.id.canc);
 
                         final AlertDialog dialog = new AlertDialog.Builder(holder.more.getContext())
                                 .setView(view).setCancelable(false).create();
 
-                        // Intent intent = new Intent(mContext, editpost.class);
-                        //((Activity)mContext).startActivityForResult(intent,requestCode);
-
                         if(post.getQuestionimage()!=null){
                             qimage.setVisibility(View.VISIBLE);
                         }
                         Glide.with(mContext).load(post.getQuestionimage()).into(qimage);
                         question.setText(post.getQuestion());
-                        tv.setText(post.getTopic());
+
+                        switch(post.getTopic()) {
+                            case "Cse":
+                                sp.setSelection(1);
+                                break;
+                            case "Ece":
+                                sp.setSelection(2);
+                                break;
+                            case "Mech":
+                                sp.setSelection(3);
+                                break;
+                            case "Civil":
+                                sp.setSelection(4);
+                                break;
+                            case "Chemical":
+                                sp.setSelection(5);
+                                break;
+                        }
 
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);

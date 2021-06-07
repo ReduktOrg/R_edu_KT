@@ -6,12 +6,15 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.Adapters.PostAdapter;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
@@ -67,7 +73,6 @@ public class discussion_home extends AppCompatActivity implements NavigationView
     EditText et;
     TextView load_more;
     NeumorphCardView cardView;
-    String s="";
     static final float END_SCALE = 0.7f;
     Boolean total_items_loaded = false, isSearching = false;
 
@@ -127,7 +132,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
                 fullName = user.getFullName();
-                Glide.with(header.getContext()).load(user.getProfileimage()).into(pro_img);
+                Glide.with(header.getContext()).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(pro_img);
                 email=user.getEmail();
                 app_nameEt.setText("Hi !\n"+fullName);
                 mail_id.setText(email);
@@ -154,9 +159,11 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         splayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                total_items_loaded = false;
+                mcurrentpage = 1;
                 postList.clear();
                 readQuestionsPosts();
-                recyclerView.scrollToPosition(postList.size() - ((mcurrentpage -1 ) * total_items_to_load));
+                recyclerView.scrollToPosition(postList.size() - 1);
             }
         });
 
@@ -169,32 +176,34 @@ public class discussion_home extends AppCompatActivity implements NavigationView
             }
         });
 
-        search.setOnClickListener(new View.OnClickListener() {
+
+        et.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                final Animation animation = AnimationUtils.loadAnimation(discussion_home.this,R.anim.bounce);
-                BounceInterpolator interpolator = new BounceInterpolator();
-                animation.setInterpolator(interpolator);
-                search.startAnimation(animation);
-                isSearching = true;
-                total_items_loaded=false;
-                splayout.setEnabled(false);
-                cardView.setVisibility(View.VISIBLE);
-                search2.setVisibility(View.VISIBLE);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
                 et.requestFocus();
-                String val=et.getText().toString();
-                s = StringUtils.capitalize(val);
-                DatabaseReference reference= FirebaseDatabase.getInstance().getReference("questions posts");
-                Query query=reference.orderByChild("topic").startAt(s).endAt(s+"\uf8ff");
+                String val = et.getText().toString();
+                String p = StringUtils.capitalize(val);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("questions posts");
+                Query query = reference.orderByChild("topic").startAt(p).endAt(p + "\uf8ff");
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         postList.clear();
-                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            Post post=dataSnapshot.getValue(Post.class);
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            Post post = dataSnapshot.getValue(Post.class);
                             postList.add(post);
                         }
-                        recyclerView.scrollToPosition(postList.size()-1);
+                        recyclerView.scrollToPosition(postList.size() - 1);
                         postAdapter.notifyDataSetChanged();
                     }
 
@@ -204,6 +213,37 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 });
             }
         });
+
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isSearching = true;
+                total_items_loaded=false;
+                splayout.setEnabled(false);
+                search.setVisibility(View.GONE);
+                cardView.setVisibility(View.VISIBLE);
+                search2.setVisibility(View.VISIBLE);
+                DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("questions posts");
+                reference1.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        postList.clear();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            Post post = dataSnapshot.getValue(Post.class);
+                            postList.add(post);
+                        }
+                        recyclerView.scrollToPosition(postList.size() - 1);
+                        postAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
+            }
+        });
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -219,6 +259,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 }
                 if(!recyclerView.canScrollVertically(-1)){
                     up.setVisibility(View.GONE);
+                    load_more.setVisibility(View.GONE);
                 }
             }
         });
@@ -237,12 +278,12 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                 cardView.setVisibility(View.GONE);
                 et.setText("");
                 search2.setVisibility(View.GONE);
+                search.setVisibility(View.VISIBLE);
                 postList.clear();
-                mcurrentpage = 1;
                 isSearching = false;
                 splayout.setEnabled(true);
                 readQuestionsPosts();
-                recyclerView.scrollToPosition(postList.size()-1);
+                recyclerView.scrollToPosition(postList.size() - ((mcurrentpage -1 ) * total_items_to_load));
             }
         });
 
@@ -303,6 +344,10 @@ public class discussion_home extends AppCompatActivity implements NavigationView
                     count++;
                     Post post = dataSnapshot.getValue(Post.class);
                     postList.add(post);
+                }
+                RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+                if(animator instanceof SimpleItemAnimator){
+                    ((SimpleItemAnimator)animator).setSupportsChangeAnimations(false);
                 }
                 postAdapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(postList.size() - ((mcurrentpage -1 ) * total_items_to_load));

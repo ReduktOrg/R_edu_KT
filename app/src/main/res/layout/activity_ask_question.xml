@@ -83,6 +83,7 @@
                     android:layout_margin="15dp"
                     android:background="@drawable/blue_border"
                     android:hint="Enter your question here"
+                    android:inputType="textCapSentences"
                     android:maxLines="5"
                     android:padding="10dp"
                     android:textColor="#000"

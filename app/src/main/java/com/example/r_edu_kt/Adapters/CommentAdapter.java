@@ -26,7 +26,10 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.CommentReply;
 import com.example.r_edu_kt.Model.Comment;
 import com.example.r_edu_kt.Model.User;
@@ -106,7 +109,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         else{
             holder.commentimage.setVisibility(View.VISIBLE);
         }
-        Glide.with(mContext).load(comment.getCommentimage()).into(holder.commentimage);
+        Glide.with(mContext).load(comment.getCommentimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(holder.commentimage);
 
         isLiked(comment.getCommentid(),comment.getPostid(),holder.like);
         isDisLiked(comment.getCommentid(),comment.getPostid(),holder.dislike);
@@ -121,7 +124,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
                 final PhotoView img=view.findViewById(R.id.img);
                 final ImageButton close =view.findViewById(R.id.close);
-                Glide.with(img.getContext()).load(comment.getCommentimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+                final ImageButton rotate = view.findViewById(R.id.rotate);
+                Glide.with(img.getContext()).load(comment.getCommentimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(img);
 
                 final AlertDialog dialog = new AlertDialog.Builder(holder.commentimage.getContext())
                         .setView(view).setCancelable(false).create();
@@ -132,6 +136,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
+                    }
+                });
+
+                rotate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        img.setRotationBy(90);
                     }
                 });
             }
@@ -262,7 +273,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                         if(comment.getCommentimage()!=null){
                             cimage.setVisibility(View.VISIBLE);
                         }
-                        Glide.with(mContext).load(comment.getCommentimage()).into(cimage);
+                        Glide.with(mContext).load(comment.getCommentimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(cimage);
                         comment1.setText(comment.getComment());
 
 
@@ -453,7 +464,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user=snapshot.getValue(User.class);
-                Glide.with(mContext).load(user.getProfileimage()).into(circleImageView);
+                Glide.with(mContext).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(circleImageView);
                 username.setText(user.getUserName());
             }
             @Override

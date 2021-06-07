@@ -105,6 +105,8 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="mail_recover">An account is created with your email for the action of your recent register task in our app. But you cannot use your account, because no personal info is uploaded. To create another account using this email, first you should recover this email.</string>
+    <string name="mail_recovertext">To recover your email, please provide the password which you have used to create your account.</string>
     <string-array name="topics">
         <item>select branch</item>
         <item>Cse</item>

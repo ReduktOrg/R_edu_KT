@@ -56,6 +56,7 @@
                 android:hint="Add a Comment..."
                 android:paddingLeft="5dp"
                 android:layout_gravity="center"
+                android:inputType="textCapSentences"
                 android:textColor="#000"
                 android:textColorHint="#717070"
                 android:background="@color/transparent" />

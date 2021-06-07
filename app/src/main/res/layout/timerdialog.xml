@@ -6,10 +6,54 @@
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerInParent="true"
-        app:cardCornerRadius="16dp">
+        android:layout_width="370dp"
+        android:layout_height="240dp"
+        app:cardCornerRadius="3dp"
+        android:layout_centerInParent="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/red"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:text="* Please don't remove app from recent apps list *"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Verification mail sent to"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/display_message"
+                android:text="Please "
+                android:textSize="16sp"
+                android:layout_gravity="center"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="please verify it to create your account"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+            </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -17,9 +61,11 @@
             android:id="@+id/text_view"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:layout_marginTop="12dp"
             android:layout_gravity="center"
             android:textColor="@color/button_blue"
             app:drawableTopCompat="@drawable/ic_timer" />
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

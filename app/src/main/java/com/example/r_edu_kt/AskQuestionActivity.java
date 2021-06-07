@@ -4,16 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
@@ -32,6 +39,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,6 +52,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -52,6 +62,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class AskQuestionActivity extends AppCompatActivity {
+    private static final int PERMISSION_CODE = 1000;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
     private Spinner spinner;
     private EditText questionBox;
     private ImageView imageView;
@@ -68,6 +80,7 @@ public class AskQuestionActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private String onlineuserId = "";
+    BottomSheetDialog bottomSheetDialog;
 
 
     @Override
@@ -107,32 +120,56 @@ public class AskQuestionActivity extends AppCompatActivity {
 
         storageReference= FirebaseStorage.getInstance().getReference("questions posts");
 
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.topics));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(spinner.getSelectedItem().equals("select branch")){
-                    Toast.makeText(AskQuestionActivity.this,"please select a valid branch",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, 1);
+                bottomSheetDialog = new BottomSheetDialog(AskQuestionActivity.this,R.style.BottomSheetTheme);
+                View sheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.imgbottom, (ViewGroup) findViewById(R.id.BottomSheet));
+
+                ImageView camera = sheetView.findViewById(R.id.camera);
+                ImageView gallery = sheetView.findViewById(R.id.gallery);
+
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                                String[] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                                requestPermissions(permission,PERMISSION_CODE);
+                            }
+                            else {
+                                openCamer();
+                            }
+                        }
+                        else {
+                            openCamer();
+                        }
+                    }
+                });
+
+                gallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        Intent intent=new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                bottomSheetDialog.setContentView(sheetView);
+                bottomSheetDialog.setCanceledOnTouchOutside(false);
+                bottomSheetDialog.show();
             }
         });
+
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +185,30 @@ public class AskQuestionActivity extends AppCompatActivity {
         });
     }
 
+    private void openCamer() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE,"New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION,"From the Camera");
+        resulturi = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
 
+        Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,resulturi);
+        startActivityForResult(cameraintent,IMAGE_CAPTURE_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull @NotNull String[] permissions, @NonNull @NotNull int[] grantResults) {
+        switch (requestCode){
+            case PERMISSION_CODE:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    openCamer();
+                }
+                else {
+                    Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
 
     String getQuestionText(){
         return questionBox.getText().toString().trim();
@@ -284,6 +344,8 @@ public class AskQuestionActivity extends AppCompatActivity {
             resulturi = data.getData();
             imageView.setImageURI(resulturi);
         }
+        else if(requestCode == 1001 && resultCode == RESULT_OK){
+           imageView.setImageURI(resulturi);
+        }
     }
-
 }

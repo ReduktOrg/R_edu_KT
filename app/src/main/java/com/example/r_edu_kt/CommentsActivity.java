@@ -6,16 +6,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
@@ -35,7 +40,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.Adapters.CommentAdapter;
 import com.example.r_edu_kt.Model.Comment;
 import com.example.r_edu_kt.Model.Post;
@@ -45,6 +53,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -68,6 +77,8 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentsActivity extends AppCompatActivity {
+    private static final int PERMISSION_CODE = 1000;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
 
     private RecyclerView recyclerView;
     private CircleImageView circleImageView;
@@ -82,6 +93,7 @@ public class CommentsActivity extends AppCompatActivity {
     LinearLayout linearimage;
     String Url = "https://fcm.googleapis.com/fcm/send";
     RequestQueue requestQueue;
+    BottomSheetDialog bottomSheetDialog;
 
     private ProgressDialog loader;
 
@@ -122,7 +134,7 @@ public class CommentsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                Glide.with(CommentsActivity.this).load(user.getProfileimage()).into(circleImageView);
+                Glide.with(CommentsActivity.this).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(circleImageView);
             }
 
             @Override
@@ -148,9 +160,44 @@ public class CommentsActivity extends AppCompatActivity {
         commentimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, 1);
+                bottomSheetDialog = new BottomSheetDialog(CommentsActivity.this,R.style.BottomSheetTheme);
+                View sheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.imgbottom, (ViewGroup) findViewById(R.id.BottomSheet));
+
+                ImageView camera = sheetView.findViewById(R.id.camera);
+                ImageView gallery = sheetView.findViewById(R.id.gallery);
+
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                                String[] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                                requestPermissions(permission,PERMISSION_CODE);
+                            }
+                            else {
+                                openCamer();
+                            }
+                        }
+                        else {
+                            openCamer();
+                        }
+                    }
+                });
+
+                gallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        Intent intent=new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                bottomSheetDialog.setContentView(sheetView);
+                bottomSheetDialog.setCanceledOnTouchOutside(false);
+                bottomSheetDialog.show();
             }
         });
 
@@ -166,7 +213,8 @@ public class CommentsActivity extends AppCompatActivity {
 
                         final PhotoView img = view.findViewById(R.id.img);
                         final ImageButton close = view.findViewById(R.id.close);
-                        Glide.with(img.getContext()).load(post.getQuestionimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+                        final ImageButton rotate = view.findViewById(R.id.rotate);
+                        Glide.with(img.getContext()).load(post.getQuestionimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(img);
 
                         final AlertDialog dialog = new AlertDialog.Builder(CommentsActivity.this)
                                 .setView(view).setCancelable(false).create();
@@ -177,6 +225,13 @@ public class CommentsActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
+                            }
+                        });
+
+                        rotate.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                img.setRotationBy(90);
                             }
                         });
                     }
@@ -200,6 +255,17 @@ public class CommentsActivity extends AppCompatActivity {
 
         getquestionImage();
         readComments();
+    }
+
+    private void openCamer() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE,"New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION,"From the Camera");
+        resulturi = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+
+        Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,resulturi);
+        startActivityForResult(cameraintent,IMAGE_CAPTURE_CODE);
     }
 
     private void performvalidations() {
@@ -400,7 +466,7 @@ public class CommentsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Post post = snapshot.getValue(Post.class);
                 tv.setText(post.getQuestion());
-                Glide.with(CommentsActivity.this).load(post.getQuestionimage()).into(photoView);
+                Glide.with(CommentsActivity.this).load(post.getQuestionimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(photoView);
                 if (post.getQuestionimage() == null) {
                     linearimage.setVisibility(View.GONE);
                 }
@@ -445,6 +511,9 @@ public class CommentsActivity extends AppCompatActivity {
 
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             resulturi = data.getData();
+            commentimage.setImageURI(resulturi);
+        }
+        else if(requestCode == 1001 && resultCode == RESULT_OK){
             commentimage.setImageURI(resulturi);
         }
     }

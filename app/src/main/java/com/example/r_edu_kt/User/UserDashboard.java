@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.GradientDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
+import com.example.r_edu_kt.Common.NetWorkChangeListener;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.CategoriesAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.CategoriesHelperClass;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.FeaturedAdapter;
@@ -36,13 +41,10 @@ import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedAdapter;
 import com.example.r_edu_kt.HelperClasses.HomeAdapter.MostViewedHelperClass;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
-import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 import com.example.r_edu_kt.User.Login.LoginActivity;
 import com.example.r_edu_kt.User.MyAccount.MyAccount;
-import com.example.r_edu_kt.User.MyAccount.MyAccountEmail;
 import com.example.r_edu_kt.User.Quiz.QuizIntro;
 import com.example.r_edu_kt.discussion_home;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,17 +54,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserDashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    Context mcontext;
+    NetWorkChangeListener netWorkChangeListener = new NetWorkChangeListener();
 
     static final float END_SCALE = 0.7f;
     RecyclerView featuredRecycler, mostViewedRecycler, categoriesRecycler;
@@ -120,30 +120,7 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         final TextView mail_id = header.findViewById(R.id.mail_id);
         final CircleImageView pro_img = header.findViewById(R.id.pro_img);
 
-        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user= snapshot.getValue(User.class);
-                Glide.with(header.getContext()).load(user.getProfileimage()).into(pro_img);
-                fullName = user.getFullName();
-                email=user.getEmail();
-                app_nameEt.setText("Hi !\n"+fullName);
-                if(!email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                    final HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                    reference.updateChildren(hashMap);
-                }
-                email=user.getEmail();
-                mail_id.setText(email);
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(UserDashboard.this,error.getMessage(),Toast.LENGTH_SHORT).show();
-
-            }
-        });
 
         //course hooks
     //dont use below one
@@ -170,6 +147,26 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
         mostViewedRecycler();
         categoriesRecycler();
 
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    User user = snapshot.getValue(User.class);
+                    Glide.with(header.getContext()).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(pro_img);
+                    fullName = user.getFullName();
+                    email = user.getEmail();
+                    app_nameEt.setText("Hi !\n" + fullName);
+                    mail_id.setText(email);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(UserDashboard.this,error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
     }
 
@@ -338,9 +335,19 @@ public class UserDashboard extends AppCompatActivity implements NavigationView.O
 
         adapter = new FeaturedAdapter(featuredCourses,getApplicationContext());
         featuredRecycler.setAdapter(adapter);
+    }
 
+    @Override
+    protected void onStart() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(netWorkChangeListener,filter);
+        super.onStart();
+    }
 
-
+    @Override
+    protected void onStop() {
+        unregisterReceiver(netWorkChangeListener);
+        super.onStop();
     }
 
 }

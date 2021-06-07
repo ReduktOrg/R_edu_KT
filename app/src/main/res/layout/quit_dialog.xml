@@ -18,70 +18,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!--            <soup.neumorphism.NeumorphCardView-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_centerHorizontal="true"-->
-            <!--                app:neumorph_shapeType="flat"-->
-            <!--                style="@style/Widget.Neumorph.CardView"-->
-            <!--                android:layout_margin="6dp"-->
-            <!--                android:id="@+id/ed">-->
-
-            <TextView
-                android:id="@+id/ed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="6dp"
-                android:padding="12dp"
-                android:text="Update Comment!"
-                android:textColor="@color/button_blue"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-            <!--            </soup.neumorphism.NeumorphCardView>-->
-
             <LinearLayout
                 android:id="@+id/lin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ed"
                 android:orientation="vertical">
 
-                <!--                <soup.neumorphism.NeumorphCardView-->
-                <!--                    style="@style/Widget.Neumorph.CardView"-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="100dp"-->
-                <!--                    android:layout_gravity="center_horizontal"-->
-                <!--                    android:layout_margin="6dp"-->
-                <!--                    app:neumorph_shapeType="basin">-->
-
-                <EditText
-                    android:id="@+id/comenttext"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="15dp"
-                    android:background="@drawable/blue_border"
-                    android:hint="Edit your comment here"
-                    android:imeOptions="actionDone"
+                    android:gravity="center"
                     android:maxLines="5"
                     android:padding="10dp"
-                    android:inputType="textCapSentences"
                     android:textColor="#000"
                     android:textCursorDrawable="@drawable/cursor"
-                    android:textSize="18sp" />
-                <!--                </soup.neumorphism.NeumorphCardView>-->
-
-                <ImageView
-                    android:id="@+id/coment_img"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_image"
-                    android:visibility="gone" />
+                    android:textSize="18sp"
+                    android:text="Really want to quit the process?"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -94,7 +49,7 @@
 
 
                 <Button
-                    android:id="@+id/cance"
+                    android:id="@+id/cancell"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -107,7 +62,7 @@
                     android:textSize="15sp" />
 
                 <Button
-                    android:id="@+id/postC"
+                    android:id="@+id/postl"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -115,7 +70,7 @@
                     android:layout_weight="2"
                     android:background="@drawable/bg_upload"
                     android:backgroundTint="@color/colorAccent"
-                    android:text="Update Comment"
+                    android:text="Quit"
                     android:textAllCaps="false"
                     android:textColor="#fff"
                     android:textSize="15sp" />

@@ -25,6 +25,9 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.Model.ModelCommentReply;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
@@ -415,7 +418,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                Glide.with(mContext).load(user.getProfileimage()).into(circleImageView);
+                Glide.with(mContext).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(circleImageView);
                 username.setText(user.getUserName());
             }
 
@@ -576,7 +579,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                Glide.with(mContext).load(user.getProfileimage()).into(comment_profile_image);
+                Glide.with(mContext).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(comment_profile_image);
             }
 
             @Override

@@ -4,10 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -19,6 +22,7 @@ import android.provider.MediaStore;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -28,12 +32,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.r_edu_kt.AskQuestionActivity;
 import com.example.r_edu_kt.Model.User;
-import com.example.r_edu_kt.User.UserDashboard;
+import com.example.r_edu_kt.User.Login.LoginActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -60,12 +68,16 @@ import java.util.concurrent.TimeUnit;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SignUp3rdClass extends AppCompatActivity {
+    private static final int PERMISSION_CODE = 1000;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
     private CircleImageView profileImage;
     private Uri resultUri;
     AlertDialog dialog;
+    BottomSheetDialog bottomSheetDialog;
     private Task<Void> usertask;
 
     private FirebaseAuth mAuth;
+    FirebaseUser mUser;
     private DatabaseReference reference;
     private ProgressDialog loader;
     private String onlineuserID="",phoneNumber,userName,fullName,date,gender,password,email,Uname;
@@ -105,13 +117,58 @@ public class SignUp3rdClass extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent,1);
+                bottomSheetDialog = new BottomSheetDialog(SignUp3rdClass.this,R.style.BottomSheetTheme);
+                View sheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.imgbottom, (ViewGroup) findViewById(R.id.BottomSheet));
+
+                ImageView camera = sheetView.findViewById(R.id.camera);
+                ImageView gallery = sheetView.findViewById(R.id.gallery);
+
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                                String[] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                                requestPermissions(permission,PERMISSION_CODE);
+                            }
+                            else {
+                                openCamer();
+                            }
+                        }
+                        else {
+                            openCamer();
+                        }
+                    }
+                });
+
+                gallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        Intent intent=new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                bottomSheetDialog.setContentView(sheetView);
+                bottomSheetDialog.setCanceledOnTouchOutside(false);
+                bottomSheetDialog.show();
             }
         });
     }
 
+    private void openCamer() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE,"New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION,"From the Camera");
+        resultUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+
+        Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,resultUri);
+        startActivityForResult(cameraintent,IMAGE_CAPTURE_CODE);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -120,11 +177,9 @@ public class SignUp3rdClass extends AppCompatActivity {
         if(requestCode == 1 && resultCode == RESULT_OK && data != null){
             resultUri = data.getData();
             profileImage.setImageURI(resultUri);
-
-
         }
-        else {
-            Toast.makeText(SignUp3rdClass.this,"something went wrong",Toast.LENGTH_SHORT).show();
+        else if(requestCode == 1001 && resultCode == RESULT_OK){
+            profileImage.setImageURI(resultUri);
         }
     }
 
@@ -163,6 +218,7 @@ public class SignUp3rdClass extends AppCompatActivity {
             Toast.makeText(SignUp3rdClass.this,"profile image is required",Toast.LENGTH_SHORT).show();
         }
         else {
+            phoneNumberEt.clearFocus();
             loader.setMessage("Registeration in progress");
             loader.setCanceledOnTouchOutside(false);
             loader.show();
@@ -183,17 +239,19 @@ public class SignUp3rdClass extends AppCompatActivity {
                                 if(task.isSuccessful()){
                                     loader.dismiss();
                                     register.setEnabled(false);
-                                    Toast.makeText(SignUp3rdClass.this,"Verification mail sent to "+mAuth.getCurrentUser().getEmail()+"! please verify it to create your account",Toast.LENGTH_SHORT).show();
 
                                     runnable.run();
                                     View view = LayoutInflater.from(SignUp3rdClass.this).inflate(R.layout.timerdialog,null);
                                     final TextView textView = view.findViewById(R.id.text_view);
+                                    TextView display_message = view.findViewById(R.id.display_message);
 
                                     dialog = new AlertDialog.Builder(SignUp3rdClass.this)
                                             .setView(view).setCancelable(false).create();
 
                                     dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                                     dialog.show();
+
+                                    display_message.setText(mAuth.getCurrentUser().getEmail());
 
                                     long duration = TimeUnit.MINUTES.toMillis(5);
 
@@ -210,24 +268,53 @@ public class SignUp3rdClass extends AppCompatActivity {
 
                                         @Override
                                         public void onFinish() {
-                                            mhandler.removeCallbacks(runnable);
-                                            mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
-                                                        Toast.makeText(SignUp3rdClass.this,"Time out! please try again",Toast.LENGTH_SHORT).show();
-                                                        startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
-                                                        finish();
+                                            mUser = mAuth.getCurrentUser();
+                                            if(mUser != null){
+                                                String mailid = mUser.getEmail();
+                                                AuthCredential credential = EmailAuthProvider.getCredential(mailid,password);
+                                                mUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                        if(task.isSuccessful()){
+                                                            mhandler.removeCallbacks(runnable);
+                                                            usertask = mAuth.getCurrentUser().reload();
+                                                            usertask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                                            if(task.isSuccessful()){
+                                                                                Toast.makeText(SignUp3rdClass.this,"Time out! please try again",Toast.LENGTH_LONG).show();
+                                                                                startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
+                                                                                finish();
+                                                                            }
+                                                                            else {
+                                                                                Toast.makeText(SignUp3rdClass.this,task.getException().toString(),Toast.LENGTH_LONG).show();
+                                                                            }
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }
+                                                        else {
+                                                            Toast.makeText(SignUp3rdClass.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
+                                            else {
+                                                Toast.makeText(SignUp3rdClass.this,"Time out! please try again",Toast.LENGTH_LONG).show();
+                                                startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
+                                                finish();
+                                            }
                                             dialog.dismiss();
                                         }
                                     }.start();
                                 }
                                 else {
                                     loader.dismiss();
-                                    Toast.makeText(SignUp3rdClass.this,"Could not process your request! please try again",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUp3rdClass.this,"Could not process your request! please try again",Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
                                     finish();
                                 }
@@ -309,8 +396,7 @@ public class SignUp3rdClass extends AppCompatActivity {
                                 }
                             }
                         });
-
-                        Intent intent = new Intent(SignUp3rdClass.this, UserDashboard.class);
+                        Intent intent = new Intent(SignUp3rdClass.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
                         String userid = mAuth.getCurrentUser().getUid();
@@ -336,7 +422,6 @@ public class SignUp3rdClass extends AppCompatActivity {
                     else {
                         mhandler.postDelayed(runnable, 5000);
                     }
-
                 }
             });
         }
@@ -344,7 +429,7 @@ public class SignUp3rdClass extends AppCompatActivity {
 
 
     public void onLoginClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), SignUp2ndClass.class);
+        Intent intent = new Intent(SignUp3rdClass.this, SignUp2ndClass.class);
 
         //Add Transition
         Pair[] pairs = new Pair[5];
@@ -361,5 +446,65 @@ public class SignUp3rdClass extends AppCompatActivity {
         } else {
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        View view = LayoutInflater.from(this).inflate(R.layout.quit_dialog,null);
+
+        Button submit=view.findViewById(R.id.postl);
+        Button canc=view.findViewById(R.id.cancell);
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view).setCancelable(false).create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+
+        canc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth = FirebaseAuth.getInstance();
+                if (mAuth.getCurrentUser() != null) {
+                    mUser = mAuth.getCurrentUser();
+                    String mailid = mUser.getEmail();
+                    AuthCredential credential = EmailAuthProvider.getCredential(mailid, password);
+                    mUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                usertask = mAuth.getCurrentUser().reload();
+                                usertask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(SignUp3rdClass.this, "Your request is granted", Toast.LENGTH_SHORT).show();
+                                                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                    dialog.dismiss();
+                    SignUp3rdClass.super.onBackPressed();
+                } else {
+                    dialog.dismiss();
+                    SignUp3rdClass.super.onBackPressed();
+                }
+            }
+        });
     }
 }

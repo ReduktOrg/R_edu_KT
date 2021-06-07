@@ -31,6 +31,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
@@ -122,9 +125,9 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
-                Glide.with(header.getContext()).load(user.getProfileimage()).into(pro_img);
-                Glide.with(MyAccount.this).load(user.getProfileimage()).into(promy_img);
-                Glide.with(MyAccount.this).load(user.getProfileimage()).into(proimg);
+                Glide.with(header.getContext()).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(pro_img);
+                Glide.with(MyAccount.this).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(promy_img);
+                Glide.with(MyAccount.this).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(proimg);
                 fullName = user.getFullName();
                 email=user.getEmail();
                 userName = user.getUserName();

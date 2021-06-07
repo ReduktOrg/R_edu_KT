@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <ImageView
+        android:src="@drawable/net"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="40dp"
+        android:id="@+id/networkimg"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/networkimg"
+        android:id="@+id/networktext"
+        android:layout_centerHorizontal="true"
+        android:text="OOPS! NO INTERNET"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please check your network connection."
+        android:layout_below="@+id/networktext"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        android:textColor="@color/design_dark_default_color_shadow_light"/>
+
+    <Button
+        android:id="@+id/netcheckbtn"
+        android:text="Try Again"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="60dp"
+        android:padding="20dp"
+        android:layout_below="@+id/networktext"
+        android:layout_centerHorizontal="true" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

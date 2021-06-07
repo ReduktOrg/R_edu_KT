@@ -23,21 +23,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.r_edu_kt.Adapters.CommentAdapter;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.Adapters.CommentReplyAdapter;
 import com.example.r_edu_kt.Model.Comment;
 import com.example.r_edu_kt.Model.ModelCommentReply;
-import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -49,18 +42,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -118,7 +105,7 @@ public class CommentReply extends AppCompatActivity {
                     commentview.setText(com);
                     if(comment.getCommentimage()!=null){
                         linearLayout.setVisibility(View.VISIBLE);
-                        Glide.with(CommentReply.this).load(comment.getCommentimage()).into(image);
+                        Glide.with(CommentReply.this).load(comment.getCommentimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(image);
                     }
                 }
             }
@@ -193,7 +180,8 @@ public class CommentReply extends AppCompatActivity {
 
                         final PhotoView img=view.findViewById(R.id.img);
                         final ImageButton close =view.findViewById(R.id.close);
-                        Glide.with(img.getContext()).load(comment.getCommentimage()).fitCenter().diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+                        final ImageButton rotate = view.findViewById(R.id.rotate);
+                        Glide.with(img.getContext()).load(comment.getCommentimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(img);
 
                         final AlertDialog dialog = new AlertDialog.Builder(CommentReply.this)
                                 .setView(view).setCancelable(false).create();
@@ -204,6 +192,13 @@ public class CommentReply extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
+                            }
+                        });
+
+                        rotate.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                img.setRotationBy(90);
                             }
                         });
                     }
@@ -246,8 +241,8 @@ public class CommentReply extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                Glide.with(CommentReply.this).load(user.getProfileimage()).into(comment_profile_image);
-                Glide.with(CommentReply.this).load(user.getProfileimage()).into(comment_profile_img);
+                Glide.with(CommentReply.this).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(comment_profile_image);
+                Glide.with(CommentReply.this).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(comment_profile_img);
             }
 
             @Override

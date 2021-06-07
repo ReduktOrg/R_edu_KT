@@ -3,11 +3,13 @@ package com.example.r_edu_kt.User.ForgetPassword;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -26,6 +28,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -40,7 +44,9 @@ public class SetNewPassword extends AppCompatActivity {
 
     Button update;
     EditText new_pass,confirm_pass;
-    FirebaseUser user;
+    FirebaseUser user,mUser;
+    FirebaseAuth mAuth;
+    private Task<Void> usertask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,44 +86,55 @@ public class SetNewPassword extends AppCompatActivity {
                     return;
                 }
                 else {
-                    final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-                    final HashMap<String, Object> hashMap = new HashMap<>();
-                    hashMap.put("password",ori_pas);
+                    mAuth = FirebaseAuth.getInstance();
+                    mUser = mAuth.getCurrentUser();
 
                     final ProgressDialog pd = new ProgressDialog(SetNewPassword.this);
                     pd.setMessage("Updating your Password");
                     pd.setCanceledOnTouchOutside(false);
                     pd.show();
 
-                    user.updatePassword(ori_pas).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull @NotNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(hashMap)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(SetNewPassword.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
-                                                    pd.dismiss();
-                                                    Intent intent = new Intent(SetNewPassword.this,MyAccount.class);
-                                                    startActivity(intent);
-                                                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                                                    finish();
+                    final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+                    final HashMap<String, Object> hashMap = new HashMap<>();
+                    hashMap.put("password",ori_pas);
 
-                                                } else {
-                                                    Toast.makeText(SetNewPassword.this, "could not update Password", Toast.LENGTH_SHORT).show();
-                                                    pd.dismiss();
-                                                }
-                                            }
-                                        });
-                            }
-                            else {
-                                Toast.makeText(SetNewPassword.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
-                                pd.dismiss();
-                            }
+                    usertask = mAuth.getCurrentUser().reload();
+                    usertask.addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            mUser = mAuth.getCurrentUser();
+                            mUser.updatePassword(ori_pas).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        reference.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(hashMap)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(SetNewPassword.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
+                                                            pd.dismiss();
+                                                            Intent intent = new Intent(SetNewPassword.this,MyAccount.class);
+                                                            startActivity(intent);
+                                                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                                                            finish();
+
+                                                        } else {
+                                                            Toast.makeText(SetNewPassword.this, "could not update Password", Toast.LENGTH_SHORT).show();
+                                                            pd.dismiss();
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                    else {
+                                        Toast.makeText(SetNewPassword.this,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                        pd.dismiss();
+                                    }
+                                }
+                            });
                         }
                     });
+
                 }
             }
         });
