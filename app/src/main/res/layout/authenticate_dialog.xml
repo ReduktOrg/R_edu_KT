@@ -48,21 +48,24 @@
                     android:textColor="#000"
                     android:textSize="18sp" />
 
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_horizontal"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/parent"
                     android:layout_margin="15dp"
-                    android:maxLines="1"
-                    style="@style/modifiedEditText"
-                    android:inputType="textPassword"
-                    app:endIconMode="password_toggle"
-                    android:hint="Password"
-                    android:padding="10dp"
-                    android:textColor="#000"
-                    android:textCursorDrawable="@drawable/cursor"
-                    android:textSize="18sp" />
+                    app:endIconMode="password_toggle">
+
+                    <EditText
+                        android:id="@+id/password"
+                        android:padding="10dp"
+                        style="@style/modifiedEditText"
+                        android:layout_height="50dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:textColor="#000"
+                        android:textCursorDrawable="@drawable/cursor"
+                        android:textSize="18sp"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
 

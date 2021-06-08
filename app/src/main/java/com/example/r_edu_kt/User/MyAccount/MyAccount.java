@@ -8,11 +8,14 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -21,6 +24,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
@@ -45,6 +49,7 @@ import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,6 +73,8 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyAccount extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final int PERMISSION_CODE = 1000;
+    private static final int IMAGE_CAPTURE_CODE = 1001;
 
 
     Button nameButton,birthdayButton,genderButton,passwordButton,emailButton,phoneButton;
@@ -75,6 +82,7 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
     private ProgressDialog loader;
     private DatabaseReference reference;
     String onlineuserid="";
+    BottomSheetDialog bottomSheetDialog;
 
     DrawerLayout drawerLayout;
     LinearLayout contentView;
@@ -177,9 +185,44 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
        promy_img.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               Intent intent=new Intent(Intent.ACTION_PICK);
-               intent.setType("image/*");
-               startActivityForResult(intent, 1);
+              bottomSheetDialog = new BottomSheetDialog(MyAccount.this,R.style.BottomSheetTheme);
+                View sheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.imgbottom, (ViewGroup) findViewById(R.id.BottomSheet));
+
+                ImageView camera = sheetView.findViewById(R.id.camera);
+                ImageView gallery = sheetView.findViewById(R.id.gallery);
+
+                camera.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
+                                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                                String[] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                                requestPermissions(permission,PERMISSION_CODE);
+                            }
+                            else {
+                                openCamer();
+                            }
+                        }
+                        else {
+                            openCamer();
+                        }
+                    }
+                });
+
+                gallery.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        bottomSheetDialog.dismiss();
+                        Intent intent=new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                bottomSheetDialog.setContentView(sheetView);
+                bottomSheetDialog.setCanceledOnTouchOutside(false);
+                bottomSheetDialog.show();
            }
        });
 
@@ -251,6 +294,17 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
+    private void openCamer() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE,"New Picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION,"From the Camera");
+        resultUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+
+        Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,resultUri);
+        startActivityForResult(cameraintent,IMAGE_CAPTURE_CODE);
+    }
+
 
     private void update_image() {
         loader.setMessage("updating profile image");
@@ -310,8 +364,9 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
             promy_img.setImageURI(resultUri);
             update_photo.setVisibility(View.VISIBLE);
         }
-        else {
-            Toast.makeText(MyAccount.this,"something went wrong",Toast.LENGTH_SHORT).show();
+        else if(requestCode == 1001 && resultCode == RESULT_OK){
+            promy_img.setImageURI(resultUri);
+            update_photo.setVisibility(View.VISIBLE);
         }
     }
 
@@ -374,6 +429,17 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
                 Intent account_intent=new Intent(getApplicationContext(), MyAccount.class);
                 startActivity(account_intent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                break;
+
+            case R.id.nav_contact_us:
+                String[] redukt_mail={"teamredukt@gmail.com"};
+                String mailSubject="Help needed for "+fullName.toUpperCase();
+                String chooseOne="Choose one email application";
+                Intent mailIntent=new Intent(Intent.ACTION_SENDTO);
+                mailIntent.setData(Uri.parse("mailto:"));
+                mailIntent.putExtra(Intent.EXTRA_EMAIL,redukt_mail);
+                mailIntent.putExtra(Intent.EXTRA_SUBJECT,mailSubject);
+                startActivity(Intent.createChooser(mailIntent,chooseOne));
                 break;
 
             case R.id.nav_logout:

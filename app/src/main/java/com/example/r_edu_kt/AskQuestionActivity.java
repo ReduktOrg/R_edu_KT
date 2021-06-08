@@ -267,7 +267,6 @@ public class AskQuestionActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     Toast.makeText(AskQuestionActivity.this,"Question Posted Successfully", Toast.LENGTH_SHORT).show();
                     loader.dismiss();
-                    startActivity(new Intent(AskQuestionActivity.this,discussion_home.class));
                     finish();
                 }else {
                     Toast.makeText(AskQuestionActivity.this,"could not upload question"+task.getException().toString(),Toast.LENGTH_SHORT).show();
@@ -313,7 +312,6 @@ public class AskQuestionActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 Toast.makeText(AskQuestionActivity.this,"Question Posted Successfully", Toast.LENGTH_SHORT).show();
                                 loader.dismiss();
-                                startActivity(new Intent(AskQuestionActivity.this,discussion_home.class));
                                 finish();
 
                             }else {
