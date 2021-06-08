@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -57,6 +58,11 @@ public class MyAccountBirthday extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
                 date=user.getDate();
+                String[] birth = date.split("/");
+                int day = Integer.parseInt(birth[0]);
+                int month = Integer.parseInt(birth[1]);
+                int year = Integer.parseInt(birth[2]);
+                datePicker.updateDate(year,month-1,day);
             }
 
             @Override
