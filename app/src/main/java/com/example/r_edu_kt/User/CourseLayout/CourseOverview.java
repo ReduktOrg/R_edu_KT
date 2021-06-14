@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.r_edu_kt.R;
 import com.example.r_edu_kt.User.CourseLayout.Fragments.FragmentAdapter;
@@ -60,18 +61,73 @@ public class CourseOverview extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_overview);
 
+
+        setUpExoPlayer("https://i.imgur.com/7bMqysJ.mp4");
+
+        //hooks
+        tabLayout = findViewById(R.id.tab_layout);
+        pager2 = findViewById(R.id.view_pager2);
+
+        img = (ImageView) findViewById(R.id.image);
+        title = (TextView) findViewById(R.id.title);
+//        desc=(TextView)findViewById(R.id.description);
+        img.setImageResource(getIntent().getIntExtra("courseimage", 0));
+        title.setText(getIntent().getStringExtra("title").toString());
+//        desc.setText(getIntent().getStringExtra("description").toString());
+
+        FragmentManager fm = getSupportFragmentManager();
+
+
+        adapter = new FragmentAdapter(fm, getLifecycle(), title.getText().toString());
+        pager2.setAdapter(adapter);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                pager2.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        pager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                tabLayout.selectTab(tabLayout.getTabAt(position));
+            }
+        });
+    }
+
+
+    public void setUpExoPlayer(String url){
+
+        releasePlayer();
+
+//        Toast.makeText(this,"setting up player",Toast.LENGTH_LONG).show();
+
         //Exoplayer
         playerView = findViewById(R.id.player_view);
         progressBar = findViewById(R.id.video_progress_bar);
         btFullScreen = playerView.findViewById(R.id.bt_fullscreen);
-        Uri videoUrl = Uri.parse("https://i.imgur.com/7bMqysJ.mp4");
+        Uri videoUrl = Uri.parse(url);
 
+//        return;
         LoadControl loadControl = new DefaultLoadControl();
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
 
         //Initialise simple exo player
         simpleExoPlayer = ExoPlayerFactory.newSimpleInstance(getApplicationContext(), trackSelector, loadControl);
+
+
 
         //Initialise data source factory
         DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory("exoplayer_video");
@@ -180,49 +236,7 @@ public class CourseOverview extends AppCompatActivity {
                 }
             }
         });
-
-        //hooks
-        tabLayout = findViewById(R.id.tab_layout);
-        pager2 = findViewById(R.id.view_pager2);
-
-        img = (ImageView) findViewById(R.id.image);
-        title = (TextView) findViewById(R.id.title);
-//        desc=(TextView)findViewById(R.id.description);
-        img.setImageResource(getIntent().getIntExtra("courseimage", 0));
-        title.setText(getIntent().getStringExtra("title").toString());
-//        desc.setText(getIntent().getStringExtra("description").toString());
-
-        FragmentManager fm = getSupportFragmentManager();
-
-
-        adapter = new FragmentAdapter(fm, getLifecycle(), title.getText().toString());
-        pager2.setAdapter(adapter);
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                pager2.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        pager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                tabLayout.selectTab(tabLayout.getTabAt(position));
-            }
-        });
     }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -239,5 +253,16 @@ public class CourseOverview extends AppCompatActivity {
         simpleExoPlayer.setPlayWhenReady(true);
         //get playback state
         simpleExoPlayer.getPlaybackState();
+    }
+    private void releasePlayer(){
+        if(simpleExoPlayer!=null){
+            simpleExoPlayer.release();
+            simpleExoPlayer.clearVideoSurface();
+            playerView.getPlayer().release();;
+
+
+            simpleExoPlayer= null;
+            playerView=null;
+        }
     }
 }

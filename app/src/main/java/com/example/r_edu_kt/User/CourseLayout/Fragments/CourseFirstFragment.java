@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.User.CourseLayout.CourseOverview;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class CourseFirstFragment extends Fragment {
     private List<CourseModel> lstCourse;
 
 
-    ArrayList<String> imageLinks;
+    ArrayList<String> imageLinks,videoLinks;
 
 
     ListView list;
@@ -73,6 +74,13 @@ public class CourseFirstFragment extends Fragment {
         lstCourse.add(new CourseModel("video21", "Video - 04:20mins", R.drawable.baseline_play_circle_filled_black_48,R.drawable.baseline_check_circle_black_48));
 
 
+        videoLinks=new ArrayList<>();
+        videoLinks.add("https://i.imgur.com/6kQ7fGW.mp4");
+        videoLinks.add("https://i.imgur.com/IsQr1Fl.mp4");
+        videoLinks.add("https://i.imgur.com/YnUELTm.mp4");
+        videoLinks.add("https://i.imgur.com/7bMqysJ.mp4");
+        videoLinks.add("https://i.imgur.com/ohrqpvs.mp4");
+
         for(int i=0;i<lstCourse.size();i++){
             lstCourse.get(i).setMainTitle(title+" "+lstCourse.get(i).getMainTitle());
         }
@@ -85,6 +93,7 @@ public class CourseFirstFragment extends Fragment {
 //                        Toast.makeText(getActivity(),"hello",Toast.LENGTH_SHORT).show();
                         ImageView imgView=(ImageView) getActivity().findViewById(R.id.image);
 
+                        ((CourseOverview)getActivity()).setUpExoPlayer(videoLinks.get(position%5));
                         int md=position%5;
 //                        if(md==0)
 //                            imgView.setImageResource(R.drawable.app5);
