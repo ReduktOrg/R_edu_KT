@@ -62,6 +62,17 @@ public class MyAccountGender extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user= snapshot.getValue(User.class);
                 gender=user.getGender();
+                switch (gender){
+                    case "Male":
+                        radioGroup.check(R.id.male);
+                        break;
+                    case "Female":
+                        radioGroup.check(R.id.female);
+                        break;
+                    case "Other":
+                        radioGroup.check(R.id.other);
+                        break;
+                }
             }
 
             @Override

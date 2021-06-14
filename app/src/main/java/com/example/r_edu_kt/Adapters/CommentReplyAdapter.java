@@ -3,6 +3,7 @@ package com.example.r_edu_kt.Adapters;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -31,9 +32,8 @@ import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.Model.ModelCommentReply;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.image;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,6 +87,15 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
         holder.commentDate.setText(modelCommentReply.getDate());
         getUserInfo(holder.commentor_profile_image,holder.commentorUserName,modelCommentReply.getPublisher());
 
+        holder.commentor_profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent img_intent = new Intent(mContext, image.class);
+                img_intent.putExtra("Uid",modelCommentReply.getPublisher());
+                mContext.startActivity(img_intent);
+            }
+        });
+
         String Uname= modelCommentReply.getPrevious_username();
         String previous_com = modelCommentReply.getPrevious_comment();
         if(Uname != null && previous_com !=null){
@@ -105,7 +114,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
         getDisLikes(holder.dislikes,modelCommentReply.getCommentid(),modelCommentReply.getPrevious_commentid(),modelCommentReply.getPostid());
 
 
-         holder.like.setOnClickListener(new View.OnClickListener() {
+         holder.like_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.like.getTag().equals("like") && holder.dislike.getTag().equals("dislike")){
@@ -121,7 +130,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             }
         });
 
-        holder.dislike.setOnClickListener(new View.OnClickListener() {
+        holder.dislike_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.dislike.getTag().equals("dislike") && holder.like.getTag().equals("like")){
@@ -298,9 +307,6 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                                     }
                                 });
                             }
-                                else {
-
-                                }
                             }
 
                             @Override
@@ -392,7 +398,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
         public CircleImageView commentor_profile_image;
         public TextView commentorUserName, commentDate, pre_comment_usr, commentor_comment,pre_com,likes,dislikes;
         ImageView more,like,dislike;
-        LinearLayout line;
+        LinearLayout line, like_layout, dislike_layout;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -409,6 +415,8 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             likes = itemView.findViewById(R.id.likes);
             dislike = itemView.findViewById(R.id.dislike);
             dislikes = itemView.findViewById(R.id.dislikes);
+            like_layout = itemView.findViewById(R.id.like_layout);
+            dislike_layout = itemView.findViewById(R.id.dislike_layout);
         }
     }
 

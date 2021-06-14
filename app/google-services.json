@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "1073134115556",
+    "firebase_url": "https://proj-redukt-default-rtdb.firebaseio.com",
     "project_id": "proj-redukt",
     "storage_bucket": "proj-redukt.appspot.com"
   },
@@ -13,6 +14,30 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1073134115556-i6msfh1ceccnk3equm5su8qsfbqd38fr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.r_edu_kt",
+            "certificate_hash": "0abfffe9749b12d6b351a1847dc6077353d06afa"
+          }
+        },
+        {
+          "client_id": "1073134115556-kpmfehtpbhfudhetbbqpspbfm2isug8s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.r_edu_kt",
+            "certificate_hash": "58278e479bc12868e976663ae407dd1ab9620ea2"
+          }
+        },
+        {
+          "client_id": "1073134115556-u067nm83cddtq832ua73m6o5hpaik95l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.r_edu_kt",
+            "certificate_hash": "03f5d2b1d0ccb6249e04626717e19e06bac3baaf"
+          }
+        },
         {
           "client_id": "1073134115556-kr43t6obdambppt2ips3g1nouj30do9h.apps.googleusercontent.com",
           "client_type": 3

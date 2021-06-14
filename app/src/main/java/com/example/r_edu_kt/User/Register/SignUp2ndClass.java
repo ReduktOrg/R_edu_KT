@@ -105,23 +105,7 @@ public class SignUp2ndClass extends AppCompatActivity {
     }
 
     public void onLoginClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-
-        //Add Transition
-        Pair[] pairs = new Pair[5];
-
-        pairs[0] = new Pair<View, String>(backBtn, "transition_back_btn");
-        pairs[1] = new Pair<View, String>(next, "transition_next_btn");
-        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
-        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
-        pairs[4] = new Pair<View, String>(sideImage, "transition_side_image");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignUp2ndClass.this, pairs);
-            startActivity(intent, options.toBundle());
-        } else {
-            startActivity(intent);
-        }
+        finish();
     }
 
     public  boolean validateGender(){
@@ -131,6 +115,7 @@ public class SignUp2ndClass extends AppCompatActivity {
         }
         return  true;
     }
+
     public  boolean validateAge(){
         //minimum 14 yrs age
 
@@ -143,5 +128,11 @@ public class SignUp2ndClass extends AppCompatActivity {
         }
         return  true;
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
     }
 }

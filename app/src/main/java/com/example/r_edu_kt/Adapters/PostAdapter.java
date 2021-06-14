@@ -4,16 +4,13 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Matrix;
 import android.os.Build;
 import android.text.TextUtils;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,18 +30,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.example.r_edu_kt.CommentsActivity;
 import com.example.r_edu_kt.Model.Post;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
-import com.example.r_edu_kt.discussion_home;
+import com.example.r_edu_kt.image;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -116,7 +110,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         else{
             holder.questionImage.setVisibility(View.VISIBLE);
         }
-        Glide.with(mContext).load(post.getQuestionimage()).into(holder.questionImage);
+        Glide.with(mContext).load(post.getQuestionimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(holder.questionImage);
         holder.questionImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +153,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
         getDisLikes(holder.dislikes,post.getPostid());
         getComments(holder.comments,post.getPostid());
 
-        holder.like.setOnClickListener(new View.OnClickListener() {
+        holder.profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent img_intent = new Intent(mContext, image.class);
+                img_intent.putExtra("Uid",post.getPublisher());
+                mContext.startActivity(img_intent);
+            }
+        });
+
+        holder.like_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.like.getTag().equals("like") && holder.dislike.getTag().equals("dislike")){
@@ -175,7 +178,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             }
         });
 
-        holder.dislike.setOnClickListener(new View.OnClickListener() {
+        holder.dislike_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.dislike.getTag().equals("dislike") && holder.like.getTag().equals("like")){
@@ -199,15 +202,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             }
         });
 
-        holder.comments.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(mContext,CommentsActivity.class);
-                intent.putExtra("postid",post.getPostid());
-                intent.putExtra("publisher",post.getPublisher());
-                mContext.startActivity(intent);
-            }
-        });
 
         holder.more.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
@@ -244,7 +238,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                         if(post.getQuestionimage()!=null){
                             qimage.setVisibility(View.VISIBLE);
                         }
-                        Glide.with(mContext).load(post.getQuestionimage()).into(qimage);
+                        Glide.with(mContext).load(post.getQuestionimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(qimage);
                         question.setText(post.getQuestion());
 
                         switch(post.getTopic()) {
@@ -345,13 +339,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                             }
                         });
 
-                       submit.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
-                               FirebaseDatabase.getInstance().getReference("questions posts").child(postid).removeValue();
-                               dialog.dismiss();
-                           }
-                       });
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                FirebaseDatabase.getInstance().getReference("questions posts").child(postid).removeValue();
+                                dialog.dismiss();
+                            }
+                        });
                         return true;
                     }
                 });
@@ -372,44 +366,44 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.show();
 
-                       submit.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
-                               int selected = radioGroup.getCheckedRadioButtonId();
-                               radioButton=view.findViewById(selected);
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                int selected = radioGroup.getCheckedRadioButtonId();
+                                radioButton=view.findViewById(selected);
 
-                               if(selected == -1){
-                                   Toast.makeText(mContext,"please select any one of the option to report",Toast.LENGTH_SHORT).show();
-                               }else {
-                                   String mDate= DateFormat.getDateInstance().format(new Date());
-                                   DatabaseReference ref=FirebaseDatabase.getInstance().getReference("questions_report");
-                                   String questions_reportid= ref.push().getKey();
+                                if(selected == -1){
+                                    Toast.makeText(mContext,"please select any one of the option to report",Toast.LENGTH_SHORT).show();
+                                }else {
+                                    String mDate= DateFormat.getDateInstance().format(new Date());
+                                    DatabaseReference ref=FirebaseDatabase.getInstance().getReference("questions_report");
+                                    String questions_reportid= ref.push().getKey();
 
-                                   HashMap<String, Object> hashMap = new HashMap<>();
-                                   hashMap.put("questions_reportid",questions_reportid);
-                                   hashMap.put("report",radioButton.getText());
-                                   hashMap.put("date",mDate);
-                                   ref.child(postid).child(questions_reportid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                       @Override
-                                       public void onComplete(@NonNull Task<Void> task) {
-                                           if(task.isSuccessful()){
-                                               Toast.makeText(mContext,"Reported Successfully", Toast.LENGTH_SHORT).show();
-                                           }else {
-                                               Toast.makeText(mContext,task.getException().toString(),Toast.LENGTH_SHORT).show();
-                                           }
-                                       }
-                                   });
-                                   dialog.dismiss();
-                               }
-                           }
-                       });
+                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                    hashMap.put("questions_reportid",questions_reportid);
+                                    hashMap.put("report",radioButton.getText());
+                                    hashMap.put("date",mDate);
+                                    ref.child(postid).child(questions_reportid).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(mContext,"Reported Successfully", Toast.LENGTH_SHORT).show();
+                                            }else {
+                                                Toast.makeText(mContext,task.getException().toString(),Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                    dialog.dismiss();
+                                }
+                            }
+                        });
 
-                       canc.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
-                               dialog.dismiss();
-                           }
-                       });
+                        canc.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
                         return true;
                     }
                 });
@@ -430,12 +424,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
     public class viewHolder extends RecyclerView.ViewHolder{
         public CircleImageView profile_image;
         public TextView asked_by_Textview,likes,dislikes,comments;
-        public ImageView more,like,dislike,comment;
+        public ImageView more,like,dislike;
         public ImageButton questionImage;
         public TextView topicTextview,askedOnTextview;
         public ExpandableTextView expandable_text;
         public CardView mCardView;
-        public LinearLayout linear;
+        public LinearLayout linear,like_layout,dislike_layout,comment;
 
         public viewHolder(@NonNull View itemView) {
             super(itemView);
@@ -448,13 +442,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             questionImage=itemView.findViewById(R.id.questionImage);
             like=itemView.findViewById(R.id.like);
             dislike=itemView.findViewById(R.id.dislike);
-            comment=itemView.findViewById(R.id.comment);
+            comment=itemView.findViewById(R.id.comment_layout);
             topicTextview=itemView.findViewById(R.id.topicTextview);
             askedOnTextview=itemView.findViewById(R.id.askedOnTextview);
             asked_by_Textview=itemView.findViewById(R.id.asked_by_Textview);
             expandable_text=itemView.findViewById(R.id.expand_text_view);
             mCardView = itemView.findViewById(R.id.cardView);
             linear=itemView.findViewById(R.id.linear);
+            like_layout = itemView.findViewById(R.id.like_layout);
+            dislike_layout = itemView.findViewById(R.id.dislike_layout);
         }
 
     }
@@ -466,9 +462,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user=snapshot.getValue(User.class);
-                Glide.with(mContext).load(user.getProfileimage()).into(profile_image);
+                Glide.with(mContext).load(user.getProfileimage()).apply(new RequestOptions().override(Target.SIZE_ORIGINAL).format(DecodeFormat.PREFER_ARGB_8888)).into(profile_image);
                 askedBy.setText(user.getUserName());
-
             }
 
             @Override
@@ -496,7 +491,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -567,9 +561,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                 } else {
                     dislikes.setText(snapshot.getChildrenCount() + " Dislike");
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -592,9 +584,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.viewHolder> {
                 } else {
                     comments.setText(snapshot.getChildrenCount() + " Comment");
                 }
-
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();

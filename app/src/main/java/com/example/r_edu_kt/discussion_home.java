@@ -1,6 +1,7 @@
 package com.example.r_edu_kt;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,10 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,6 +43,7 @@ import com.example.r_edu_kt.User.UserDashboard;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -77,7 +75,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
     static final float END_SCALE = 0.7f;
     Boolean total_items_loaded = false, isSearching = false;
 
-    private static int total_items_to_load = 7;
+    private static final int total_items_to_load = 7;
     private int mcurrentpage = 1,count = 0;
 
     String fullName,email;
@@ -119,6 +117,7 @@ public class discussion_home extends AppCompatActivity implements NavigationView
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+
 
         navigationView = findViewById(R.id.nav_view);
         final View header = navigationView.getHeaderView(0);
@@ -334,7 +333,6 @@ public class discussion_home extends AppCompatActivity implements NavigationView
 
     private void readQuestionsPosts() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("questions posts");
-
         Query question_query = reference.limitToLast(mcurrentpage * total_items_to_load);
         question_query.addValueEventListener(new ValueEventListener() {
             @Override

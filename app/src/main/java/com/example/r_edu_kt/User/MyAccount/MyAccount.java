@@ -62,6 +62,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -185,46 +187,9 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
        promy_img.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-              bottomSheetDialog = new BottomSheetDialog(MyAccount.this,R.style.BottomSheetTheme);
-                View sheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.imgbottom, (ViewGroup) findViewById(R.id.BottomSheet));
-
-                ImageView camera = sheetView.findViewById(R.id.camera);
-                ImageView gallery = sheetView.findViewById(R.id.gallery);
-
-                camera.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.dismiss();
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-                                String[] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                                requestPermissions(permission,PERMISSION_CODE);
-                            }
-                            else {
-                                openCamer();
-                            }
-                        }
-                        else {
-                            openCamer();
-                        }
+                         startCropActivity();
                     }
                 });
-
-                gallery.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.dismiss();
-                        Intent intent=new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, 1);
-                    }
-                });
-                bottomSheetDialog.setContentView(sheetView);
-                bottomSheetDialog.setCanceledOnTouchOutside(false);
-                bottomSheetDialog.show();
-           }
-       });
 
 
         nameButton.setOnClickListener(new View.OnClickListener() {
@@ -294,15 +259,8 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
 
     }
 
-    private void openCamer() {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE,"New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION,"From the Camera");
-        resultUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-
-        Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,resultUri);
-        startActivityForResult(cameraintent,IMAGE_CAPTURE_CODE);
+    private void startCropActivity() {
+        CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(this);
     }
 
 
@@ -359,14 +317,19 @@ public class MyAccount extends AppCompatActivity implements NavigationView.OnNav
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
-            resultUri = data.getData();
-            promy_img.setImageURI(resultUri);
-            update_photo.setVisibility(View.VISIBLE);
-        }
-        else if(requestCode == 1001 && resultCode == RESULT_OK){
-            promy_img.setImageURI(resultUri);
-            update_photo.setVisibility(View.VISIBLE);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode == RESULT_OK){
+                assert result != null;
+                resultUri = result.getUri();
+                promy_img.setImageURI(resultUri);
+                update_photo.setVisibility(View.VISIBLE);
+            }
+            else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+                assert result != null;
+                Exception error = result.getError();
+                Toast.makeText(MyAccount.this,error.toString(),Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

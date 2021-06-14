@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.example.r_edu_kt.AskQuestionActivity;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.User.Login.LoginActivity;
+import com.example.r_edu_kt.User.MyAccount.MyAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -55,6 +56,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hbb20.CountryCodePicker;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -68,12 +71,9 @@ import java.util.concurrent.TimeUnit;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SignUp3rdClass extends AppCompatActivity {
-    private static final int PERMISSION_CODE = 1000;
-    private static final int IMAGE_CAPTURE_CODE = 1001;
     private CircleImageView profileImage;
     private Uri resultUri;
     AlertDialog dialog;
-    BottomSheetDialog bottomSheetDialog;
     private Task<Void> usertask;
 
     private FirebaseAuth mAuth;
@@ -86,9 +86,7 @@ public class SignUp3rdClass extends AppCompatActivity {
 
 
     //variables
-    ImageView backBtn;
-    Button next,register;
-    TextView titleText, login, sideImage;
+    Button register;
 
     EditText phoneNumberEt;
     CountryCodePicker countryCodePicker;
@@ -117,69 +115,31 @@ public class SignUp3rdClass extends AppCompatActivity {
         profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetDialog = new BottomSheetDialog(SignUp3rdClass.this,R.style.BottomSheetTheme);
-                View sheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.imgbottom, (ViewGroup) findViewById(R.id.BottomSheet));
-
-                ImageView camera = sheetView.findViewById(R.id.camera);
-                ImageView gallery = sheetView.findViewById(R.id.gallery);
-
-                camera.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.dismiss();
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                            if(checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-                                String[] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                                requestPermissions(permission,PERMISSION_CODE);
-                            }
-                            else {
-                                openCamer();
-                            }
-                        }
-                        else {
-                            openCamer();
-                        }
-                    }
-                });
-
-                gallery.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.dismiss();
-                        Intent intent=new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        startActivityForResult(intent, 1);
-                    }
-                });
-                bottomSheetDialog.setContentView(sheetView);
-                bottomSheetDialog.setCanceledOnTouchOutside(false);
-                bottomSheetDialog.show();
+                startCropActivity();
             }
         });
     }
 
-    private void openCamer() {
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE,"New Picture");
-        values.put(MediaStore.Images.Media.DESCRIPTION,"From the Camera");
-        resultUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
-
-        Intent cameraintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraintent.putExtra(MediaStore.EXTRA_OUTPUT,resultUri);
-        startActivityForResult(cameraintent,IMAGE_CAPTURE_CODE);
+    private void startCropActivity() {
+        CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null){
-            resultUri = data.getData();
-            profileImage.setImageURI(resultUri);
-        }
-        else if(requestCode == 1001 && resultCode == RESULT_OK){
-            profileImage.setImageURI(resultUri);
+        if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if(resultCode == RESULT_OK){
+                assert result != null;
+                resultUri = result.getUri();
+                profileImage.setImageURI(resultUri);
+            }
+            else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
+                assert result != null;
+                Exception error = result.getError();
+                Toast.makeText(SignUp3rdClass.this,error.toString(),Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -429,23 +389,7 @@ public class SignUp3rdClass extends AppCompatActivity {
 
 
     public void onLoginClick(View view) {
-        Intent intent = new Intent(SignUp3rdClass.this, SignUp2ndClass.class);
-
-        //Add Transition
-        Pair[] pairs = new Pair[5];
-
-        pairs[0] = new Pair<View, String>(backBtn, "transition_back_btn");
-        pairs[1] = new Pair<View, String>(next, "transition_next_btn");
-        pairs[2] = new Pair<View, String>(login, "transition_login_btn");
-        pairs[3] = new Pair<View, String>(titleText, "transition_title_text");
-        pairs[4] = new Pair<View, String>(sideImage, "transition_side_image");
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(SignUp3rdClass.this, pairs);
-            startActivity(intent, options.toBundle());
-        } else {
-            startActivity(intent);
-        }
+        finish();
     }
 
     @Override

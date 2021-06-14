@@ -34,6 +34,7 @@ import com.example.r_edu_kt.CommentReply;
 import com.example.r_edu_kt.Model.Comment;
 import com.example.r_edu_kt.Model.User;
 import com.example.r_edu_kt.R;
+import com.example.r_edu_kt.image;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -117,7 +118,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         getDisLikes(holder.dislikes,comment.getCommentid(),comment.getPostid());
         getComments(holder.replies,comment.getPostid(),comment.getCommentid());
 
-         holder.commentimage.setOnClickListener(new View.OnClickListener() {
+        holder.commentimage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 View view = LayoutInflater.from(holder.commentimage.getContext()).inflate(R.layout.imagedialog,null);
@@ -151,6 +152,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.commentor_comment.setText(comment.getComment());
         holder.commentDate.setText(comment.getDate());
         getUserInformation(holder.commentorUserName, comment.getPublisher(),holder.commentor_profile_image);
+
+        holder.commentor_profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent img_intent = new Intent(mContext, image.class);
+                img_intent.putExtra("Uid",comment.getPublisher());
+                mContext.startActivity(img_intent);
+            }
+        });
 
         holder.reply.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +214,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             }
         });
 
-         holder.like.setOnClickListener(new View.OnClickListener() {
+        holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(holder.like.getTag().equals("like") && holder.dislike.getTag().equals("dislike")){
@@ -347,21 +357,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                         dialog.show();
 
-                       canc.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
-                               dialog.dismiss();
-                           }
-                       });
+                        canc.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialog.dismiss();
+                            }
+                        });
 
-                       submit.setOnClickListener(new View.OnClickListener() {
-                           @Override
-                           public void onClick(View v) {
-                               FirebaseDatabase.getInstance().getReference("comments").child(postid).child(commentid).removeValue();
-                               dialog.dismiss();
-                           }
-                       });
-                       return true;
+                        submit.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                FirebaseDatabase.getInstance().getReference("comments").child(postid).child(commentid).removeValue();
+                                dialog.dismiss();
+                            }
+                        });
+                        return true;
                     }
                 });
 
@@ -470,10 +480,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(mContext,error.getMessage(),Toast.LENGTH_SHORT).show();
-
             }
         });
-
     }
 
 
@@ -512,7 +520,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     imageView.setImageResource(R.drawable.ic_dislike_outline);
                     imageView.setTag("dislike");
                 }
-
             }
 
             @Override
@@ -539,7 +546,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                     likes.setText("");
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(mContext,error.getMessage(),Toast.LENGTH_SHORT).show();
@@ -588,13 +594,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 } else {
                     replies.setText(snapshot.getChildrenCount() + "");
                 }
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(mContext, error.getMessage(), Toast.LENGTH_SHORT).show();
-
             }
         });
     }

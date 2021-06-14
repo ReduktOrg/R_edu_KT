@@ -83,7 +83,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Please select profile image"
-                        android:textColor="#000"
+                        android:textColor="@color/button_blue"
                         android:textStyle="bold"
                         android:layout_gravity="center"
                         android:layout_marginBottom="3dp"/>
