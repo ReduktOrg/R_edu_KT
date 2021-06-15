@@ -113,19 +113,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
-                    android:text="what is c language?"
                     android:textColor="#000"
-                    android:textSize="15dp" />
+                    android:ellipsize="end"
+                    android:textSize="15sp"/>
 
                 <ImageButton
                     android:id="@+id/expand_collapse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:layout_marginRight="10dp"
+                    android:layout_gravity="end|bottom"
+                    android:layout_marginEnd="10dp"
                     android:background="@android:color/transparent"
                     android:padding="2dp" />
-
 
             </com.ms.square.android.expandabletextview.ExpandableTextView>
 

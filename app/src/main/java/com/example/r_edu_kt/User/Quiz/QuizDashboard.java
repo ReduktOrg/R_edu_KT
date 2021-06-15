@@ -146,16 +146,19 @@ public class QuizDashboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 correctCount++;
-                index++;
-                modelclass = list.get(index);
-                resetColor();
-                setAllData();
-                enableButton();
+                if (index < list.size() - 1) {
+                    index++;
+                    modelclass = list.get(index);
+                    resetColor();
+                    setAllData();
+                    enableButton();
+                } else {
+                    GameWon();
+                }
             }
         });
-
-
     }
+
 
     public void Wrong(CardView cardOA) {
 
@@ -212,7 +215,7 @@ public class QuizDashboard extends AppCompatActivity {
         if (modelclass.getoA().equals(modelclass.getAns())) {
             cardOA.setCardBackgroundColor(getResources().getColor(R.color.green));
 
-            if (index < list.size() - 1) {
+            if (index < list.size()) {
                 Correct(cardOA);
 
             } else {
@@ -230,7 +233,7 @@ public class QuizDashboard extends AppCompatActivity {
         if (modelclass.getoB().equals(modelclass.getAns())) {
             cardOB.setCardBackgroundColor(getResources().getColor(R.color.green));
 
-            if (index < list.size() - 1) {
+            if (index < list.size()) {
                 Correct(cardOB);
 
             } else {
@@ -248,7 +251,7 @@ public class QuizDashboard extends AppCompatActivity {
         if (modelclass.getoC().equals(modelclass.getAns())) {
             cardOC.setCardBackgroundColor(getResources().getColor(R.color.green));
 
-            if (index < list.size() - 1) {
+            if (index < list.size()) {
                 Correct(cardOC);
 
             } else {
@@ -266,7 +269,7 @@ public class QuizDashboard extends AppCompatActivity {
         if (modelclass.getoD().equals(modelclass.getAns())) {
             cardOD.setCardBackgroundColor(getResources().getColor(R.color.green));
 
-            if (index < list.size() - 1) {
+            if (index < list.size()) {
 
                 Correct(cardOD);
 

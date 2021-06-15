@@ -48,8 +48,14 @@ public class QuizIntro extends AppCompatActivity {
                     ModelClass modelClass = dataSnapshot.getValue(ModelClass.class);
                     list.add(modelClass);
                 }
-                Intent intent = new Intent(QuizIntro.this,QuizDashboard.class);
-                startActivity(intent);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent=new Intent(getApplicationContext(),QuizDashboard.class);
+                        startActivity(intent);
+                    }
+                },3000);
+
             }
 
             @Override
@@ -67,13 +73,5 @@ public class QuizIntro extends AppCompatActivity {
      //   list.add(new ModelClass("Which mountains form the eastern and western edges of the Deccan plateau?", "Eastern and Western Ghats", "Hindu Kush", "Urals", "Himalayas", "Eastern and Western Ghats"));
        // list.add(new ModelClass("What is the name of the boundary that separated India from Pakistan, set in 1947?", "Radcliffe Line", "Plimsoll Line", "Durand Line", "Green Line", "Radcliffe Line"));
       //  list.add(new ModelClass("The name of which Indian union territory means a Hundred Thousand Islands in Sanskrit?", "Lakshadweep", "Puducherry", "Delhi", "Chandigarh", "Lakshadweep"));
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-              //  Intent intent=new Intent(getApplicationContext(),QuizDashboard.class);
-              //  startActivity(intent);
-            }
-        },1500);
     }
 }
